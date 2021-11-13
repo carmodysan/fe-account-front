@@ -7,7 +7,6 @@ import axios from 'axios';
 Vue.config.productionTip = false
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL_API
-console.log('base url ! ' + process.env.VUE_APP_BASE_URL_API)
 
 new Vue({
   vuetify,
