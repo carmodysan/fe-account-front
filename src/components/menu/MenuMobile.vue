@@ -30,7 +30,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>Dashboard</v-list-item-title>
                 </v-list-item>
-                <v-list-item link href="#">
+                <v-list-item link :to="{ name: 'monthly-accounts'}" v-if="isAuthenticated">
                     <v-list-item-icon>
                         <v-icon>mdi-cash-multiple</v-icon>
                     </v-list-item-icon>
@@ -65,6 +65,7 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
     name: "MenuMobile",
 
+	// TODO à mettre en place pour faciliter la lecture du code du menu
     data: () => ({
       items: [
         { title: 'Dashboard', icon: 'mdi-monitor-dashboard', href: '/dashboard' },

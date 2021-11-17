@@ -5,6 +5,7 @@ import Login from '../views/Login'
 import Register from '../views/Register'
 import Dashboard from '../views/Dashboard'
 import About from '../views/About'
+import MonthlyAccount from '../views/MonthlyAccount'
 import PageNotFound from '../views/PageNotFound'
 import store from '../store'
 
@@ -30,6 +31,19 @@ const routes = [
         path: '/dashboard',
         name: 'dashboard',
         component: Dashboard,
+        beforeEnter: (to, from, next) => {
+            if (!store.getters['auth/isAuthenticated']) {
+                return next({
+                    name: 'login'
+                })
+            }
+            next()
+        }
+    },
+    {
+        path: '/monthly-accounts',
+        name: 'monthly-accounts',
+        component: MonthlyAccount,
         beforeEnter: (to, from, next) => {
             if (!store.getters['auth/isAuthenticated']) {
                 return next({

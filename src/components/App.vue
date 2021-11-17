@@ -14,8 +14,8 @@
 <style scoped></style>
 
 <script>
-import MenuDesktop from "./MenuDesktop";
-import MenuMobile from './MenuMobile';
+import MenuDesktop from "./menu/MenuDesktop";
+import MenuMobile from './menu/MenuMobile';
 import { mapGetters } from "vuex";
 
 export default {

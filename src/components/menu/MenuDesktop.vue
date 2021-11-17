@@ -9,7 +9,7 @@
 			</v-list-item>
 		</v-list>
 		<v-divider></v-divider>
-		<v-list>
+		<v-list nav>
             <v-list-item link :to="{ name: 'login'}" v-if="!isAuthenticated">
 				<v-list-item-icon>
 					<v-icon>mdi-login</v-icon>
@@ -28,7 +28,7 @@
 				</v-list-item-icon>
 				<v-list-item-title>Dashboard</v-list-item-title>
 			</v-list-item>
-			<v-list-item link href="#">
+			<v-list-item link :to="{ name: 'monthly-accounts'}" v-if="isAuthenticated">
 				<v-list-item-icon>
 					<v-icon>mdi-cash-multiple</v-icon>
 				</v-list-item-icon>
@@ -63,6 +63,8 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
     name: "MenuDesktop",
+
+	// TODO Mettre en place un data store comme le menu du mobile pour faciliter la lecture du code du menu
 
 	computed: {
 		...mapGetters({
