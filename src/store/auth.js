@@ -57,6 +57,17 @@ export default {
             store.commit('setLoading', false)
 		},
 
+		async reloadUser({commit}) {
+			try {
+                let response = await axios.get('/profile')
+                commit('setUser', JSON.parse(response.data[0]))
+				console.log('user loaded')
+            } catch(e) {
+                commit('setUser', null)
+                console.log('error get profile : '+e)
+            }
+		},
+
         logout({commit}) {
             store.commit('setLoading', true)
             localStorage.removeItem('token')

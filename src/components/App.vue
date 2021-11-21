@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-container fluid>
+		<v-container fill-height fluid>
 			<MenuMobile />
 			<MenuDesktop />
 			<v-overlay :value="isLoading" :absolute="absolute" z-index="10">
