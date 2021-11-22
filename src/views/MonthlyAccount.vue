@@ -48,7 +48,7 @@
 											<v-row dense>
 												<v-col v-for="ma in allMAByYear" :key="ma.month" :cols="maCardCols">
 													<v-card class="my-4">
-														<v-img src="../assets/images/card_11.jpg" height="200"></v-img>
+														<v-img src="../assets/images/card_11.jpg" width="300" height="200"></v-img>
 														<v-card-title> {{ ma.month | formatMonth }} </v-card-title>
 														<v-card-subtitle> {{ ma.operations.length }} operations </v-card-subtitle>
 														<v-divider></v-divider>
