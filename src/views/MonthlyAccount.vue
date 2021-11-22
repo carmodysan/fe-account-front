@@ -26,7 +26,45 @@
 				</v-row>
 			</div>
 			<div v-else>
-				{{ monthlyAccount.length }} monthly accounts created !
+				<v-row>
+					<v-col cols="12">
+						<v-card v-for="(allMAByYear, year) in allMA" v-bind:key="year">
+							<v-card-actions>
+								<v-btn color="orange lighten-2" text> {{ year }} </v-btn>
+
+								<v-spacer></v-spacer>
+
+								<v-btn icon @click="show = !show">
+									<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+								</v-btn>
+							</v-card-actions>
+
+							<v-expand-transition>
+								<div v-show="show">
+									<v-divider></v-divider>
+
+									<v-card-text>
+										<v-container fluid>
+											<v-row dense>
+												<v-col v-for="ma in allMAByYear" :key="ma.month" :cols="maCardCols">
+													<v-card class="my-4">
+														<v-img src="../assets/images/card_11.jpg" width="300" height="200"></v-img>
+														<v-card-title> {{ ma.month | formatMonth }} </v-card-title>
+														<v-card-subtitle> {{ ma.operations.length }} operations </v-card-subtitle>
+														<v-divider></v-divider>
+														<v-card-actions>
+															<v-btn>Go</v-btn>
+														</v-card-actions>
+													</v-card>
+												</v-col>
+											</v-row>
+										</v-container>
+									</v-card-text>
+								</div>
+							</v-expand-transition>
+						</v-card>
+					</v-col>
+				</v-row>
 			</div>
 		</v-row>
 	</v-container>
@@ -40,6 +78,7 @@ $progress-circular-overlay-transition: all .1s ease-in-out !default
 // TODO Créer les composants pour un affichage correct de tous les monthlyAccounts
 import { mapActions, mapGetters } from 'vuex';
 import axios from 'axios';
+
 export default {
 	name: 'Dashboard',
 
@@ -47,7 +86,8 @@ export default {
 		absolute: true,
 		isFirstMACreating: false,
 		isMALoading: false,
-		monthlyAccount: [],
+		allMA: {},
+		show: true,
 	}),
 
 	methods: {
@@ -92,30 +132,31 @@ export default {
 		},
 
 		async getMAItems(isFirst) {
-			try {
-				if (!isFirst) this.isMALoading = true;
+				if (!isFirst) this.isFirstMACreating = false; // On désactive le loader s'il était activé
+				this.isMALoading = true;
 
-				// On parcourt tous les comptes mensuels de l'utilisateur
+				// --> Création du tableau à deux dimensions [year][ma, ma2, ma3, ...] <-- //
+				let year = [];
+				let currentYear = 0;
+				// Création d'un tableau multi dimension dont la première dimension correspond à l'année
 				for (let index = 0; index < this.user.monthlyAccounts.length; index++) {
-					const ma = this.user.monthlyAccounts[index]; // On récupère le compte mensuel (MA)
-					const url = '/monthly_accounts/' + ma.id; // On construit l'url pour récupérer via API le compte mensuel
-					console.log(url);
-					let response = await axios
-						.get(url)
-						.then((response) => response.data)
-						.finally(() => {
-							console.log(index);
-							if (index == 11) {
-								this.isFirstMACreating = false; // On désactive le loader s'il était activé
-								this.isMALoading = false; // On désactive le loader s'il était activé
-								console.log('loader deactivated')
-							}
-						});
-					this.monthlyAccount.push(response);
+					const ma = this.user.monthlyAccounts[index];
+					if (currentYear != ma.year) {
+						if (year.length > 0) {
+							this.allMA[currentYear.toString()] = year;
+						}
+						currentYear = ma.year;
+					}
+					year.push(ma);
 				}
-			} catch (error) {
-				// TODO Gestion de l'exception
-			}
+				// Après la boucle on inscrit le dernier tableau d'élément non couvert par la boucle
+				if (year.length > 0) {
+					console.log('le tableau year a plus de 0 élément : ' + year.length);
+					this.allMA[currentYear.toString()] = year;
+				}
+				// --> Fin de création du tableau <-- //
+
+				this.isMALoading = false;
 		},
 	},
 
@@ -126,6 +167,23 @@ export default {
 
 		maItemsCount() {
 			return this.user.monthlyAccounts.length;
+		},
+
+		maCardCols() {
+			switch (this.$vuetify.breakpoint.name) {
+				case 'xs':
+					return 12;
+				case 'sm':
+					return 4;
+				case 'md':
+					return 2;
+				case 'lg':
+					return 2;
+				case 'xl':
+					return 2;
+				default:
+					return 2;
+			}
 		},
 	},
 
