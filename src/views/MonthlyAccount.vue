@@ -53,7 +53,7 @@
 														<v-card-subtitle> {{ ma.operations.length }} operations </v-card-subtitle>
 														<v-divider></v-divider>
 														<v-card-actions>
-															<v-btn link :to="{ name: 'madetails', params: { slug: ma.slug, maId: ma.id, operations: ma.operations } }">Go</v-btn>
+															<v-btn link :to="{ name: 'operations-list', params: { slug: ma.slug, maId: ma.id } }">Go</v-btn>
 														</v-card-actions>
 													</v-card>
 												</v-col>

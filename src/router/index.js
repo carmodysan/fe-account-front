@@ -6,7 +6,10 @@ import Register from '../views/Register'
 import Dashboard from '../views/Dashboard'
 import About from '../views/About'
 import MonthlyAccount from '../views/MonthlyAccount'
-import MADetails from '../views/MADetails'
+import Operations from '../views/monthly-account/Operations'
+import OperationsList from '../views/monthly-account/OperationsList'
+import OperationDetails from '../views/monthly-account/OperationDetails'
+import OperationAdd from '../views/monthly-account/OperationAdd'
 import PageNotFound from '../views/PageNotFound'
 import store from '../store'
 
@@ -56,16 +59,48 @@ const routes = [
     },
     {
         path: '/monthly-accounts/:slug',
-        name: 'madetails',
-        component: MADetails,
-        beforeEnter: (to, from, next) => {
-            if (!store.getters['auth/isAuthenticated']) {
-                return next({
-                    name: 'login'
-                })
+        component: Operations,
+        children: [
+            {
+                path: 'operations',
+                name: 'operations-list',
+                component: OperationsList, 
+                beforeEnter: (to, from, next) => {
+                    if (!store.getters['auth/isAuthenticated']) {
+                        return next({
+                            name: 'login'
+                        })
+                    }
+                    next()
+                }
+            },
+            {
+                path: 'operation/:id',
+                name: 'operation-details',
+                component: OperationDetails,
+                beforeEnter: (to, from, next) => {
+                    if (!store.getters['auth/isAuthenticated']) {
+                        return next({
+                            name: 'login'
+                        })
+                    }
+                    next()
+                }
+            },
+            {
+                path: 'operations/add',
+                name: 'operation-add',
+                component: OperationAdd,
+                beforeEnter: (to, from, next) => {
+                    if (!store.getters['auth/isAuthenticated']) {
+                        return next({
+                            name: 'login'
+                        })
+                    }
+                    next()
+                }
             }
-            next()
-        }
+        ],
     },
     {
       path: '/about',
