@@ -53,7 +53,7 @@
 														<v-card-subtitle> {{ ma.operations.length }} operations </v-card-subtitle>
 														<v-divider></v-divider>
 														<v-card-actions>
-															<v-btn>Go</v-btn>
+															<v-btn link :to="{ name: 'madetails', params: { slug: ma.slug, maId: ma.id, operations: ma.operations } }">Go</v-btn>
 														</v-card-actions>
 													</v-card>
 												</v-col>
@@ -132,31 +132,31 @@ export default {
 		},
 
 		async getMAItems(isFirst) {
-				if (!isFirst) this.isFirstMACreating = false; // On désactive le loader s'il était activé
-				this.isMALoading = true;
+			if (!isFirst) this.isFirstMACreating = false; // On désactive le loader s'il était activé
+			this.isMALoading = true;
 
-				// --> Création du tableau à deux dimensions [year][ma, ma2, ma3, ...] <-- //
-				let year = [];
-				let currentYear = 0;
-				// Création d'un tableau multi dimension dont la première dimension correspond à l'année
-				for (let index = 0; index < this.user.monthlyAccounts.length; index++) {
-					const ma = this.user.monthlyAccounts[index];
-					if (currentYear != ma.year) {
-						if (year.length > 0) {
-							this.allMA[currentYear.toString()] = year;
-						}
-						currentYear = ma.year;
+			// --> Création du tableau à deux dimensions [year][ma, ma2, ma3, ...] <-- //
+			let year = [];
+			let currentYear = 0;
+			// Création d'un tableau multi dimension dont la première dimension correspond à l'année
+			for (let index = 0; index < this.user.monthlyAccounts.length; index++) {
+				const ma = this.user.monthlyAccounts[index];
+				if (currentYear != ma.year) {
+					if (year.length > 0) {
+						this.allMA[currentYear.toString()] = year;
 					}
-					year.push(ma);
+					currentYear = ma.year;
 				}
-				// Après la boucle on inscrit le dernier tableau d'élément non couvert par la boucle
-				if (year.length > 0) {
-					console.log('le tableau year a plus de 0 élément : ' + year.length);
-					this.allMA[currentYear.toString()] = year;
-				}
-				// --> Fin de création du tableau <-- //
+				year.push(ma);
+			}
+			// Après la boucle on inscrit le dernier tableau d'élément non couvert par la boucle
+			if (year.length > 0) {
+				console.log('le tableau year a plus de 0 élément : ' + year.length);
+				this.allMA[currentYear.toString()] = year;
+			}
+			// --> Fin de création du tableau <-- //
 
-				this.isMALoading = false;
+			this.isMALoading = false;
 		},
 	},
 

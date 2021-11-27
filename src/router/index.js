@@ -6,6 +6,7 @@ import Register from '../views/Register'
 import Dashboard from '../views/Dashboard'
 import About from '../views/About'
 import MonthlyAccount from '../views/MonthlyAccount'
+import MADetails from '../views/MADetails'
 import PageNotFound from '../views/PageNotFound'
 import store from '../store'
 
@@ -44,6 +45,19 @@ const routes = [
         path: '/monthly-accounts',
         name: 'monthly-accounts',
         component: MonthlyAccount,
+        beforeEnter: (to, from, next) => {
+            if (!store.getters['auth/isAuthenticated']) {
+                return next({
+                    name: 'login'
+                })
+            }
+            next()
+        }
+    },
+    {
+        path: '/monthly-accounts/:slug',
+        name: 'madetails',
+        component: MADetails,
         beforeEnter: (to, from, next) => {
             if (!store.getters['auth/isAuthenticated']) {
                 return next({
