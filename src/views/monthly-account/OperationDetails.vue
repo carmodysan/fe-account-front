@@ -41,7 +41,7 @@
 							<!-- Débit -->
 							<v-text-field v-model="currentOperation.debit" :rules="numberRules" type="number" step="0.01" label="Débit (€)" required></v-text-field>
 							<!-- Pointée ? -->
-							<v-text-field v-model="currentOperation.checked" :rules="numberRules" type="checkbox" label="Pointée ?" required></v-text-field>
+							<v-checkbox v-model="currentOperation.checked" label="Pointée ?"></v-checkbox>
 
 							<v-divider class="my-5"></v-divider>
 
@@ -76,16 +76,6 @@ export default {
 		descriptionRules: [(v) => !!v || 'La description est obligatoire'],
 		// TODO Mettre en place un vrai validateur pour les montants chiffrés (crédit et débit)
 		numberRules: [(v) => !!v || 'Un montant est obligatoire'],
-
-		form: {
-			dateOp: new Date(Date.now()).toISOString().substr(0, 10),
-			category: '',
-			description: '',
-			credit: 0,
-			debit: 0,
-			checked: false,
-			monthlyAccount: '',
-		},
 	}),
 
 	methods: {
@@ -128,17 +118,12 @@ export default {
 			const debit = parseFloat(this.currentOperation.debit);
 			this.currentOperation.credit = credit;
 			this.currentOperation.debit = debit;
-			this.currentOperation.checked = this.currentOperation.checked === 'true';
 		},
 	},
 
 	mounted() {
 		this.message = '';
 		this.getOperation(this.$route.params.id);
-	},
-
-	created() {
-		this.form.monthlyAccount = '/api/monthly_accounts/' + this.$route.params.maId;
 	},
 };
 </script>

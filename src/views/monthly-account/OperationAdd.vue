@@ -33,7 +33,7 @@
 						<!-- Débit -->
 						<v-text-field v-model="form.debit" :rules="numberRules" type="number" step="0.01" label="Débit (€)" required></v-text-field>
 						<!-- Pointée ? -->
-						<v-text-field v-model="form.checked" :rules="numberRules" type="checkbox" label="Pointée ?" required></v-text-field>
+                        <v-checkbox v-model="form.checked" label="Pointée ?"></v-checkbox>
 
 						<v-btn :disabled="!valid" color="success" class="mr-4" @click="submit"> Envoyer </v-btn>
 					</v-form>
@@ -104,7 +104,6 @@ export default {
 			const debit = parseFloat(this.form.debit);
 			this.form.credit = credit;
 			this.form.debit = debit;
-			this.form.checked = this.form.checked === 'true';
 		},
 	},
 
