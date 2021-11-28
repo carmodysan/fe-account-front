@@ -8,9 +8,9 @@ class PeriodicOperationsDataService {
      * @returns la liste des opérations d'un compte mensuel.
      */
 	getAll(authorId) {
-		// return axios.get(`/periodic_operations/?authorId=${authorId}`);
-        console.log(authorId);
-        return axios.get(`/periodic_operations`);
+		return axios.get(`/periodic_operations/?authorId=${authorId}`);
+        // console.log(authorId);
+        // return axios.get(`/periodic_operations`);
 	}
 
     /**
