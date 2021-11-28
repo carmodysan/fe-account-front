@@ -37,9 +37,9 @@
 							<!-- Description -->
 							<v-text-field v-model="currentOperation.description" :rules="descriptionRules" label="Libellé" required></v-text-field>
 							<!-- Credit -->
-							<v-text-field v-model="currentOperation.credit" :rules="numberRules" type="number" step="0.01" label="Crédit (€)" required></v-text-field>
+							<v-text-field v-model="currentOperation.credit" :rules="numberRules" type="decimal" label="Crédit (€)" required></v-text-field>
 							<!-- Débit -->
-							<v-text-field v-model="currentOperation.debit" :rules="numberRules" type="number" step="0.01" label="Débit (€)" required></v-text-field>
+							<v-text-field v-model="currentOperation.debit" :rules="numberRules" type="decimal" label="Débit (€)" required></v-text-field>
 							<!-- Pointée ? -->
 							<v-checkbox v-model="currentOperation.checked" label="Pointée ?"></v-checkbox>
 
@@ -111,13 +111,11 @@ export default {
 		},
 
 		/**
-		 * Formatte les valeurs du formulaire avec les types attendus par l'API
+		 * Formatte les valeurs du formulaire avec les types attendus par l'API (à savoir de type String)
 		 */
 		formatCurrentOperation() {
-			const credit = parseFloat(this.currentOperation.credit);
-			const debit = parseFloat(this.currentOperation.debit);
-			this.currentOperation.credit = credit;
-			this.currentOperation.debit = debit;
+			this.currentOperation.credit = (typeof this.currentOperation.credit === 'string' ? this.currentOperation.credit : '0');
+			this.currentOperation.debit = (typeof this.currentOperation.debit === 'string' ? this.currentOperation.debit : '0');
 		},
 	},
 

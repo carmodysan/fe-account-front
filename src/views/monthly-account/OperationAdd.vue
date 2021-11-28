@@ -29,9 +29,9 @@
 						<!-- Description -->
 						<v-text-field v-model="form.description" :rules="descriptionRules" label="Libellé" required></v-text-field>
 						<!-- Credit -->
-						<v-text-field v-model="form.credit" :rules="numberRules" type="number" step="0.01" label="Crédit (€)" required></v-text-field>
+						<v-text-field v-model="form.credit" :rules="numberRules" type="decimal" label="Crédit (€)" required></v-text-field>
 						<!-- Débit -->
-						<v-text-field v-model="form.debit" :rules="numberRules" type="number" step="0.01" label="Débit (€)" required></v-text-field>
+						<v-text-field v-model="form.debit" :rules="numberRules" type="decimal" label="Débit (€)" required></v-text-field>
 						<!-- Pointée ? -->
                         <v-checkbox v-model="form.checked" label="Pointée ?"></v-checkbox>
 
@@ -64,24 +64,19 @@ export default {
 			dateOp: new Date(Date.now()).toISOString().substr(0, 10),
 			category: '',
 			description: '',
-			credit: 0,
-			debit: 0,
+			credit: '0',
+			debit: '0',
 			checked: false,
 			monthlyAccount: '',
 		},
 	}),
 
 	methods: {
-		/*...mapActions({
-			login: 'auth/login',
-		}),*/
-
 		/**
 		 * Envoi le formulaire à l'API
 		 */
 		async submit() {
 			console.log('submit');
-			this.formatForm();
 			await OperationsDataService.create(this.form)
 				.catch((e) => {
 					console.log(e);
@@ -94,16 +89,6 @@ export default {
                         }
 					});
 				});
-		},
-
-		/**
-		 * Formatte les valeurs du formulaire avec les types attendus par l'API
-		 */
-		formatForm() {
-			const credit = parseFloat(this.form.credit);
-			const debit = parseFloat(this.form.debit);
-			this.form.credit = credit;
-			this.form.debit = debit;
 		},
 	},
 
