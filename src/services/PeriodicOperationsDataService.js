@@ -9,6 +9,7 @@ class PeriodicOperationsDataService {
      */
 	getAll(authorId) {
 		// return axios.get(`/periodic_operations/?authorId=${authorId}`);
+        console.log(authorId);
         return axios.get(`/periodic_operations`);
 	}
 
