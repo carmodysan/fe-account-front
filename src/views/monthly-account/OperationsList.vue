@@ -96,7 +96,7 @@ export default {
 		},
 
 		retrievePeriodicOperations() {
-			PeriodicOperationsDataService.getAll(this.authorId)
+			PeriodicOperationsDataService.getAll(this.user.id)
 				.then((response) => {
 					this.periodicOperations = response.data['hydra:member'].map(this.getDisplayPeriodicOperation);
 				})
