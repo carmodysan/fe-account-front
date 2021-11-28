@@ -2,12 +2,25 @@
 	<v-container fill-height fluid>
 		<div align="center" justify="center">
 			<v-btn :to="{ name: 'operation-add', params: { maId: maId } }"> New </v-btn>
-			<v-data-table :headers="headers" :items="operations" item-key="id">
-				<template v-slot:[`item.actions`]="{ item }">
-					<v-icon small class="mr-2" @click="editOperation(item.id)">mdi-pencil</v-icon>
-					<v-icon small @click="deleteOperation(item.id)">mdi-delete</v-icon>
-				</template>
-			</v-data-table>
+			<v-card>
+				<v-data-table :headers="headers" :items="operations" item-key="id">
+					<template v-slot:[`item.actions`]="{ item }">
+						<v-icon small class="mr-2" @click="editOperation(item.id)">mdi-pencil</v-icon>
+						<v-icon small @click="deleteOperation(item.id)">mdi-delete</v-icon>
+					</template>
+					<template slot="body.append">
+						<tr class="pink--text">
+							<th>Totals</th>
+							<th></th>
+							<th></th>
+							<th>{{ sumFields('debit') }}</th>
+							<th>{{ sumFields('credit') }}</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</template>
+				</v-data-table>
+			</v-card>
 		</div>
 	</v-container>
 </template>
@@ -25,7 +38,7 @@ export default {
 
 	data: () => ({
 		maId: '',
-        maSlug: '',
+		maSlug: '',
 		operations: [],
 	}),
 
@@ -33,7 +46,7 @@ export default {
 		retrieveOperations() {
 			OperationsDataService.getAll(this.maId)
 				.then((response) => {
-					this.operations = response.data["hydra:member"].map(this.getDisplayOperation);
+					this.operations = response.data['hydra:member'].map(this.getDisplayOperation);
 				})
 				.catch((e) => {
 					console.log(e);
@@ -45,7 +58,7 @@ export default {
 		},
 
 		editOperation(id) {
-            // TODO Vérifier l'utilité du this.maSlug qui pourrait sûrement être enlevé
+			// TODO Vérifier l'utilité du this.maSlug qui pourrait sûrement être enlevé
 			this.$router.push({ name: 'operation-details', params: { id: id, maId: this.maId, maSlug: this.maSlug } });
 		},
 
@@ -62,13 +75,17 @@ export default {
 		getDisplayOperation(operation) {
 			return {
 				id: operation.id,
-                dateOp: operation.dateOp.substr(0, 10),
+				dateOp: operation.dateOp.substr(0, 10),
 				category: operation.category.length > 30 ? operation.category.substr(0, 30) + '...' : operation.category,
 				description: operation.description.length > 30 ? operation.description.substr(0, 30) + '...' : operation.description,
-                credit: operation.credit,
-                debit: operation.debit,
-                checked: operation.checked,
+				credit: operation.credit,
+				debit: operation.debit,
+				checked: operation.checked,
 			};
+		},
+
+		sumFields(key) {
+			return this.operations.reduce((a, b) => a + (b[key] || 0), 0);
 		},
 	},
 
@@ -101,7 +118,7 @@ export default {
 
 	created() {
 		this.maId = this.$route.params.maId;
-        this.maSlug = this.$route.params.maSlug;
+		this.maSlug = this.$route.params.maSlug;
 	},
 };
 </script>
