@@ -10,6 +10,9 @@ import Operations from '../views/monthly-account/Operations'
 import OperationsList from '../views/monthly-account/OperationsList'
 import OperationDetails from '../views/monthly-account/OperationDetails'
 import OperationAdd from '../views/monthly-account/OperationAdd'
+import PeriodicOperationList from '../views/monthly-account/PeriodicOperationList.vue'
+import PeriodicOperationAdd from '../views/monthly-account/PeriodicOperationsAdd.vue'
+import PeriodicOperationDetails from '../views/monthly-account/PeriodicOperationDetails.vue'
 import PageNotFound from '../views/PageNotFound'
 import store from '../store'
 
@@ -101,6 +104,45 @@ const routes = [
                 }
             }
         ],
+    },
+    {
+        path: '/params/periodic-operations',
+        name: 'periodic-operations',
+        component: PeriodicOperationList,
+        beforeEnter: (to, from, next) => {
+            if (!store.getters['auth/isAuthenticated']) {
+                return next({
+                    name: 'login'
+                })
+            }
+            next()
+        }
+    },
+    {
+        path: '/params/periodic-operations-add',
+        name: 'periodic-operations-add',
+        component: PeriodicOperationAdd,
+        beforeEnter: (to, from, next) => {
+            if (!store.getters['auth/isAuthenticated']) {
+                return next({
+                    name: 'login'
+                })
+            }
+            next()
+        }
+    },
+    {
+        path: '/params/periodic-operations/:id',
+        name: 'periodic-operations-details',
+        component: PeriodicOperationDetails,
+        beforeEnter: (to, from, next) => {
+            if (!store.getters['auth/isAuthenticated']) {
+                return next({
+                    name: 'login'
+                })
+            }
+            next()
+        }
     },
     {
       path: '/about',

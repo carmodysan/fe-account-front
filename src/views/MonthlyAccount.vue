@@ -1,5 +1,10 @@
 <template>
 	<v-container fill-height fluid>
+		<v-row>
+			<v-col class="text-right">
+				<v-btn large :to="{ name: 'periodic-operations', params: { authorId: user.id } }"><v-icon>mdi-cog</v-icon></v-btn>
+			</v-col>
+		</v-row>
 		<!-- Quand il n'y a pas de compte mensuel de créé -->
 		<v-row v-if="user.monthlyAccounts.length == 0" align="center" justify="center">
 			<div v-if="!isFirstMACreating">
@@ -53,7 +58,7 @@
 														<v-card-subtitle> {{ ma.operations.length }} operations </v-card-subtitle>
 														<v-divider></v-divider>
 														<v-card-actions>
-															<v-btn link :to="{ name: 'operations-list', params: { slug: ma.slug, maId: ma.id } }">Go</v-btn>
+															<v-btn link :to="{ name: 'operations-list', params: { slug: ma.slug, ma: ma } }">Go</v-btn>
 														</v-card-actions>
 													</v-card>
 												</v-col>

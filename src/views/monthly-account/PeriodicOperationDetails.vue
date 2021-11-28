@@ -7,31 +7,7 @@
 						<v-card-title>Ajouter une opération</v-card-title>
 						<v-form ref="form" v-model="valid" lazy-validation>
 							<!-- Date operation picker -->
-							<v-menu
-								ref="menu"
-								v-model="menuDatePicker"
-								:close-on-content-click="false"
-								:return-value.sync="currentOperation.dateOp"
-								transition="scale-transition"
-								offset-y
-								min-width="auto"
-							>
-								<template v-slot:activator="{ on, attrs }">
-									<v-text-field
-										v-model="currentOperation.dateOp"
-										label="Choisissez une date"
-										prepend-icon="mdi-calendar"
-										readonly
-										v-bind="attrs"
-										v-on="on"
-									></v-text-field>
-								</template>
-								<v-date-picker v-model="currentOperation.dateOp" no-title scrollable>
-									<v-spacer></v-spacer>
-									<v-btn text color="primary" @click="menuDatePicker = false"> Cancel </v-btn>
-									<v-btn text color="primary" @click="$refs.menu.save(currentOperation.dateOp)"> OK </v-btn>
-								</v-date-picker>
-							</v-menu>
+							<v-text-field v-model="currentOperation.dayOfMonth" :rules="numberRules" type="number" step="1" label="Jour du mois" required></v-text-field>
 							<!-- Category -->
 							<v-text-field v-model="currentOperation.category" :rules="categoryRules" label="Catégories" required></v-text-field>
 							<!-- Description -->
@@ -40,8 +16,6 @@
 							<v-text-field v-model="currentOperation.credit" :rules="numberRules" type="decimal" label="Crédit (€)" required></v-text-field>
 							<!-- Débit -->
 							<v-text-field v-model="currentOperation.debit" :rules="numberRules" type="decimal" label="Débit (€)" required></v-text-field>
-							<!-- Pointée ? -->
-							<v-checkbox v-model="currentOperation.checked" label="Pointée ?"></v-checkbox>
 
 							<v-divider class="my-5"></v-divider>
 
@@ -61,16 +35,17 @@
 <style scoped></style>
 
 <script>
-import OperationsDataService from '../../services/OperationsDataService';
+import PeriodicOperationsDataService from '../../services/PeriodicOperationsDataService';
 
 export default {
-	name: 'Operation-Details',
+	name: 'Periodic-Operation-Details',
 
 	data: () => ({
 		valid: true,
 		currentOperation: null,
 		message: '',
 		menuDatePicker: false,
+		authorId: '',
 
 		categoryRules: [(v) => !!v || 'La catégorie est obligatoire'],
 		descriptionRules: [(v) => !!v || 'La description est obligatoire'],
@@ -80,7 +55,7 @@ export default {
 
 	methods: {
 		getOperation(id) {
-			OperationsDataService.get(id)
+			PeriodicOperationsDataService.get(id)
 				.then((response) => {
 					console.log(response.data);
 					this.currentOperation = response.data;
@@ -92,11 +67,11 @@ export default {
 
 		updateOperation() {
             this.formatCurrentOperation();
-			OperationsDataService.update(this.currentOperation.id, this.currentOperation)
+			PeriodicOperationsDataService.update(this.currentOperation.id, this.currentOperation)
 				.then((response) => {
 					console.log(response.data);
 					this.message = 'The operation was update successfully !';
-                    this.$router.push({ name: 'operations-list', params: { ma: this.$route.params.ma } });
+                    this.$router.push({ name: 'periodic-operations', params: { authorId: this.authorId } });
 				})
 				.catch((e) => {
 					console.log(e);
@@ -104,9 +79,9 @@ export default {
 		},
 
 		deleteOperation() {
-			OperationsDataService.delete(this.currentOperation.id).then((response) => {
+			PeriodicOperationsDataService.delete(this.currentOperation.id).then((response) => {
 				console.log(response.data);
-				this.$router.push({ name: 'operations-list', params: { ma: this.$route.params.ma } });
+				this.$router.push({ name: 'periodic-operations', params: { authorId: this.authorId } });
 			});
 		},
 
@@ -114,6 +89,7 @@ export default {
 		 * Formatte les valeurs du formulaire avec les types attendus par l'API (à savoir de type String)
 		 */
 		formatCurrentOperation() {
+			this.currentOperation.dayOfMonth = parseInt(this.currentOperation.dayOfMonth);
 			this.currentOperation.credit = (typeof this.currentOperation.credit === 'string' ? this.currentOperation.credit : '0');
 			this.currentOperation.debit = (typeof this.currentOperation.debit === 'string' ? this.currentOperation.debit : '0');
 		},
@@ -121,6 +97,7 @@ export default {
 
 	mounted() {
 		this.message = '';
+		this.authorId = this.$route.params.authorId;
 		this.getOperation(this.$route.params.id);
 	},
 };
