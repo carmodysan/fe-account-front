@@ -16,12 +16,21 @@
 						</template>
 						<template slot="body.append">
 							<tr class="pink--text">
-								<th>Totals</th>
+								<th>Total actuel</th>
 								<th></th>
 								<th></th>
-								<th>{{ sumFields('debit') }}</th>
-								<th>{{ sumFields('credit') }}</th>
+								<th>{{ sumCheckedDebitOperations }}</th>
+								<th>{{ sumCheckedCreditOperations }}</th>
+								<th>{{ sumDifferenceCheckedOperations }}</th>
 								<th></th>
+							</tr>
+							<tr class="blue--text">
+								<th>Total prévisionnel</th>
+								<th></th>
+								<th></th>
+								<th>{{ sumCheckedAndUncheckedOperations('debit') }}</th>
+								<th>{{ sumCheckedAndUncheckedOperations('credit') }}</th>
+								<th>{{ sumDifferenceCheckedAndUnCheckedOperations() }}</th>
 								<th></th>
 							</tr>
 						</template>
@@ -174,8 +183,18 @@ export default {
 			return newOperation;
 		},
 
-		sumFields(key) {
+		/**
+		 * Somme des opérations de crédit prévisionnelles
+		 */
+		sumCheckedAndUncheckedOperations(key) {
 			return this.operations.reduce((a, b) => a + (b[key] || 0), 0);
+		},
+
+		/**
+		 * Retourne le montant prévisionnel des opérations cumulées en cours et futures
+		 */
+		sumDifferenceCheckedAndUnCheckedOperations() {
+			return this.sumCheckedAndUncheckedOperations('credit') - this.sumCheckedAndUncheckedOperations('debit')
 		},
 	},
 
@@ -199,6 +218,40 @@ export default {
 				{ text: 'Pointée ?', value: 'checked' },
 				{ text: 'Actions', value: 'actions' },
 			];
+		},
+
+		/**
+		 * Somme des opérations de crédit pointées
+		 */
+		sumCheckedCreditOperations: function() {
+			let sum = 0;
+			this.operations.forEach(element => {
+				if (element.checked) {
+					sum += element.credit;
+				}
+			});
+			return sum;
+		},
+
+		/**
+		 * Somme des opérations de débit pointées
+		 */
+		sumCheckedDebitOperations: function() {
+			let sum = 0;
+			this.operations.forEach(element => {
+				if (element.checked) {
+					sum += element.debit;
+				}
+			});
+			return sum;
+		},
+
+		/**
+		 * Retourne le montant actuel des opérations cumulées
+		 */
+		sumDifferenceCheckedOperations: function() {
+			let response = this.sumCheckedCreditOperations - this.sumCheckedDebitOperations;
+			return response.toFixed(2);
 		},
 	},
 

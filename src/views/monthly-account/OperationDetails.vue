@@ -114,8 +114,8 @@ export default {
 		 * Formatte les valeurs du formulaire avec les types attendus par l'API (à savoir de type String)
 		 */
 		formatCurrentOperation() {
-			this.currentOperation.credit = (typeof this.currentOperation.credit === 'string' ? this.currentOperation.credit : '0');
-			this.currentOperation.debit = (typeof this.currentOperation.debit === 'string' ? this.currentOperation.debit : '0');
+			this.currentOperation.credit = (typeof this.currentOperation.credit === 'string' ? this.currentOperation.credit : this.currentOperation.credit.toString());
+			this.currentOperation.debit = (typeof this.currentOperation.debit === 'string' ? this.currentOperation.debit : this.currentOperation.debit.toString());
 		},
 	},
 
