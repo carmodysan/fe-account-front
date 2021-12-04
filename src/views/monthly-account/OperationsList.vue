@@ -1,66 +1,96 @@
 <template>
 	<v-container fill-height fluid>
 		<v-row align="center" justify="center">
-			<v-card>
-				<v-card-title>
-					<v-row>
-						<v-col cols="10">Toutes les opérations du mois</v-col>
-						<v-col cols="2"><v-btn :to="{ name: 'operation-add', params: { ma: ma } }"> New </v-btn></v-col>
-					</v-row>
-				</v-card-title>
-				<v-card-text>
-					<v-data-table :headers="headers" :items="operations" item-key="id">
-						<template v-slot:[`item.actions`]="{ item }">
-							<v-icon small class="mr-2" @click="editOperation(item.id)">mdi-pencil</v-icon>
-							<v-icon small @click="deleteOperation(item.id)">mdi-delete</v-icon>
-						</template>
-						<template slot="body.append">
-							<tr class="pink--text">
-								<th>Total actuel</th>
-								<th></th>
-								<th></th>
-								<th>{{ sumCheckedDebitOperations }}</th>
-								<th>{{ sumCheckedCreditOperations }}</th>
-								<th>{{ sumDifferenceCheckedOperations }}</th>
-								<th></th>
-							</tr>
-							<tr class="blue--text">
-								<th>Total prévisionnel</th>
-								<th></th>
-								<th></th>
-								<th>{{ sumCheckedAndUncheckedOperations('debit') }}</th>
-								<th>{{ sumCheckedAndUncheckedOperations('credit') }}</th>
-								<th>{{ sumDifferenceCheckedAndUnCheckedOperations() }}</th>
-								<th></th>
-							</tr>
-						</template>
-					</v-data-table>
-				</v-card-text>
-			</v-card>
+			<div v-if="isOperationsLoading">
+				<v-skeleton-loader
+					class="mx-auto"
+					min-width="300"
+					type="card-heading, table"
+				></v-skeleton-loader>
+			</div>
+			<div v-else>
+				<v-card class="mb-2">
+					<v-card-title>
+						<v-row>
+							<v-col cols="10">Toutes les opérations du mois</v-col>
+							<v-col cols="2"><v-btn :to="{ name: 'operation-add', params: { ma: ma } }"> New </v-btn></v-col>
+						</v-row>
+					</v-card-title>
+					<v-card-text>
+						<v-data-table :headers="headers" :items="operations" item-key="id">
+							<template v-slot:[`item.actions`]="{ item }">
+								<v-icon small class="mr-2" @click="editOperation(item.id)">mdi-pencil</v-icon>
+								<v-icon small @click="deleteOperation(item.id)">mdi-delete</v-icon>
+							</template>
+							<template slot="body.append">
+								<tr class="pink--text">
+									<th>Total actuel</th>
+									<th></th>
+									<th></th>
+									<th>{{ sumCheckedDebitOperations }}</th>
+									<th>{{ sumCheckedCreditOperations }}</th>
+									<th>{{ sumDifferenceCheckedOperations }}</th>
+									<th></th>
+								</tr>
+								<tr class="blue--text">
+									<th>Total prévisionnel</th>
+									<th></th>
+									<th></th>
+									<th>{{ sumCheckedAndUncheckedOperations('debit') }}</th>
+									<th>{{ sumCheckedAndUncheckedOperations('credit') }}</th>
+									<th>{{ sumDifferenceCheckedAndUnCheckedOperations() }}</th>
+									<th></th>
+								</tr>
+							</template>
+						</v-data-table>
+					</v-card-text>
+				</v-card>
+			</div>
 		</v-row>
-		<v-row class="mt-3 mb-3">
+		<v-row>
 			<v-divider></v-divider>
 		</v-row>
 		<v-row align="center" justify="center">
-			<v-card>
-				<v-card-title>Opérations périodiques</v-card-title>
-				<v-card-text>
-					<div class="font-weight-bold ml-8 mb-2">Today</div>
-					<v-timeline align-top dense>
-						<v-timeline-item v-for="operation in periodicOperations" :key="operation.id" color="purple" small>
-							<div>
-								<div class="font-weight-normal">
-									<strong>{{ operation.dayOfMonth }}</strong> @{{ operation.category }}
-								</div>
-								<div>
-									{{ operation.description }}
-									<v-icon small class="mr-2" @click="addPeriodicOperation(operation)">mdi-plus</v-icon>
-								</div>
-							</div>
-						</v-timeline-item>
-					</v-timeline>
-				</v-card-text>
-			</v-card>
+			<div v-if="isPeriodicLoading">
+				<v-skeleton-loader
+					class="mx-auto"
+					min-width="300"
+					type="card-heading, list-item-avatar, divider, list-item-avatar, divider, list-item-avatar, divider"
+				></v-skeleton-loader>
+			</div>
+			<div v-else>
+				<v-card min-width="300" class="mt-2">
+					<v-card-title>Opérations périodiques</v-card-title>
+					<v-card-text>
+						<div class="font-weight-bold ml-8 mb-2">Today</div>
+						<v-timeline align-top dense>
+							<v-timeline-item v-for="operation in periodicOperations" :key="operation.id" :color="getColorTimeLine(operation.debit)" small>
+								<v-row>
+									<v-col cols="10" class="mb-4">
+										<v-row>
+											<div>
+												Le <strong>{{ operation.dayOfMonth }}</strong> du mois -
+											</div>
+											<div class="ml-1">
+												<strong> {{ operation.debit }} € </strong>
+											</div>
+										</v-row>
+										<v-row>
+											<strong>{{ operation.category }}</strong> - {{ operation.description }}
+										</v-row>
+									</v-col>
+									<v-col cols="2" class="mb-4 d-flex justify-center">
+										<v-row>
+											<v-icon small class="mr-2" @click="addPeriodicOperation(operation)">mdi-plus</v-icon>
+										</v-row>
+									</v-col>
+								</v-row>
+								<v-divider></v-divider>
+							</v-timeline-item>
+						</v-timeline>
+					</v-card-text>
+				</v-card>
+			</div>
 		</v-row>
 	</v-container>
 </template>
@@ -91,26 +121,35 @@ export default {
 			checked: false,
 			monthlyAccount: '',
 		},
+		isPeriodicLoading: true,
+		isOperationsLoading: true,
 	}),
 
 	methods: {
 		retrieveOperations() {
+			this.isOperationsLoading = true;
 			OperationsDataService.getAll(this.ma.id)
 				.then((response) => {
 					this.operations = response.data['hydra:member'].map(this.getDisplayOperation);
 				})
 				.catch((e) => {
 					console.log(e);
+				})
+				.finally(() => {
+					this.isOperationsLoading = false;
 				});
 		},
 
 		retrievePeriodicOperations() {
+			this.isPeriodicLoading = true;
 			PeriodicOperationsDataService.getAll(this.user.id)
 				.then((response) => {
 					this.periodicOperations = response.data['hydra:member'].map(this.getDisplayPeriodicOperation);
 				})
 				.catch((e) => {
 					console.log(e);
+				}).finally(() => {
+					this.isPeriodicLoading = false;
 				});
 		},
 
@@ -173,7 +212,7 @@ export default {
 		 */
 		transferPeriodicOperation(periodicOperation) {
 			let newOperation = {};
-			newOperation.dateOp = new Date(this.ma.year, this.ma.month-1, periodicOperation.dayOfMonth+1).toISOString().substr(0, 10);
+			newOperation.dateOp = new Date(this.ma.year, this.ma.month - 1, periodicOperation.dayOfMonth + 1).toISOString().substr(0, 10);
 			newOperation.category = periodicOperation.category;
 			newOperation.description = periodicOperation.description;
 			newOperation.credit = periodicOperation.credit;
@@ -194,7 +233,28 @@ export default {
 		 * Retourne le montant prévisionnel des opérations cumulées en cours et futures
 		 */
 		sumDifferenceCheckedAndUnCheckedOperations() {
-			return this.sumCheckedAndUncheckedOperations('credit') - this.sumCheckedAndUncheckedOperations('debit')
+			return this.sumCheckedAndUncheckedOperations('credit') - this.sumCheckedAndUncheckedOperations('debit');
+		},
+
+		/**
+		 * Retourne une couleur en fonction du montant de l'opération
+		 */
+		getColorTimeLine(debit) {
+			if (debit < 21) {
+				return 'lime lighten-4';
+			} else if (debit < 51) {
+				return 'lime lighten-1';
+			} else if (debit < 81) {
+				return 'orange lighten-2';
+			} else if (debit < 151) {
+				return 'orange darken-1';
+			} else if (debit < 201) {
+				return 'orange darken-4';
+			} else if (debit < 501) {
+				return 'red darken-1';
+			} else {
+				return 'red accent-4';
+			}
 		},
 	},
 
@@ -223,9 +283,9 @@ export default {
 		/**
 		 * Somme des opérations de crédit pointées
 		 */
-		sumCheckedCreditOperations: function() {
+		sumCheckedCreditOperations: function () {
 			let sum = 0;
-			this.operations.forEach(element => {
+			this.operations.forEach((element) => {
 				if (element.checked) {
 					sum += element.credit;
 				}
@@ -236,9 +296,9 @@ export default {
 		/**
 		 * Somme des opérations de débit pointées
 		 */
-		sumCheckedDebitOperations: function() {
+		sumCheckedDebitOperations: function () {
 			let sum = 0;
-			this.operations.forEach(element => {
+			this.operations.forEach((element) => {
 				if (element.checked) {
 					sum += element.debit;
 				}
@@ -249,7 +309,7 @@ export default {
 		/**
 		 * Retourne le montant actuel des opérations cumulées
 		 */
-		sumDifferenceCheckedOperations: function() {
+		sumDifferenceCheckedOperations: function () {
 			let response = this.sumCheckedCreditOperations - this.sumCheckedDebitOperations;
 			return response.toFixed(2);
 		},
