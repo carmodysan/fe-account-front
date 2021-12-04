@@ -2,11 +2,7 @@
 	<v-container fill-height fluid>
 		<v-row align="center" justify="center">
 			<div v-if="isOperationsLoading">
-				<v-skeleton-loader
-					class="mx-auto"
-					min-width="300"
-					type="card-heading, table"
-				></v-skeleton-loader>
+				<v-skeleton-loader class="mx-auto" min-width="300" type="card-heading, table"></v-skeleton-loader>
 			</div>
 			<div v-else>
 				<v-card class="mb-2">
@@ -18,9 +14,29 @@
 					</v-card-title>
 					<v-card-text>
 						<v-data-table :headers="headers" :items="operations" item-key="id">
+							<template v-slot:[`item.dateOp`]="{ item }">
+								{{ new Date(item.dateOp).toLocaleDateString('fr-FR') }}
+							</template>
+							<template v-slot:[`item.debit`]="{ item }">
+								{{ item.debit == 0 ? '' : item.debit + ' €' }}
+							</template>
+							<template v-slot:[`item.credit`]="{ item }">
+								{{ item.credit == 0 ? '' : item.credit + ' €' }}
+							</template>
+							<template v-slot:[`item.checked`]="{ item }">
+								<v-hover v-slot="{ hover }">
+									<v-icon small @click="changeOperationStatus(item)" :color="hover ? 'blue' : item.checked ? 'green' : 'red'">
+										{{ item.checked ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline' }}
+									</v-icon>
+								</v-hover>
+							</template>
 							<template v-slot:[`item.actions`]="{ item }">
-								<v-icon small class="mr-2" @click="editOperation(item.id)">mdi-pencil</v-icon>
-								<v-icon small @click="deleteOperation(item.id)">mdi-delete</v-icon>
+								<v-hover v-slot="{ hover }">
+									<v-icon small class="mr-2" @click="editOperation(item.id)" :color="hover ? 'blue' : 'dark grey'">mdi-pencil</v-icon>
+								</v-hover>
+								<v-hover v-slot="{ hover }">
+									<v-icon small @click="deleteOperation(item.id)" :color="hover ? 'red' : 'dark grey'">mdi-delete</v-icon>
+								</v-hover>
 							</template>
 							<template slot="body.append">
 								<tr class="pink--text">
@@ -148,7 +164,8 @@ export default {
 				})
 				.catch((e) => {
 					console.log(e);
-				}).finally(() => {
+				})
+				.finally(() => {
 					this.isPeriodicLoading = false;
 				});
 		},
@@ -255,6 +272,16 @@ export default {
 			} else {
 				return 'red accent-4';
 			}
+		},
+
+		changeOperationStatus(item) {
+			item.checked = !item.checked;
+			const operation = { ...item };
+			operation.debit = operation.debit.toString();
+			operation.credit = operation.credit.toString();
+			OperationsDataService.update(operation.id, operation).catch((e) => {
+				console.log('error : ' + e);
+			});
 		},
 	},
 
