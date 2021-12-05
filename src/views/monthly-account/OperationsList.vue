@@ -8,7 +8,26 @@
 				<v-card class="mb-2">
 					<v-card-title>
 						<v-row>
-							<v-col cols="10">Toutes les opérations du mois</v-col>
+							<v-col cols="6">Toutes les opérations du mois</v-col>
+							<v-col cols="2">
+								<v-dialog v-model="dialog" width="200">
+									<template v-slot:activator="{ on, attrs }">
+										<v-btn dark v-bind="attrs" v-on="on">Importer</v-btn>
+									</template>
+									<v-card>
+										<v-card-title class="text-h5 grey lighten-2"> Sélectionner un fichier </v-card-title>
+										<v-card-text>
+											<v-file-input truncate-length="15" @change="selectFile"></v-file-input>
+										</v-card-text>
+										<v-divider></v-divider>
+										<v-card-actions>
+											<v-spacer></v-spacer>
+											<v-btn color="primary" text @click="importData()">Upload</v-btn>
+										</v-card-actions>
+									</v-card>
+								</v-dialog>
+							</v-col>
+							<v-col cols="2"><v-btn @click="exportData()">Exporter</v-btn></v-col>
 							<v-col cols="2"><v-btn :to="{ name: 'operation-add', params: { ma: ma } }"> New </v-btn></v-col>
 						</v-row>
 					</v-card-title>
@@ -139,6 +158,8 @@ export default {
 		},
 		isPeriodicLoading: true,
 		isOperationsLoading: true,
+		currentFile: undefined,
+		dialog: false,
 	}),
 
 	methods: {
@@ -283,6 +304,56 @@ export default {
 				console.log('error : ' + e);
 			});
 		},
+
+		/**
+		 * Exporte toutes les opérations dans un fichier JSON
+		 */
+		exportData() {
+			const jsonOperations = JSON.stringify(this.operations);
+			console.log(jsonOperations);
+			let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonOperations);
+
+			let exportFileDefaultName = 'data.json';
+
+			let linkElement = document.createElement('a');
+			linkElement.setAttribute('href', dataUri);
+			linkElement.setAttribute('download', exportFileDefaultName);
+			linkElement.click();
+		},
+
+		/**
+		 * Définit le fichier à importer
+		 */
+		selectFile(file) {
+			this.currentFile = file;
+		},
+
+		/**
+		 * Importe toutes les opérations depuis un fichier JSON
+		 */
+		importData() {
+			if (this.currentFile) {
+				var reader = new FileReader();
+				reader.readAsText(this.currentFile, 'UTF-8');
+				const maId = this.ma.id;
+				reader.onload = function (evt) {
+					const operationsJson = evt.target.result; // On récupère le contenu du fichier
+					const operations = JSON.parse(operationsJson); // On le transforme en un objet JSON
+					operations.forEach((element) => {
+						delete element['id']; // On supprime l'ID qui devient inutile puisque les objets opérations vont être recréés
+						element['credit'] = element['credit'].toString(); // L'API attend un string
+						element['debit'] = element['debit'].toString(); // L'API attend un string
+						element['monthlyAccount'] = '/api/monthly_accounts/' + maId; // Il faut avoir un lien vers le compte mensuel
+						OperationsDataService.create(element); // On créé l'opération
+					});
+				};
+				// TODO Implémenter le reader.onerror...
+				reader.onloadend = () => {
+					this.retrieveOperations();
+						this.dialog = false;
+				}
+			}
+		},
 	},
 
 	computed: {
@@ -349,6 +420,7 @@ export default {
 
 	created() {
 		this.ma = this.$route.params.ma;
+		console.log(this.ma);
 		this.maSlug = this.$route.params.maSlug;
 	},
 };
