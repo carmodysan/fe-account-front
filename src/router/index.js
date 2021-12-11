@@ -5,6 +5,8 @@ import Login from '../views/Login'
 import Register from '../views/Register'
 import Dashboard from '../views/Dashboard'
 import About from '../views/About'
+import Accounts from '../views/monthly-account/Accounts'
+import AccountDetails from '../views/monthly-account/AccountDetails'
 import MonthlyAccount from '../views/MonthlyAccount'
 import Operations from '../views/monthly-account/Operations'
 import OperationsList from '../views/monthly-account/OperationsList'
@@ -38,6 +40,32 @@ const routes = [
         path: '/dashboard',
         name: 'dashboard',
         component: Dashboard,
+        beforeEnter: (to, from, next) => {
+            if (!store.getters['auth/isAuthenticated']) {
+                return next({
+                    name: 'login'
+                })
+            }
+            next()
+        }
+    },
+    {
+        path: '/accounts',
+        name: 'accounts',
+        component: Accounts,
+        beforeEnter: (to, from, next) => {
+            if (!store.getters['auth/isAuthenticated']) {
+                return next({
+                    name: 'login'
+                })
+            }
+            next()
+        }
+    },
+    {
+        path: '/accounts/:slug',
+        name: 'account-details',
+        component: AccountDetails,
         beforeEnter: (to, from, next) => {
             if (!store.getters['auth/isAuthenticated']) {
                 return next({
