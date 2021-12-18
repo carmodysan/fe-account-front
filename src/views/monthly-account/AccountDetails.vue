@@ -58,72 +58,39 @@
 			<!-- Si un ou plusieurs comptes mensuels existent déjà -->
 			<v-row v-else align="center" justify="center" class="fill-height overflow-auto">
 				<v-col v-for="item in orderedMonthlyAccounts" :key="item.id" :cols="itemsPerRow" class="py-2">
-					<v-card class="card fill-height">
-						<v-img src="../../assets/images/card_11.jpg" width="100%" height="200"></v-img>
-						<v-card-title>
-							<span class="font-weight-light text-truncate"> {{ item.month | formatMonth }} {{ item.year }} </span>
-						</v-card-title>
-						<v-divider></v-divider>
-						<v-card-text>
-							<v-row justify="space-around">
-								<v-chip class="mx-2 my-auto" color="green" text-color="white">
-									<v-avatar left class="green darken-4"> {{ item.operations.length }} </v-avatar>
-									Opérations
-								</v-chip>
-								<v-btn
-									class="ma-2"
-									fab
-									small
-									dark
-									color="teal"
-									:to="{
-										name: 'operations-list',
-										params: { slug: item.slug, ma: item, accountDetailsId: accountDetailsId, accountDetailsSlug: accountDetailsSlug },
-									}"
-								>
-									<v-icon dark>mdi-eye</v-icon>
-								</v-btn>
-							</v-row>
-						</v-card-text>
-					</v-card>
+					<v-hover v-slot="{ hover }">
+						<v-card class="card fill-height" :elevation="hover ? 16 : 2" :class="{ 'on-hover': hover }" max-width="300">
+							<v-img :src="require(`../../assets/images/card_${item.month}.jpg`)" width="100%" height="200"></v-img>
+							<v-card-title>
+								<span class="font-weight-light text-truncate"> {{ item.month | formatMonth }} {{ item.year }} </span>
+							</v-card-title>
+							<v-divider></v-divider>
+							<v-card-text>
+								<v-row justify="space-around">
+									<v-chip class="mx-2 my-auto" color="green" text-color="white">
+										<v-avatar left class="green darken-4"> {{ item.operations.length }} </v-avatar>
+										Opérations
+									</v-chip>
+									<v-btn
+										class="ma-2"
+										fab
+										small
+										dark
+										color="teal"
+										:to="{
+											name: 'operations-list',
+											params: { slug: item.slug, ma: item, accountDetailsId: accountDetailsId, accountDetailsSlug: accountDetailsSlug },
+										}"
+									>
+										<v-icon dark>mdi-eye
+											<!-- {{ item.operations.length == 0 ? 'mdi-playlist-plus' : 'mdi-eye'}} -->
+										</v-icon>
+									</v-btn>
+								</v-row>
+							</v-card-text>
+						</v-card>
+					</v-hover>
 				</v-col>
-				<!-- <v-col cols="12">
-					<v-card v-for="(allMAByYear, year) in allMonthlyAccounts" v-bind:key="year">
-						<v-card-actions>
-							<v-btn color="orange lighten-2" text> {{ year }} </v-btn>
-
-							<v-spacer></v-spacer>
-
-							<v-btn icon @click="show = !show">
-								<v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-							</v-btn>
-						</v-card-actions>
-
-						<v-expand-transition>
-							<div v-show="show">
-								<v-divider></v-divider>
-
-								<v-card-text>
-									<v-container fluid>
-										<v-row dense>
-											<v-col v-for="ma in allMAByYear" :key="ma.month" :cols="maCardCols">
-												<v-card class="my-4">
-													<v-img src="../../assets/images/card_11.jpg" width="300" height="200"></v-img>
-													<v-card-title> {{ ma.month | formatMonth }} </v-card-title>
-													<v-card-subtitle> {{ ma.operations.length }} operations </v-card-subtitle>
-													<v-divider></v-divider>
-													<v-card-actions>
-														<v-btn link :to="{ name: 'operations-list', params: { slug: ma.slug, ma: ma } }">Go</v-btn>
-													</v-card-actions>
-												</v-card>
-											</v-col>
-										</v-row>
-									</v-container>
-								</v-card-text>
-							</div>
-						</v-expand-transition>
-					</v-card>
-				</v-col> -->
 			</v-row>
 		</div>
 	</v-container>
