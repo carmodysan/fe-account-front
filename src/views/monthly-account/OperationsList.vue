@@ -32,15 +32,15 @@
 						</v-row>
 					</v-card-title>
 					<v-card-text>
-						<v-data-table :headers="headers" :items="operations" item-key="id">
+						<v-data-table :headers="headers" :items="operations" item-key="id" hide-default-footer disable-pagination>
 							<template v-slot:[`item.dateOp`]="{ item }">
 								{{ new Date(item.dateOp).toLocaleDateString('fr-FR') }}
 							</template>
 							<template v-slot:[`item.debit`]="{ item }">
-								{{ item.debit == 0 ? '' : item.debit + ' €' }}
+								{{ item.debit == 0 ? '' : item.debit | formatCurrencyNumber }}
 							</template>
 							<template v-slot:[`item.credit`]="{ item }">
-								{{ item.credit == 0 ? '' : item.credit + ' €' }}
+								{{ item.credit == 0 ? '' : item.credit | formatCurrencyNumber }}
 							</template>
 							<template v-slot:[`item.checked`]="{ item }">
 								<v-hover v-slot="{ hover }">
@@ -62,18 +62,18 @@
 									<th>Total actuel</th>
 									<th></th>
 									<th></th>
-									<th>{{ sumCheckedDebitOperations }}</th>
-									<th>{{ sumCheckedCreditOperations }}</th>
-									<th>{{ sumDifferenceCheckedOperations }}</th>
+									<th>{{ sumCheckedDebitOperations | formatCurrencyNumber }}</th>
+									<th>{{ sumCheckedCreditOperations | formatCurrencyNumber }}</th>
+									<th>{{ sumDifferenceCheckedOperations | formatCurrencyNumber }}</th>
 									<th></th>
 								</tr>
 								<tr class="blue--text">
 									<th>Total prévisionnel</th>
 									<th></th>
 									<th></th>
-									<th>{{ sumCheckedAndUncheckedOperations('debit') }}</th>
-									<th>{{ sumCheckedAndUncheckedOperations('credit') }}</th>
-									<th>{{ sumDifferenceCheckedAndUnCheckedOperations() }}</th>
+									<th>{{ sumCheckedAndUncheckedOperations('debit') | formatCurrencyNumber }}</th>
+									<th>{{ sumCheckedAndUncheckedOperations('credit') | formatCurrencyNumber }}</th>
+									<th>{{ sumDifferenceCheckedAndUnCheckedOperations() | formatCurrencyNumber }}</th>
 									<th></th>
 								</tr>
 							</template>
@@ -366,15 +366,14 @@ export default {
 				{
 					text: "Date de l'opération",
 					align: 'start',
-					sortable: false,
 					value: 'dateOp',
 				},
-				{ text: 'Catégorie', value: 'category' },
-				{ text: 'Libellé', value: 'description' },
-				{ text: 'Débit', value: 'debit' },
-				{ text: 'Crédit', value: 'credit' },
+				{ text: 'Catégorie', sortable: false, value: 'category' },
+				{ text: 'Libellé', sortable: false, value: 'description' },
+				{ text: 'Débit', sortable: false, value: 'debit' },
+				{ text: 'Crédit', sortable: false, value: 'credit' },
 				{ text: 'Pointée ?', value: 'checked' },
-				{ text: 'Actions', value: 'actions' },
+				{ text: 'Actions', sortable: false, value: 'actions' },
 			];
 		},
 

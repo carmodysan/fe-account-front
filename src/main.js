@@ -44,6 +44,14 @@ Vue.filter('formatMonth', function (value) {
 	}
 });
 
+var currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR'});
+
+Vue.filter('formatCurrencyNumber', function (value) {
+	if (value) {
+		return currencyFormatter.format(value);
+	}
+});
+
 store.dispatch('auth/attempt', localStorage.getItem('token')).then(() => {
 	new Vue({
 		router,
