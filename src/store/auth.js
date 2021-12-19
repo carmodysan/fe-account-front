@@ -1,5 +1,5 @@
 import store from "./index";
-import axios from "axios";
+import axios from './../services/FEApiService';
 
 export default {
 	namespaced: true,

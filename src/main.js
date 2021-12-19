@@ -3,12 +3,11 @@ import App from './components/App';
 import vuetify from './plugins/vuetify';
 import router from './router';
 import store from './store';
-import axios from 'axios';
+import setupInterceptorApi from './services/SetupInterceptorsApi';
 
 Vue.config.productionTip = false;
 
-axios.defaults.baseURL = process.env.VUE_APP_BASE_URL_API;
-
+setupInterceptorApi(store);
 require('./store/subscriber');
 
 Vue.filter('formatMonth', function (value) {
