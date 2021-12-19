@@ -27,9 +27,8 @@ const setup = (store) => {
 				// Access Token was expired
 				if (err.response.status === 401 && !originalConfig._retry) {
 					originalConfig._retry = true;
-                    console.log('Expired token !!!' + typeof store);
                     EventBus.dispatch('logout');
-                    return axiosInstance.Cancel('Operation cancelled by expired token');
+                    return Promise.reject('Expired token' + typeof store);
 
 					/*try {
 						const rs = await axiosInstance.post('/auth/refreshtoken', {

@@ -8,9 +8,9 @@
 			</v-overlay>
 			<v-main>
 				<div class="text-center">
-					<v-alert :value="alertLogout" type="info" transition="slide-y-transition" dismissible>
+					<v-snackbar :value="alertLogout" top timeout="3000">
 						Votre session a expirée ! Merci de vous authentifier de nouveau.
-					</v-alert>
+					</v-snackbar>
 				</div>
 				<router-view />
 			</v-main>
@@ -51,20 +51,11 @@ export default {
 			this.alertLogout = true;
 			this.$router.push('/login');
 		},
-
-		hide_alert() {
-			window.setInterval(() => {
-				this.alertLogout = false;
-			}, 5000);
-		},
 	},
 	mounted() {
 		EventBus.on('logout', () => {
 			this.logOut();
 		});
-		if (alert) {
-			this.hide_alert();
-		}
 	},
 	beforeDestroy() {
 		EventBus.remove('logout');
