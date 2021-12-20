@@ -6,10 +6,10 @@
 		</v-overlay>
 
 		<!-- Une alerte indiquant les erreurs -->
-		<v-snackbar v-model="alertLogin" top timeout="2500" color="error">
-			{{ textAlertLogin }}
+		<v-snackbar v-model="alertLogin" top timeout="2500" :color="alertLoginColor">
+			{{ alertLoginText }}
 			<template v-slot:action="{ attrs }">
-				<v-btn color="red darken-4" text v-bind="attrs" @click="alertLogin = false">Close</v-btn>
+				<v-btn :color="alertLoginBtnColor" text v-bind="attrs" @click="alertLogin = false">Close</v-btn>
 			</template>
 		</v-snackbar>
 
@@ -41,7 +41,19 @@
 											<v-row>
 												<v-col>
 													<p class="login-slogan display-2 text-center font-weight-medium my-10">Se connecter</p>
-													<v-btn height="45" block color="white" elevation="0" class="google text-capitalize">
+													<v-btn
+														height="45"
+														block
+														color="white"
+														elevation="0"
+														class="google text-capitalize"
+														@click="
+															alertLoginText = 'Cette fonctionnalité n\'est pas encore implémentée';
+															alertLoginColor = 'info';
+                                                            alertLoginBtnColor = 'blue darken-4';
+															alertLogin = true;
+														"
+													>
 														<v-img src="@/assets/google.svg" max-width="30" class="mr-4"></v-img>
 														Avec Google
 													</v-btn>
@@ -109,7 +121,9 @@ export default {
 	data: () => ({
 		// Partie Alerte
 		alertLogin: false,
-		textAlertLogin: '',
+		alertLoginColor: '',
+        alertLoginBtnColor: '',
+		alertLoginText: '',
 
 		// Partie formulaire Login
 		formLogin: {
@@ -137,11 +151,15 @@ export default {
 					if (e.response && e.response.status) {
 						// Gestion d'un 401 : non authorisé (invalid credentials)
 						if (e.response.status == 401) {
-							this.textAlertLogin = "Le mot de passe ou l'adresse mail est invalide !";
+							this.alertLoginText = "Le mot de passe ou l'adresse mail est invalide !";
+							this.alertLoginColor = 'error';
+                            this.alertLoginBtnColor = 'red darken-4';
 							this.alertLogin = true;
 						} else {
 							// Toutes les autres erreurs
-							this.textAlertLogin = "Une erreur est survenue durant l'authentification, merci de réessayer ultérieurement !";
+							this.alertLoginText = "Une erreur est survenue durant l'authentification, merci de réessayer ultérieurement !";
+                            this.alertLoginColor = 'error';
+                            this.alertLoginBtnColor = 'red darken-4';
 							this.alertLogin = true;
 						}
 					}
