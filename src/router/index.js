@@ -6,10 +6,11 @@ import Register from '../views/Register';
 import Dashboard from '../views/Dashboard';
 import About from '../views/About';
 import Accounts from '../views/monthly-account/Accounts';
+import AccountDetailsRouter from '../views/accounts/AccountDetailsRouter'
 import AccountDetails from '../views/monthly-account/AccountDetails';
 import MonthlyAccount from '../views/MonthlyAccount';
 import Operations from '../views/monthly-account/Operations';
-import OperationsList from '../views/monthly-account/OperationsList';
+import OperationsList from '../views/accounts/MonthlyAccountOperations';
 import OperationDetails from '../views/monthly-account/OperationDetails';
 import OperationAdd from '../views/monthly-account/OperationAdd';
 import PeriodicOperationList from '../views/monthly-account/PeriodicOperationList.vue';
@@ -63,9 +64,8 @@ const routes = [
 		},
 	},
 	{
-		path: '/accounts/:slug',
-		name: 'account-details',
-		component: AccountDetails,
+		path: '/accounts/:slugAccount',
+		component: AccountDetailsRouter,
 		beforeEnter: (to, from, next) => {
 			if (!store.getters['auth/isAuthenticated']) {
 				return next({
@@ -74,6 +74,34 @@ const routes = [
 			}
 			next();
 		},
+		children: [
+			{
+				path: '',
+				name: 'account-details',
+				component: AccountDetails,
+				beforeEnter: (to, from, next) => {
+					if (!store.getters['auth/isAuthenticated']) {
+						return next({
+							name: 'login',
+						});
+					}
+					next();
+				},
+			},
+			{
+				path: ':slugMonthlyAccount',
+				name: 'operations-list',
+				component: OperationsList,
+				beforeEnter: (to, from, next) => {
+					if (!store.getters['auth/isAuthenticated']) {
+						return next({
+							name: 'login',
+						});
+					}
+					next();
+				},
+			},
+		],
 	},
 	{
 		path: '/monthly-accounts',
@@ -92,19 +120,6 @@ const routes = [
 		path: '/monthly-accounts/:slug',
 		component: Operations,
 		children: [
-			{
-				path: 'operations',
-				name: 'operations-list',
-				component: OperationsList,
-				beforeEnter: (to, from, next) => {
-					if (!store.getters['auth/isAuthenticated']) {
-						return next({
-							name: 'login',
-						});
-					}
-					next();
-				},
-			},
 			{
 				path: 'operation/:id',
 				name: 'operation-details',
@@ -177,10 +192,10 @@ const routes = [
 		name: 'about',
 		component: About,
 	},
-    {
-        path: '/',
-        redirect: { name: 'home' },
-    },
+	{
+		path: '/',
+		redirect: { name: 'home' },
+	},
 	{
 		path: '*',
 		name: 'pagenotfound',

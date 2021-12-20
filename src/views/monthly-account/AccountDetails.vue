@@ -79,7 +79,7 @@
 										color="teal"
 										:to="{
 											name: 'operations-list',
-											params: { slug: item.slug, ma: item, accountDetailsId: accountDetailsId, accountDetailsSlug: accountDetailsSlug },
+											params: { slugMonthlyAccount: item.slug },
 										}"
 									>
 										<v-icon dark>mdi-eye
@@ -109,8 +109,7 @@ export default {
 	name: 'account-details',
 
 	data: () => ({
-		accountDetailsId: '',
-		accountDetailsSlug: '',
+		accountSlug: '',
 
 		account: Object,
 		monthlyAccounts: [],
@@ -161,9 +160,9 @@ export default {
 		 */
 		async retrieveAccount() {
 			this.isAccountLoading = true;
-			await AccountsDataService.get(this.accountDetailsId)
+			await AccountsDataService.getBySlug(this.accountSlug)
 				.then((response) => {
-					this.account = response.data;
+					this.account = response.data['hydra:member'][0];
 				})
 				.catch((e) => {
 					console.log(e);
@@ -227,14 +226,8 @@ export default {
 	},
 
 	mounted() {
-		if (!this.accountDetailsId || this.accountDetailsId === '') {
-			this.accountDetailsId = this.$route.params.accountId;
-		}
-		if (!this.accountDetailsSlug || this.accountDetailsSlug === '') {
-			this.accountDetailsSlug = this.$route.params.slug;
-		}
-		this.retrieveAccount();
+		this.accountSlug = window.location.pathname.split('/')[2]; // On récupère le slug du compte à récupérer.
+		this.retrieveAccount(); // On récupère le compte.
 	},
-    // TODO mettre en place un test pour savoir si la page vient d'être raffraichit et qu'il n'y a pas les infos nécessaires (accountDetailsId et accountDetailsSlug)
 };
 </script>

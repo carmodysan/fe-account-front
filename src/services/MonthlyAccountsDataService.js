@@ -22,6 +22,16 @@ class MonthlyAccountsDataService {
 	}
 
     /**
+     * Récupère un compte mensuel particulier par rapport au slug.
+     * 
+     * @param String slug slug du compte mensuel
+     * @returns un compte mensuel
+     */
+    getBySlug(slug) {
+        return axios.get(`/monthly_accounts?slug=${slug}`);
+    }
+
+    /**
      * Créé un compte mensuel
      * 
      * @param MonthlyAccounts data 

@@ -46,13 +46,17 @@
 								<template v-slot:[`item.actions`]="{ item }">
 									<!-- Partie visualisation du compte -->
 									<v-hover v-slot="{ hover }">
-										<v-icon small class="mr-1" @click="goToAccountDetails(item.id, item.slug)" :color="hover ? 'green' : 'green darken-4'">mdi-eye</v-icon>
+										<v-btn icon plain :to="{ name: 'account-details', params: { slugAccount: item.slug } }">
+											<v-icon :color="hover ? 'green' : 'green darken-4'">mdi-eye</v-icon>
+										</v-btn>
 									</v-hover>
 									<!-- Partie édition du compte -->
 									<v-dialog max-width="300" v-model="editDialog">
 										<template v-slot:activator="{ on, attrs }">
 											<v-hover v-slot="{ hover }">
-												<v-icon small class="mr-1" v-bind="attrs" @click="getAccount(item.id)" v-on="on" :color="hover ? 'blue' : 'dark grey'">mdi-pencil</v-icon>
+												<v-icon small class="mr-1" v-bind="attrs" @click="getAccount(item.id)" v-on="on" :color="hover ? 'blue' : 'dark grey'"
+													>mdi-pencil</v-icon
+												>
 											</v-hover>
 										</template>
 										<v-card>
@@ -208,9 +212,9 @@ export default {
 				});
 		},
 
-        /**
-         * Modifie le compte
-         */
+		/**
+		 * Modifie le compte
+		 */
 		async editAccount() {
 			await AccountsDataService.update(this.formEdit.id, this.formEdit)
 				.catch((e) => {
@@ -221,12 +225,12 @@ export default {
 				});
 		},
 
-        /**
-         * Appelle la page pour consulter le compte
-         */
-        goToAccountDetails(id, slug) {
-            this.$router.push({ name: 'account-details', params: { slug: slug, accountId: id } });
-        }
+		/**
+		 * Appelle la page pour consulter le compte
+		 */
+		goToAccountDetails(selectedAccount) {
+			this.$router.push({ name: 'account-details', params: { accountRoute: selectedAccount, slug: selectedAccount.slug } });
+		},
 	},
 
 	computed: {

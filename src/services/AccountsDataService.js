@@ -22,6 +22,16 @@ class AccountsDataService {
 	}
 
     /**
+     * Récupère un compte particulier par le slug
+     * 
+     * @param String slug Le slug du compte à récupérer
+     * @returns un compte
+     */
+    getBySlug(slug) {
+        return axios.get(`/accounts?slug=${slug}`);
+    }
+
+    /**
      * Créé un compte
      * 
      * @param Account data 
