@@ -30,8 +30,7 @@ export default {
 			store.commit("setLoading", true);
 			let response = await axios.post("/login", credentials).catch((e) => {
 				store.commit("setLoading", false);
-				console.log('error : ' + e)
-				//TODO - Faire une page d'affichage d'erreur
+				throw e; // On laisse la vue gérer l'exception (affichage d'une erreur par exemple)
 			});
 			return dispatch('attempt', response.data.token);
 		},
