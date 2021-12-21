@@ -48,7 +48,7 @@
 														elevation="0"
 														class="google text-capitalize"
 														@click="
-															alertLoginText = 'Cette fonctionnalité n\'est pas encore implémentée';
+															alertLoginText = 'Cette fonctionnalité n\'est pas encore disponible';
 															alertLoginColor = 'info';
                                                             alertLoginBtnColor = 'blue darken-4';
 															alertLogin = true;
