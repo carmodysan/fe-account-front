@@ -15,19 +15,21 @@ const routes = [
 	{ path: '/login', name: 'Login', component: Login },
 	{
 		path: '/',
-		name: 'Layout',
 		component: Layout,
-		beforeEnter: (to, from, next) => {
-			if (!store.getters['auth/isAuthenticated']) {
-				return next({
-					name: 'Login',
-				});
-			}
-			next();
-		},
-		children: [{ path: '', name: 'Home', component: Home }],
+		beforeEnter: (to, from, next) => { isAuthenticated(next) },
+		children: [{ path: '', name: 'Home', component: Home, beforeEnter: (to, from, next) => { isAuthenticated(next) }}],
 	},
 ];
+
+
+function isAuthenticated(next) {
+	if (!store.getters['auth/isAuthenticated']) {
+		return next({
+			name: 'Login',
+		});
+	}
+	next();
+}
 
 const router = new VueRouter({
 	mode: 'history',

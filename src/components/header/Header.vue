@@ -13,7 +13,6 @@
 		<v-spacer></v-spacer>
 
 		<!-- Partie notification du site - pas encore implémentée -->
-		<!-- TODO 1 - Fonctionnalité notification -->
 		<v-menu offset-y bottom nudge-bottom="10" left>
 			<template v-slot:activator="{ on, attrs }">
 				<v-btn v-bind="attrs" v-on="on" style="font-size: 28px" icon class="mr-2" @click="showSnackbar('alertUnavailable')">
@@ -25,7 +24,6 @@
 		</v-menu>
 
 		<!-- Partie message du site - pas encore implémentée -->
-		<!-- TODO 2 - Fonctionnalité notification -->
 		<v-menu max-width="280" offset-y bottom nudge-bottom="10" left>
 			<template v-slot:activator="{ on, attrs }">
 				<v-btn v-bind="attrs" v-on="on" style="font-size: 28px" icon class="mr-2" @click="showSnackbar('alertUnavailable')">
