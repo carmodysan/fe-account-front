@@ -1,27 +1,69 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import auth from './auth'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import auth from './auth';
+import snackbar from './snackbar';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state:{
-        isLoading: false
-    },
-    getters: {
-        getLoading(state) {
-            return state.isLoading
-        }
-    },
-    mutations:{
-        setLoading(state, newLoadingState) {
-            state.isLoading = newLoadingState
-        }
-    },
-    actions:{
+	state: {
+		// Contient l'état d'un chargement
+		isLoading: false,
 
+		// Contient l'état du drawer (sidebar)
+		drawer: true,
+	},
+
+	getters: {
+		/**
+		 * Retourne l'état d'un chargement.
+		 *
+		 * @param {Object} state
+		 * @returns l'état du chargement
+		 */
+		getLoading(state) {
+			return state.isLoading;
+		},
+
+		/**
+		 * Retourne l'état du drawer (sidebar).
+		 *
+		 * @param {Object} state
+		 * @returns l'état du drawer (sidebar)
+		 */
+		getDrawerState(state) {
+			return state.drawer;
+		},
+	},
+
+	mutations: {
+		/**
+		 * Modifie l'état d'un chargement.
+		 *
+		 * @param {Object} state
+		 * @param {boolean} newLoadingState
+		 */
+		setLoading(state, newLoadingState) {
+			state.isLoading = newLoadingState;
+		},
+
+		/**
+		 * Inverse l'état du drawer (sidebar).
+		 *
+		 * @param {Object} state
+		 */
+		toggleDrawer(state) {
+			state.drawer = !state.drawer;
+		},
+	},
+
+	actions: {
+        toggleDrawer({ commit }) {
+            commit('toggleDrawer');
+        }
     },
-    modules:{
-        auth
-    },
-})
+
+	modules: {
+		auth, snackbar,
+	},
+});

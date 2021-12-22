@@ -5,14 +5,6 @@
 			<v-progress-circular indeterminate size="64"></v-progress-circular>
 		</v-overlay>
 
-		<!-- Une alerte indiquant les erreurs -->
-		<v-snackbar v-model="alertLogin" top timeout="2500" :color="alertLoginColor">
-			{{ alertLoginText }}
-			<template v-slot:action="{ attrs }">
-				<v-btn :color="alertLoginBtnColor" text v-bind="attrs" @click="alertLogin = false">Close</v-btn>
-			</template>
-		</v-snackbar>
-
 		<v-row no-gutters>
 			<!-- Partie gauche de la page de Login -->
 			<v-col cols="7" class="main-part d-none d-md-none d-lg-flex">
@@ -50,7 +42,7 @@
 														@click="
 															alertLoginText = 'Cette fonctionnalité n\'est pas encore disponible';
 															alertLoginColor = 'info';
-                                                            alertLoginBtnColor = 'blue darken-4';
+															alertLoginBtnColor = 'blue darken-4';
 															alertLogin = true;
 														"
 													>
@@ -62,7 +54,7 @@
 														<span class="px-5"> ou </span>
 														<v-divider></v-divider>
 													</v-col>
-													<v-form>
+													<v-form @submit.prevent="submitLogin">
 														<v-col>
 															<v-text-field v-model="formLogin.email" :rules="emailRules" label="Adresse mail" required></v-text-field>
 															<v-text-field
@@ -84,7 +76,7 @@
 																block
 																color="primary"
 																:disabled="formLogin.password.length === 0 || formLogin.email.length === 0"
-																@click="submitLogin"
+																type="submit"
 															>
 																Se connecter
 															</v-btn>
@@ -122,7 +114,7 @@ export default {
 		// Partie Alerte
 		alertLogin: false,
 		alertLoginColor: '',
-        alertLoginBtnColor: '',
+		alertLoginBtnColor: '',
 		alertLoginText: '',
 
 		// Partie formulaire Login
@@ -139,10 +131,10 @@ export default {
 	methods: {
 		...mapActions({
 			login: 'auth/login',
+			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
 		}),
 
 		async submitLogin() {
-			// TODO Mettre en place un catch pour attraper les erreurs
 			await this.login(this.formLogin)
 				.then(() => {
 					this.$router.replace({ name: 'Home' });
@@ -151,16 +143,10 @@ export default {
 					if (e.response && e.response.status) {
 						// Gestion d'un 401 : non authorisé (invalid credentials)
 						if (e.response.status == 401) {
-							this.alertLoginText = "Le mot de passe ou l'adresse mail est invalide !";
-							this.alertLoginColor = 'error';
-                            this.alertLoginBtnColor = 'red darken-4';
-							this.alertLogin = true;
+							this.showSnackbar('alertLogin401');
 						} else {
 							// Toutes les autres erreurs
-							this.alertLoginText = "Une erreur est survenue durant l'authentification, merci de réessayer ultérieurement !";
-                            this.alertLoginColor = 'error';
-                            this.alertLoginBtnColor = 'red darken-4';
-							this.alertLogin = true;
+							this.showSnackbar('alertLoginError');
 						}
 					}
 				});
@@ -175,4 +161,4 @@ export default {
 };
 </script>
 
-<style src="./Login.scss" lang="scss"></style>
+<style src="./Login.scss" lang="scss" />
