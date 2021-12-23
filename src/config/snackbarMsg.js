@@ -24,5 +24,20 @@ export default {
 		color: `success`,
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	
+	// Partie Logout
+	alertLogoutByUser: {
+		text: `Vous vous êtes déconnecté ! Merci et à bientôt.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	alertLogoutSessionTimeout: {
+		text: `Votre session a expirée, merci de vous connecter à nouveau.`,
+		color: `warning`,
+		colorBtnClose: `yellow darken-4`,
+		icon: `mdi-alert`,
 	}
+
 };

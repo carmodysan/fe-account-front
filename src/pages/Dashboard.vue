@@ -1,7 +1,7 @@
 <template>
     <v-container>
-        Home {{ user.email }}
-        <v-btn :to="{ name: 'Dashboard' }">Dashboard</v-btn>
+        Dashboard {{ user.email }}
+        <v-btn :to="{ name: 'Home' }">Home</v-btn>
     </v-container>
 </template>
 

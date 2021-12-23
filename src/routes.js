@@ -3,24 +3,48 @@ import VueRouter from 'vue-router';
 import store from './store';
 
 // Le layout du site
-import Layout from './components/layout/Layout'
+import Layout from './components/layout/Layout';
 
 // Pages
 import Login from '@/pages/User/Login';
 import Home from '@/pages/Home';
+import Dashboard from '@/pages/Dashboard';
 
 Vue.use(VueRouter);
 
 const routes = [
-	{ path: '/login', name: 'Login', component: Login },
+	{ path: '/login', name: 'Login', component: Login }, // Partie Login
+
+	// Partie connectée
 	{
 		path: '/',
 		component: Layout,
-		beforeEnter: (to, from, next) => { isAuthenticated(next) },
-		children: [{ path: '', name: 'Home', component: Home, beforeEnter: (to, from, next) => { isAuthenticated(next) }}],
+		beforeEnter: (to, from, next) => {
+			isAuthenticated(next);
+		},
+		children: [
+			{
+				path: '',
+				name: 'Home',
+				component: Home,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+			{
+				path: 'dashboard',
+				name: 'Dashboard',
+				component: Dashboard,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+		],
 	},
-];
 
+	// Si une page non définie est appelée
+	{ path: '*', redirect: { name: 'Home' } },
+];
 
 function isAuthenticated(next) {
 	if (!store.getters['auth/isAuthenticated']) {

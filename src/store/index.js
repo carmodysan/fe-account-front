@@ -6,6 +6,8 @@ import snackbar from './snackbar';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+	namespaced: true,
+
 	state: {
 		// Contient l'état d'un chargement
 		isLoading: false,

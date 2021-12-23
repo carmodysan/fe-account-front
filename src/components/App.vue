@@ -8,9 +8,7 @@
 			</v-overlay>
 			<v-main>
 				<div class="text-center">
-					<v-snackbar :value="alertLogout" top timeout="3000">
-						Votre session a expirée ! Merci de vous authentifier de nouveau.
-					</v-snackbar>
+					<v-snackbar :value="alertLogout" top timeout="3000"> Votre session a expirée ! Merci de vous authentifier de nouveau. </v-snackbar>
 				</div>
 				<router-view />
 			</v-main>
@@ -46,17 +44,25 @@ export default {
 	},
 
 	methods: {
+		/**
+		 * Lance la déconnexion
+		 */
 		logOut() {
 			this.$store.dispatch('auth/logout');
 			this.alertLogout = true;
 			this.$router.push('/login');
 		},
 	},
+
 	mounted() {
+		/**
+		 * Attend un évènement de 'logout'. Lancé par SetupInterceptorsApi.js quand il y a un response 401.
+		 */
 		EventBus.on('logout', () => {
 			this.logOut();
 		});
 	},
+
 	beforeDestroy() {
 		EventBus.remove('logout');
 	},
