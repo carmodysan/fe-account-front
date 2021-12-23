@@ -137,16 +137,19 @@ export default {
 		async submitLogin() {
 			await this.login(this.formLogin)
 				.then(() => {
+					if (this.user) {
+						this.showSnackbar({ name: 'alertWelcomeUser', text: `Bienvenue ${this.user.email}` }); // Affichage d'un message de bienvenue à l'utilisateur
+					}
 					this.$router.replace({ name: 'Home' });
 				})
 				.catch((e) => {
 					if (e.response && e.response.status) {
 						// Gestion d'un 401 : non authorisé (invalid credentials)
 						if (e.response.status == 401) {
-							this.showSnackbar('alertLogin401');
+							this.showSnackbar({ name: 'alertLogin401' });
 						} else {
 							// Toutes les autres erreurs
-							this.showSnackbar('alertLoginError');
+							this.showSnackbar({ name: 'alertLoginError' });
 						}
 					}
 				});
@@ -156,6 +159,7 @@ export default {
 	computed: {
 		...mapGetters({
 			isLoading: 'getLoading',
+			user: 'auth/getUser',
 		}),
 	},
 };

@@ -48,14 +48,17 @@ export default {
 		/**
 		 * Affiche le snackbar définit par le nom. Tous les snackbar sont disponible dans
 		 * config/snackbarMsg.js.
+		 * Paramètre obligatoire : data:name
+		 * Paramètre optionnel : data.text
 		 *
 		 * @param {*} param0
-		 * @param {string} name le nom de la sncakbar qu'on souhaite afficher
+		 * @param {object} data les données passées en paramètre (à minima le nom)
 		 */
-		showSnackbar({ commit }, name) {
-			if (name && name !== '') {
-				let snackbar = snackbarMsg[name]; // On récupère le snackbar en fonction du nom
-				snackbar.showing = true; // 
+		showSnackbar({ commit }, data) {
+			if (data.name && data.name !== '') {
+				let snackbar = snackbarMsg[data.name]; // On récupère le snackbar en fonction du nom
+				snackbar.showing = true; // On modifie la visibilité du snackbar
+				if (data.text !== undefined) snackbar.text = data.text;
 				commit('setSnackbar', snackbar);
 			}
 		},

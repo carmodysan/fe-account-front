@@ -13,6 +13,7 @@
 			:color="snackbar.color"
 			:style="`top: ${index * 60}px`"
 		>
+			<v-icon color="blue-grey lighten-5">{{ snackbar.icon }}</v-icon>
 			{{ snackbar.text }}
 			<template v-slot:action="{ attrs }">
 				<v-btn :color="snackbar.colorBtnClose" text v-bind="attrs" @click="removeSnackbar(snackbar)">Close</v-btn>
