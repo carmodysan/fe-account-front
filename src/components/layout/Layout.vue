@@ -1,6 +1,7 @@
 <template>
 	<v-app class="pa-6">
 		<Header />
+		<Sidebar />
 		<p>My super sidebar</p>
 		<v-main class="content">
 			<router-view />
@@ -11,10 +12,11 @@
 
 <script>
 import Header from "../header/Header";
+import Sidebar from "../sidebar/Sidebar";
 
 export default {
     name: "Layout",
-    components: { Header },
+    components: { Header, Sidebar },
 }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-	<v-app-bar height="64" fixed color="primary" dark class="main-header">
+	<v-app-bar height="64" fixed :color="config.color.light.primary" dark class="main-header">
 		<v-btn icon class="mx-1" @click.stop="toggleDrawer">
 			<template v-if="drawerState">
 				<v-icon style="font-size: 28px">mdi-arrow-left</v-icon>
