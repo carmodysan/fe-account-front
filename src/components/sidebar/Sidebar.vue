@@ -11,10 +11,6 @@
 		:class="{ 'drawer-mini': !drawerState }"
 	>
 		<!-- Header du menu -->
-		<div class="v-list">
-			<a class="v-list-item v-list-item--link grey--text text-sm-h6" target="_blank">Menu</a>
-		</div>
-
 		<v-list>
 			<template v-for="(item, i) in items">
 				<!-- Partie titre du menu -->
