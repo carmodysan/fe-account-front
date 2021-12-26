@@ -1,0 +1,10 @@
+@import '../../styles/app';
+
+.account-page {
+	.page-title {
+		padding-bottom: 20px;
+		@include media-breakpoint-up(sm) {
+			padding-bottom: 0;
+		}
+	}
+}

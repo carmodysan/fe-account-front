@@ -8,7 +8,9 @@ import Layout from './components/layout/Layout';
 // Pages
 import Login from '@/pages/User/Login';
 import Home from '@/pages/Home';
-import Dashboard from '@/pages/Dashboard';
+import Dashboard from '@/pages/Dashboard/Dashboard';
+import Account from '@/pages/Accounts/Account';
+import Empty from '@/pages/Empty/Empty';
 
 Vue.use(VueRouter);
 
@@ -39,6 +41,22 @@ const routes = [
 					isAuthenticated(next);
 				},
 			},
+			{
+				path: 'accounts',
+				name: 'Account',
+				component: Account,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+			{
+				path: 'empty',
+				name: 'Empty',
+				component: Empty,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			}
 		],
 	},
 

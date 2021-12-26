@@ -26,7 +26,7 @@
 				<!-- Séparateur -->
 				<v-divider v-else-if="item.divider" :key="i" dark class="my-4"></v-divider>
 
-				<!-- Partie  -->
+				<!-- Partie sous-item du menu -->
 				<v-list-group color="primary" v-else-if="item.children && drawerState" :key="item.title" v-model="item.model" append-icon="">
 					<template v-slot:prependIcon>
 						<v-icon size="28">mdi-image-filter-none</v-icon>
@@ -51,7 +51,7 @@
 				</v-list-group>
 
                 <!-- Partie item du menu -->
-				<v-list-item color="primary" v-else :key="item.text" :href="item.href ? item.href : null" :to="item.link === '#' ? null : item.link" link>
+				<v-list-item color="primary" v-else :key="item.text" :href="item.href ? item.href : null" :to=" {name: item.link } " link>
 					<v-list-item-action>
 						<v-icon size="28" :color="item.color ? item.color : ''">{{ item.icon }}</v-icon>
 					</v-list-item-action>
@@ -79,19 +79,19 @@ export default {
 
 		// Menu
 		items: [
-			{ title: 'Dashboard', icon: 'mdi-home', link: '/dashboard' },
-			{ title: 'Typography', icon: 'mdi-format-size', link: '/typography' },
-			{ title: 'Tables', icon: 'mdi-grid-large', link: '/tables' },
-			{ title: 'Notifications', icon: 'mdi-bell-outline', link: '/notifications' },
+			{ title: 'Tableau de bord', icon: 'mdi-home', link: 'Dashboard' },
+			{ title: 'Comptes', icon: 'mdi-format-size', link: 'Account' },
+			{ title: 'Tables', icon: 'mdi-grid-large', link: 'Empty' },
+			{ title: 'Notifications', icon: 'mdi-bell-outline', link: 'Empty' },
 			{
 				title: 'UI Elements',
 				icon: 'mdi-image-filter-none',
-				link: '/icons',
+				link: 'Empty',
 				model: false,
 				children: [
-					{ title: 'Icons', icon: 'mdi-circle-small', link: '/icons' },
-					{ title: 'Charts', icon: 'mdi-circle-small', link: '/charts' },
-					{ title: 'Maps', icon: 'mdi-circle-small', link: '/maps' },
+					{ title: 'Icons', icon: 'mdi-circle-small', link: 'Empty' },
+					{ title: 'Charts', icon: 'mdi-circle-small', link: 'Empty' },
+					{ title: 'Maps', icon: 'mdi-circle-small', link: 'Empty' },
 				],
 			},
 			{ divider: true },
