@@ -38,6 +38,13 @@ export default {
 		color: `warning`,
 		colorBtnClose: `yellow darken-4`,
 		icon: `mdi-alert`,
-	}
+	},
 
+	// Partie Comptes
+	alertAccountsRetrievingError: {
+		text: `Une erreur est survenue durant la récupération des comptes.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	}
 };

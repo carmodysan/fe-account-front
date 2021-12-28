@@ -98,7 +98,8 @@
 							</v-btn>
 						</v-card-title>
 						<v-card-text class="pa-6 pt-0 mb-1">
-							<v-data-table disable-pagination hide-default-footer :headers="headers"> </v-data-table>
+							<v-skeleton-loader v-if="isAccountsRetrieving" type="table"></v-skeleton-loader>
+							<v-data-table v-else disable-pagination hide-default-footer :headers="headers" :items="accounts" item-key="id"> </v-data-table>
 						</v-card-text>
 					</v-card>
 				</v-col>
@@ -109,7 +110,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import config from '../../config/index';
 import AccountsDataService from '../../services/AccountsDataService';
@@ -124,7 +125,9 @@ export default {
 	data: () => ({
 		apexLoading: true,
 
+		// Partie comptes
 		accounts: [],
+		isAccountsRetrieving: true,
 
 		// Juste pour l'exemple
 		apexArea1: {
@@ -229,19 +232,25 @@ export default {
 	}),
 
 	methods: {
+		...mapActions({
+			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
+		}),
+
 		/**
 		 * Récupère tous les comptes de l'utilisateur courant
 		 */
 		retrieveAccounts() {
+			this.isAccountsRetrieving = true;
 			AccountsDataService.getAll(this.user.id)
-				.then((response) => {
-					this.accounts = response.data['hydra:member'];
+				.then((responses) => {
+					// On récupère toutes les rpéonses et on les ajoute dans le tableau des comptes
+					for (const response of responses) this.accounts.push.apply(this.accounts, response.data['hydra:member']);
 				})
-				.catch((e) => {
-					console.log(e);
+				.catch(() => {
+					this.showSnackbar({ name: 'alertAccountsRetrievingError' });
 				})
 				.finally(() => {
-					// this.isAccountsLoading = false;
+					this.isAccountsRetrieving = false;
 				});
 		},
 	},

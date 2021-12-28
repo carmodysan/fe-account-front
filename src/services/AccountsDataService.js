@@ -2,16 +2,37 @@ import axios from './FEApiService';
 
 class AccountsDataService {
     /**
-     * Récupère toutes les comptes.
+     * Récupère tous les comptes d'un utilisateurs.
      * 
      * @param String authorId Identifiant de l'utilisateur
      * @returns la liste des comptes.
      */
 	getAll(authorId) {
-		// return axios.get(`/accounts?authorId=${authorId}&order[bank]`);
-        console.log(authorId);
-        return axios.get(`/current_accounts?authorId=${authorId}`);
+        const currentAccounts = this.getAllCurrentAccounts(authorId);
+        const savingsAccounts = this.getAllSavingsAccounts(authorId);
+
+        return Promise.all([currentAccounts, savingsAccounts]);
 	}
+    
+    /**
+     * Récupère tous les comptes courants d'un utilisateur.
+     * 
+     * @param String authorId  Identifiant de l'utilisateur
+     * @returns la liste des comptes courants
+     */
+    getAllCurrentAccounts(authorId) {
+        return axios.get(`/current_accounts?authorId=${authorId}&order[establishment]`);
+    }
+
+    /**
+     * Récupère tous les comptes d'épargne d'un utilisateur.
+     * 
+     * @param String authorId  Identifiant de l'utilisateur
+     * @returns la liste des comptes d'épargne
+     */
+     getAllSavingsAccounts(authorId) {
+        return axios.get(`/savings_accounts?authorId=${authorId}&order[establishment]`);
+    }
 
     /**
      * Récupère un compte particulier.
