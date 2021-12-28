@@ -8,7 +8,9 @@ class AccountsDataService {
      * @returns la liste des comptes.
      */
 	getAll(authorId) {
-		return axios.get(`/accounts?authorId=${authorId}&order[bank]`);
+		// return axios.get(`/accounts?authorId=${authorId}&order[bank]`);
+        console.log(authorId);
+        return axios.get(`/current_accounts?authorId=${authorId}`);
 	}
 
     /**

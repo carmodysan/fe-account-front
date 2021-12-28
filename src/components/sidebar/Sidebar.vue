@@ -79,9 +79,9 @@ export default {
 
 		// Menu
 		items: [
-			{ title: 'Tableau de bord', icon: 'mdi-home', link: 'Dashboard' },
-			{ title: 'Comptes', icon: 'mdi-format-size', link: 'Account' },
-			{ title: 'Tables', icon: 'mdi-grid-large', link: 'Empty' },
+			{ title: 'Accueil', icon: 'mdi-home', link: 'Home' },
+			{ title: 'Tableau de bord', icon: 'mdi-format-size', link: 'Dashboard' },
+			{ title: 'Comptes', icon: 'mdi-grid-large', link: 'Accounts' },
 			{ title: 'Notifications', icon: 'mdi-bell-outline', link: 'Empty' },
 			{
 				title: 'UI Elements',

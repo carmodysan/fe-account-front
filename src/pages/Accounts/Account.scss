@@ -7,4 +7,26 @@
 			padding-bottom: 0;
 		}
 	}
+	.apexcharts-legend-series {
+		padding: 2px 5px 3px;
+		display: flex;
+		align-items: center;
+		.apexcharts-legend-marker {
+			margin-right: 8px;
+		}
+	}
+	.v-card {
+		.v-card__text {
+		  .subtext {
+			font-size: 1.142rem;
+			font-weight: 400;
+			color: $title-grey;
+		  }
+		  .subtext-index {
+			font-size: 11px;
+			color: $text-color;
+			font-weight: 400;
+		  }
+		}
+	  }
 }
