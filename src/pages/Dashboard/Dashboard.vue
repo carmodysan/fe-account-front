@@ -10,6 +10,10 @@ import { mapGetters } from 'vuex'
 export default {
     name: 'Dashboard',
 
+    metaInfo: {
+		title: 'Tableau de bord',
+	},
+
     computed: {
         ...mapGetters({
             user: 'auth/getUser',

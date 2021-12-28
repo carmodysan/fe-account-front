@@ -110,6 +110,10 @@ import { mapGetters } from 'vuex';
 export default {
 	name: 'LoginRegister',
 
+	metaInfo: {
+		title: 'Connexion',
+	},
+
 	data: () => ({
 		// Partie Alerte
 		alertLogin: false,

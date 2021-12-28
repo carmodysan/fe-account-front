@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Meta from 'vue-meta';
+
 import store from './store';
 
 // Le layout du site
@@ -13,6 +15,7 @@ import Accounts from '@/pages/Accounts/Account';
 import Empty from '@/pages/Empty/Empty';
 
 Vue.use(VueRouter);
+Vue.use(Meta);
 
 const routes = [
 	{ path: '/login', name: 'Login', component: Login }, // Partie Login

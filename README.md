@@ -11,6 +11,7 @@ Cette programme a été conçus avec les technologies/framework/langages suivant
 * [Vuetify](https://vuetifyjs.com/) : Partie design basé sur du Material Design
 * [APEXCHARTS](https://apexcharts.com/) : Diagrammes du site
 * [AXIOS](https://axios-http.com/) : Consommation d'API
+* [Vue Meta](https://vue-meta.nuxtjs.org/) : Gestion des metadata HTML
 
 
 ## Contribution
@@ -27,6 +28,7 @@ La version 0.4 doit voir l'arrivé d'un nouveau design et d'une gestion des comp
 * Page de login
 * Layout (header, footer, sidebar, etc.)
 * Système de notification global (erreur, warning et info)
+* Favicon et Titre du site dynamique (utilisation de vue-meta)
 
 *Correction de bug :*
 * Pas de correction

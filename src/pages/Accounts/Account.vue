@@ -120,6 +120,10 @@ import ApexChart from 'vue-apexcharts';
 export default {
 	name: 'Account',
 
+	metaInfo: {
+		title: 'Comptes',
+	},
+
 	components: { ApexChart },
 
 	data: () => ({

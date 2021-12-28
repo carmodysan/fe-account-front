@@ -29,6 +29,11 @@ import EventBus from './common/EventBus';
 export default {
 	name: 'App',
 
+	metaInfo: {
+		title: '',
+		titleTemplate: '%s - FacilEpargne | La gestion de vos comptes',
+	},
+
 	methods: {
 		...mapActions({
 			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
