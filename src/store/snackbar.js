@@ -48,7 +48,7 @@ export default {
 		/**
 		 * Affiche le snackbar définit par le nom. Tous les snackbar sont disponible dans
 		 * config/snackbarMsg.js.
-		 * Paramètre obligatoire : data:name
+		 * Paramètre obligatoire : data.name
 		 * Paramètre optionnel : data.text
 		 *
 		 * @param {*} param0

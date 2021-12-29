@@ -113,7 +113,6 @@
 import { mapActions, mapGetters } from 'vuex';
 
 import config from '../../config/index';
-import AccountsDataService from '../../services/AccountsDataService';
 
 import ApexChart from 'vue-apexcharts';
 
@@ -128,10 +127,6 @@ export default {
 
 	data: () => ({
 		apexLoading: true,
-
-		// Partie comptes
-		accounts: [],
-		isAccountsRetrieving: true,
 
 		// Juste pour l'exemple
 		apexArea1: {
@@ -238,30 +233,19 @@ export default {
 	methods: {
 		...mapActions({
 			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
+			retrieveAccounts: 'accounts/retrieveAccounts', // Récupère la liste des comptes dans le store
+			refreshAccounts: 'accounts/refreshAccounts', // Rafraichit la liste des comptes dans le store
 		}),
-
-		/**
-		 * Récupère tous les comptes de l'utilisateur courant
-		 */
-		retrieveAccounts() {
-			this.isAccountsRetrieving = true;
-			AccountsDataService.getAll(this.user.id)
-				.then((responses) => {
-					// On récupère toutes les rpéonses et on les ajoute dans le tableau des comptes
-					for (const response of responses) this.accounts.push.apply(this.accounts, response.data['hydra:member']);
-				})
-				.catch(() => {
-					this.showSnackbar({ name: 'alertAccountsRetrievingError' });
-				})
-				.finally(() => {
-					this.isAccountsRetrieving = false;
-				});
-		},
 	},
 
 	computed: {
 		...mapGetters({
+			// Partie utilisateur
 			user: 'auth/getUser',
+
+			// Partie comptes
+			isAccountsRetrieving: 'accounts/getIsAccountsRetrieving',
+			accounts: 'accounts/getAccounts',
 		}),
 
 		/*
@@ -279,7 +263,12 @@ export default {
 	},
 
 	mounted() {
-		this.retrieveAccounts();
+		// Au chargement de la page, on lance la récupération des comptes dans le store.
+		try {
+			this.retrieveAccounts(this.user.id);
+		} catch (error) {
+			this.showSnackbar({ name: 'alertAccountsRetrievingError' });
+		}
 	},
 };
 </script>

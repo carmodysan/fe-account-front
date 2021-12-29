@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import auth from './auth';
 import snackbar from './snackbar';
+import accounts from './accounts';
 
 Vue.use(Vuex);
 
@@ -66,6 +67,6 @@ export default new Vuex.Store({
     },
 
 	modules: {
-		auth, snackbar,
+		auth, snackbar, accounts
 	},
 });
