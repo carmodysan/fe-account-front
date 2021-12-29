@@ -28,5 +28,10 @@
 			font-weight: 400;
 		  }
 		}
-	  }
+	}
+}
+
+// Pas de transparence dans l'affichage des tooltips dans cette page.
+.v-tooltip__content {
+	opacity: 1 !important;
 }
