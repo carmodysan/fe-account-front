@@ -104,7 +104,7 @@
 											<!-- Partie visualisation du compte -->
 											<v-tooltip bottom color="primary">
 												<template v-slot:activator="{ on, attrs }">
-													<v-btn v-bind="attrs" v-on="on" @click="viewAccount(item.id)" fab outlined elevation="2" small class="mx-2" color="primary">
+													<v-btn v-bind="attrs" v-on="on" @click="viewAccount(item)" fab outlined elevation="2" small class="mx-2" color="primary">
 														<v-icon>mdi-eye</v-icon>
 													</v-btn>
 												</template>
@@ -270,20 +270,15 @@ export default {
 			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
 			retrieveAccounts: 'accounts/retrieveAccounts', // Récupère la liste des comptes dans le store
 			refreshAccounts: 'accounts/refreshAccounts', // Rafraichit la liste des comptes dans le store
+			retrieveAccountSelected: 'accountDetails/retrieveAccountSelected', // Télécharge le compte dans le store
 		}),
 
-		// Partie CRUD des comptes
 		/**
 		 * Affiche le compte
 		 */
-		viewAccount(accountId) {
-			console.log('(View) Compte : ' + accountId);
-		},
-		/**
-		 * Supprime le compte
-		 */
-		deleteAccount(accountId) {
-			console.log('(Delete) Compte : ' + accountId);
+		viewAccount(account) {
+			this.retrieveAccountSelected(account); // Récupère le compte dans le store
+			this.$router.push({ name: 'AccountDetails'}); // Affiche la page des détails
 		},
 	},
 
@@ -324,4 +319,4 @@ export default {
 };
 </script>
 
-<style src="./Account.scss" lang="scss" />
+<style src="./Accounts.scss" lang="scss" />

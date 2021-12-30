@@ -11,7 +11,8 @@ import Layout from './components/layout/Layout';
 import Login from '@/pages/User/Login';
 import Home from '@/pages/Home';
 import Dashboard from '@/pages/Dashboard/Dashboard';
-import Accounts from '@/pages/Accounts/Account';
+import Accounts from '@/pages/Accounts/Accounts';
+import AccountDetails from '@/pages/Accounts/AccountDetails';
 import Empty from '@/pages/Empty/Empty';
 
 Vue.use(VueRouter);
@@ -48,6 +49,14 @@ const routes = [
 				path: 'accounts',
 				name: 'Accounts',
 				component: Accounts,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+			{
+				path: 'account-details',
+				name: 'AccountDetails',
+				component: AccountDetails,
 				beforeEnter: (to, from, next) => {
 					isAuthenticated(next);
 				},
