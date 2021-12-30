@@ -54,7 +54,6 @@ export default {
 		 * Modifie le compte
 		 */
 		deleteAccount() {
-			console.log('Delete');
 			this.dialog = false; // On ferme le dialog
 			this.deleteAccountInStore(this.item);
 		},

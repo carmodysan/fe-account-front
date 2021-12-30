@@ -41,10 +41,50 @@ export default {
 	},
 
 	// Partie Comptes
+	// Récupération
 	alertAccountsRetrievingError: {
 		text: `Une erreur est survenue durant la récupération des comptes.`,
 		color: `error`,
 		colorBtnClose: `red darken-4`,
 		icon: `mdi-alert-octagram`,
-	}
+	},
+	// Création
+	alertAccountCreatingError: {
+		text: `Une erreur est survenue durant la création du compte.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertAccountCreated: {
+		text: `Le compte a bien été créé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	// Modification
+	alertAccountUpdatingError: {
+		text: `Une erreur est survenue durant la modification du compte.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertAccountUpdated: {
+		text: `Le compte est bien modifié.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-pencil`,
+	},
+	// Suppression
+	alertAccountDeletingError: {
+		text: `Une erreur est survenue durant la suppression du compte.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertAccountDeleted: {
+		text: `Le compte est bien supprimé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-delete`,
+	},
 };

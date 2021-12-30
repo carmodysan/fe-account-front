@@ -50,39 +50,45 @@ class AccountsDataService {
      * @param {*} data les données du compte courant à créer
      * @returns Response La response d'axios pour le POST
      */
-    createCurrentAccount(data) {
+	createCurrentAccount(data) {
         return axios.post(`/current_accounts`, data);
     }
 
 	/**
-	 * Met à jour un compte courant.
+	 * Met à jour un compte.
 	 *
 	 * @param String id Identifiant du compte
 	 * @param Account data
 	 * @returns Response
 	 */
-	updateCurrentAccount(id, data) {
-		return axios.put(`/current_accounts/${id}`, data);
+	updateAccount(account) {
+		switch (account['@type']) {
+			case 'CurrentAccount': // Compte courant
+				return axios.put(`/current_accounts/${account.id}`, account);
+			case 'SavingsAccount': // Compte d'épargne
+				return axios.put(`/savings_accounts/${account.id}`, account);
+
+			default:
+				throw 'Error: category does not exist !';
+		}
 	}
 
 	/**
-	 * Supprime un compte courant.
+	 * Supprime un compte.
 	 *
 	 * @param String id Identifiant du compte
 	 * @returns Response
 	 */
-	deleteCurrentAccount(id) {
-		return axios.delete(`/current_accounts/${id}`);
-	}
+	deleteAccount(account) {
+		switch (account['@type']) {
+			case 'CurrentAccount': // Compte courant
+				return axios.delete(`/current_accounts/${account.id}`);
+			case 'SavingsAccount': // Compte d'épargne
+				return axios.delete(`/savings_accounts/${account.id}`);
 
-	/**
-	 * Supprime un compte courant.
-	 *
-	 * @param String id Identifiant du compte
-	 * @returns Response
-	 */
-	deleteSavingsAccount(id) {
-		return axios.delete(`/savings_accounts/${id}`);
+			default:
+				throw 'Error: category does not exist !';
+		}
 	}
 }
 

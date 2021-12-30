@@ -139,7 +139,6 @@ import DialogCreateAccount from '../../components/accounts/DialogCreateAccount';
 import DialogEditAccount from '../../components/accounts/DialogEditAccount';
 import DialogDeleteAccount from '../../components/accounts/DialogDeleteAccount';
 
-
 import config from '../../config/index';
 
 import ApexChart from 'vue-apexcharts';
@@ -307,7 +306,7 @@ export default {
 			return [
 				{ text: 'Nom du compte', align: 'start', value: 'name' },
 				{ text: 'Etablissement', value: 'establishment' },
-				{ text: 'Catégorie', value: '@type' },
+				{ text: 'Catégorie', value: 'category' },
 				{ text: 'Solde', value: 'balance', sortable: false },
 				{ text: '', value: 'actions', align: 'end', sortable: false },
 			];

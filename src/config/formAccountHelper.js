@@ -11,7 +11,7 @@ export default {
         // Liste des catégories des comptes possibles
         categories: [
 			{ text: 'Compte courant', value: 'Current' },
-			{ text: 'Compte dépargne', value: 'Savings' },
+			// { text: 'Compte dépargne', value: 'Savings' },
 		],
         // Liste des établissement existants
         establishments: [
