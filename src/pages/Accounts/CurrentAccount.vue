@@ -1,19 +1,17 @@
 <template>
 	<v-container fluid>
-		<div class="account-page">
+        <!-- Partie si le compte courant ne possède aucun compte mensuel -->
+		<div v-if="!monthlyAccountExist()" class="account-page">
+			<CardIfEmpty v-bind:account="account"/>
+		</div>
+		<div v-else class="account-page">
 			<!-- Partie titre et sous-titre -->
 			<v-row no-gutters class="d-flex justify-space-between mt-10 mb-1">
-				<v-row no-gutters class="d-flex">
-					<h1 class="page-title">Compte de Janvier 2022</h1>
-					<v-btn color="secondary" class="text-capitalize button-shadow ml-5">Revenir sur tous les comptes</v-btn>
-				</v-row>
+				<h1 class="page-title">Compte de Janvier 2022</h1>
 				<div>
 					<v-btn color="primary" class="text-capitalize button-shadow mr-4">Changer de mois</v-btn>
 					<v-btn color="secondary" class="text-capitalize button-shadow mr-1">Configuration</v-btn>
 				</div>
-			</v-row>
-			<v-row class="ml-10 mb-6">
-				<h6>Date d'ouverture le 05 avril 2020</h6>
 			</v-row>
 
 			<!-- Partie corps de page -->
@@ -174,10 +172,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import ApexChart from 'vue-apexcharts';
+import CardIfEmpty from '../../components/accounts/monthly-account/CardIfEmpty';
 import config from '../../config/index';
 
 export default {
-	name: 'AccountDetails',
+	name: 'CurrentAccount',
 
 	metaInfo: {
 		title: 'Comptes',
@@ -185,6 +184,7 @@ export default {
 
 	components: {
 		ApexChart,
+        CardIfEmpty,
 	},
 
 	data() {
@@ -225,6 +225,15 @@ export default {
 		...mapActions({
 			// retrieveAccountSelected: 'accountDetails/retrieveAccountSelected', // Télécharge le compte dans le store
 		}),
+
+		/**
+		 * Permet de tester l'existence des comptes mensuels dans le compte courant.
+		 * Utilisé pour savoir s'il faut afficher la demande de création des comptes mensuels ou non.
+		 */
+		monthlyAccountExist() {
+			if (this.account.monthlyAccounts && this.account.monthlyAccounts.length > 0) return true;
+			else return false;
+		},
 	},
 
 	computed: {

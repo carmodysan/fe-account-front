@@ -40,7 +40,7 @@ export default {
 		icon: `mdi-alert`,
 	},
 
-	// Partie Comptes
+	// ==========================>>> Partie Comptes <<<==========================
 	// Récupération
 	alertAccountsRetrievingError: {
 		text: `Une erreur est survenue durant la récupération des comptes.`,
@@ -86,5 +86,12 @@ export default {
 		color: `success`,
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-delete`,
+	},
+	// MonthlyAccount
+	alertMACreatingYearError: {
+		text: `Vous devez sélectionner une année pour pouvoir ajouter des comptes mensuels.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
 	},
 };

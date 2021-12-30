@@ -12,7 +12,7 @@ import Login from '@/pages/User/Login';
 import Home from '@/pages/Home';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import Accounts from '@/pages/Accounts/Accounts';
-import AccountDetails from '@/pages/Accounts/AccountDetails';
+import CurrentAccount from '@/pages/Accounts/CurrentAccount';
 import Empty from '@/pages/Empty/Empty';
 
 Vue.use(VueRouter);
@@ -54,9 +54,9 @@ const routes = [
 				},
 			},
 			{
-				path: 'account-details',
-				name: 'AccountDetails',
-				component: AccountDetails,
+				path: 'current-account-details',
+				name: 'CurrentAccount',
+				component: CurrentAccount,
 				beforeEnter: (to, from, next) => {
 					isAuthenticated(next);
 				},

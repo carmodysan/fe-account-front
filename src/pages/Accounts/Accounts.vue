@@ -278,7 +278,7 @@ export default {
 		 */
 		viewAccount(account) {
 			this.retrieveAccountSelected(account); // Récupère le compte dans le store
-			this.$router.push({ name: 'AccountDetails'}); // Affiche la page des détails
+			this.$router.push({ name: 'CurrentAccount'}); // Affiche la page des détails
 		},
 	},
 
