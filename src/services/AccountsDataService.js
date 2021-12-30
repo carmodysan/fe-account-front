@@ -55,24 +55,34 @@ class AccountsDataService {
     }
 
 	/**
-	 * Met à jour un compte.
+	 * Met à jour un compte courant.
 	 *
 	 * @param String id Identifiant du compte
 	 * @param Account data
 	 * @returns Response
 	 */
-	update(id, data) {
-		return axios.put(`/accounts/${id}`, data);
+	updateCurrentAccount(id, data) {
+		return axios.put(`/current_accounts/${id}`, data);
 	}
 
 	/**
-	 * Supprime un compte.
+	 * Supprime un compte courant.
 	 *
 	 * @param String id Identifiant du compte
 	 * @returns Response
 	 */
-	delete(id) {
-		return axios.delete(`/accounts/${id}`);
+	deleteCurrentAccount(id) {
+		return axios.delete(`/current_accounts/${id}`);
+	}
+
+	/**
+	 * Supprime un compte courant.
+	 *
+	 * @param String id Identifiant du compte
+	 * @returns Response
+	 */
+	deleteSavingsAccount(id) {
+		return axios.delete(`/savings_accounts/${id}`);
 	}
 }
 

@@ -140,6 +140,12 @@ export default {
 		/**
 		 * ==============> Partie Création des comptes <==============
 		 */
+		/**
+		 * Créé un compte via l'API.
+		 *
+		 * @param {Dispatch} param0 dispatch
+		 * @param {Object} account Objet de type account
+		 */
 		createAccount({ dispatch }, account) {
 			store.commit('setLoading', true); // On déclenche l'affichage du loader.
 
@@ -151,18 +157,24 @@ export default {
 			switch (categoryAccount) {
 				case 'Current':
 					dispatch('createCurrentAccount', account);
-                    break;
+					break;
 				case 'Savings':
 					break;
 
 				default:
-                    store.commit('setLoading', false); // On arrête le loader
+					store.commit('setLoading', false); // On arrête le loader
 					throw 'Error: category does not exist !';
 			}
 
-            store.commit('setLoading', false); // Au cas où on ne serait passé dans aucune des instructions ci-dessus.
+			store.commit('setLoading', false); // Au cas où on ne serait passé dans aucune des instructions ci-dessus.
 		},
 
+		/**
+		 * Créé un compte courant via l'API.
+		 *
+		 * @param {Dispatch} param0 dispatch
+		 * @param {Object} account Objet de type account
+		 */
 		createCurrentAccount({ dispatch }, account) {
 			account.upcomingBalance = '0'; // On ajoute le solde à venir dans les données à envoyer
 
@@ -172,8 +184,120 @@ export default {
 					throw e;
 				})
 				.finally(() => {
-                    store.commit('setLoading', false); // On arrête le loader
-                    dispatch('refreshAccounts', account.authorId);
+					store.commit('setLoading', false); // On arrête le loader
+					dispatch('refreshAccounts', account.authorId);
+				});
+		},
+
+		/**
+		 * ==============> Partie Edition des comptes <==============
+		 */
+		/**
+		 * Modifie un compte via l'API.
+		 *
+		 * @param {Dispatch} param0
+		 * @param {Object} account Objet de type account
+		 */
+		editAccount({ dispatch }, account) {
+			store.commit('setLoading', true); // On déclenche l'affichage du loader.
+
+			// On switch sur la catégorie du compte (ici disponible sous @type)
+			switch (account['@type']) {
+				case 'CurrentAccount':
+					dispatch('editCurrentAccount', account);
+					break;
+				case 'SavingsAccount':
+					break;
+
+				default:
+					store.commit('setLoading', false); // On arrête le loader
+					throw 'Error: category does not exist !';
+			}
+
+			store.commit('setLoading', false); // Au cas où on ne serait passé dans aucune des instructions ci-dessus.
+		},
+
+		/**
+		 * Modifie un compte courant via l'API.
+		 *
+		 * @param {Dispatch} param0 dispatch
+		 * @param {Object} account Objet de type account
+		 */
+		editCurrentAccount({ dispatch }, account) {
+			AccountsDataService.updateCurrentAccount(account.id, account)
+				.catch((e) => {
+					store.commit('setLoading', false); // On arrête le loader
+					throw e; // On laisse la vue gérer les erreurs
+				})
+				.finally(() => {
+					store.commit('setLoading', false); // On arrête le loader
+					dispatch('refreshAccounts', account.authorId);
+				});
+		},
+
+		/**
+		 * ==============> Partie Suppression des comptes <==============
+		 */
+		/**
+		 * Supprime un compte via l'API.
+		 *
+		 * @param {Dispatch} param0
+		 * @param {Object} account Objet de type account
+		 */
+		deleteAccount({ dispatch }, account) {
+			console.log(account);
+			store.commit('setLoading', true); // On déclenche l'affichage du loader.
+
+			// On switch sur la catégorie du compte (ici disponible sous @type)
+			switch (account['@type']) {
+				case 'CurrentAccount':
+					dispatch('deleteCurrentAccount', account);
+					break;
+				case 'SavingsAccount':
+					dispatch('deleteSavingsAccount', account);
+					break;
+
+				default:
+					store.commit('setLoading', false); // On arrête le loader
+					throw 'Error: category does not exist !';
+			}
+
+			store.commit('setLoading', false); // Au cas où on ne serait passé dans aucune des instructions ci-dessus.
+		},
+
+		/**
+		 * Supprime un compte courant via l'API.
+		 *
+		 * @param {Dispatch} param0 dispatch
+		 * @param {Object} account Objet de type account
+		 */
+		deleteCurrentAccount({ dispatch }, account) {
+			AccountsDataService.deleteCurrentAccount(account.id)
+				.catch((e) => {
+					store.commit('setLoading', false); // On arrête le loader
+					throw e; // On laisse la vue gérer les erreurs
+				})
+				.finally(() => {
+					store.commit('setLoading', false); // On arrête le loader
+					dispatch('refreshAccounts', account.authorId);
+				});
+		},
+
+		/**
+		 * Supprime un compte d'épargne via l'API.
+		 *
+		 * @param {Dispatch} param0 dispatch
+		 * @param {Object} account Objet de type account
+		 */
+		deleteSavingsAccount({ dispatch }, account) {
+			AccountsDataService.deleteSavingsAccount(account.id)
+				.catch((e) => {
+					store.commit('setLoading', false); // On arrête le loader
+					throw e; // On laisse la vue gérer les erreurs
+				})
+				.finally(() => {
+					store.commit('setLoading', false); // On arrête le loader
+					dispatch('refreshAccounts', account.authorId);
 				});
 		},
 	},

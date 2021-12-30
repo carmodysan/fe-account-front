@@ -93,144 +93,35 @@
 							<p>Liste des comptes détenus</p>
 							<v-spacer></v-spacer>
 							<!-- Partie création d'un compte -->
-							<v-dialog v-model="dialogCreateAccount" persistent max-width="290">
-								<template v-slot:activator="{ on, attrs }">
-									<v-btn v-bind="attrs" v-on="on" color="secondary" class="text-capitalize button-shadow mr-1">
-										<v-icon class="mr-2">mdi-plus</v-icon>
-										Nouveau compte
-									</v-btn>
-								</template>
-								<v-card>
-									<v-card-title>Création d'un compte</v-card-title>
-									<v-card-text>
-										<v-row>
-											<v-col cols="12">
-												<v-text-field v-model="formCreateAccount.name" :rules="formBankRules" label="Nom du compte" required></v-text-field>
-											</v-col>
-											<v-col cols="12">
-												<v-text-field v-model="formCreateAccount.establishment" :rules="formBankRules" label="Etablissement" required></v-text-field>
-											</v-col>
-											<v-col cols="12">
-												<v-text-field v-model="formCreateAccount.category" :rules="formBankRules" label="Type de compte" required></v-text-field>
-											</v-col>
-											<v-col cols="12">
-												<v-menu
-													ref="menuCreate"
-													v-model="menuCreateDatePicker"
-													:close-on-content-click="false"
-													:return-value.sync="formCreateAccount.createAt"
-													transition="scale-transition"
-													offset-y
-													min-width="auto"
-												>
-													<template v-slot:activator="{ on, attrs }">
-														<v-text-field
-															v-model="formCreateAccount.createAt"
-															label="Choisissez une date"
-															prepend-icon="mdi-calendar"
-															readonly
-															v-bind="attrs"
-															v-on="on"
-														></v-text-field>
-													</template>
-													<v-date-picker v-model="formCreateAccount.createAt" no-title scrollable>
-														<v-spacer></v-spacer>
-														<v-btn text color="primary" @click="menuDatePicker = false"> Cancel </v-btn>
-														<v-btn text color="primary" @click="$refs.menuCreate.save(formCreateAccount.createAt)"> OK </v-btn>
-													</v-date-picker>
-												</v-menu>
-											</v-col>
-										</v-row>
-									</v-card-text>
-									<v-card-actions>
-										<v-spacer></v-spacer>
-										<v-btn @click="dialogCreateAccount = false">Annuler</v-btn>
-										<v-btn @click="createAccount()">Créer</v-btn>
-									</v-card-actions>
-								</v-card>
-							</v-dialog>
+							<div><DialogCreateAccount v-bind:userId="user.id" /></div>
 						</v-card-title>
 						<v-card-text class="pa-6 pt-0 mb-1">
 							<v-skeleton-loader v-if="isAccountsRetrieving" type="table"></v-skeleton-loader>
 							<v-data-table v-else disable-pagination hide-default-footer :headers="headers" :items="accounts" item-key="id">
 								<template v-slot:[`item.actions`]="{ item }">
-									<!-- Partie visualisation du compte -->
-									<v-tooltip bottom color="primary">
-										<template v-slot:activator="{ on, attrs }">
-											<v-btn v-bind="attrs" v-on="on" @click="viewAccount(item.id)" fab outlined elevation="2" small class="mx-2" color="primary">
-												<v-icon>mdi-eye</v-icon>
-											</v-btn>
-										</template>
-										<span>Visualiser</span>
-									</v-tooltip>
-
-									<!-- Partie édition du compte -->
-									<v-dialog v-model="dialogEditAccount[item.id]" :key="item.id + 'editKey'" persistent max-width="290">
-										<template #activator="dialogEditActivator">
-											<v-tooltip bottom color="warning">
-												<template #activator="tooltipEditActivator">
-													<v-btn
-														v-on="{ ...dialogEditActivator.on, ...tooltipEditActivator.on }"
-														@click.stop="
-															$set(dialogEditAccount, item.id, true);
-															editAccount(item.id);
-														"
-														fab
-														outlined
-														elevation="2"
-														small
-														class="mx-2"
-														color="warning"
-													>
-														<v-icon>mdi-pencil</v-icon>
+									<v-row class="d-flex justify-end mr-2">
+										<div>
+											<!-- Partie visualisation du compte -->
+											<v-tooltip bottom color="primary">
+												<template v-slot:activator="{ on, attrs }">
+													<v-btn v-bind="attrs" v-on="on" @click="viewAccount(item.id)" fab outlined elevation="2" small class="mx-2" color="primary">
+														<v-icon>mdi-eye</v-icon>
 													</v-btn>
 												</template>
-												<span>Supprimer</span>
+												<span>Visualiser</span>
 											</v-tooltip>
-										</template>
-										<v-card>
-											<v-card-title>Mon titre</v-card-title>
-											<v-card-text>Mon super text</v-card-text>
-											<v-card-actions>
-												<v-spacer></v-spacer>
-												<v-btn @click="$set(dialogEditAccount, item.id, false)">Fermer</v-btn>
-											</v-card-actions>
-										</v-card>
-									</v-dialog>
+										</div>
 
-									<!-- Partie suppression du compte -->
-									<v-dialog v-model="dialogDeleteAccount[item.id]" :key="item.id + 'deleteKey'" persistent max-width="290">
-										<template #activator="dialogDeleteActivator">
-											<v-tooltip bottom color="error">
-												<template #activator="tooltipDeleteActivator">
-													<v-btn
-														v-on="{ ...dialogDeleteActivator.on, ...tooltipDeleteActivator.on }"
-														@click.stop="
-															$set(dialogDeleteAccount, item.id, true);
-															deleteAccount(item.id);
-														"
-														fab
-														outlined
-														elevation="2"
-														small
-														class="mx-2"
-														color="error"
-													>
-														<v-icon>mdi-delete</v-icon>
-													</v-btn>
-												</template>
-												<span>Supprimer</span>
-											</v-tooltip>
-										</template>
-										<v-card>
-											<v-card-title>Mon titre</v-card-title>
-											<v-card-text>Mon super text</v-card-text>
-											<v-card-actions>
-												<v-spacer></v-spacer>
-												<v-btn @click="$set(dialogDeleteAccount, item.id, false)">Fermer</v-btn>
-											</v-card-actions>
-										</v-card>
-									</v-dialog>
+										<!-- Partie édition du compte -->
+										<div>
+											<DialogEditAccount v-bind:item="item" />
+										</div>
+
+										<!-- Partie suppression du compte -->
+										<div>
+											<DialogDeleteAccount v-bind:item="item" />
+										</div>
+									</v-row>
 								</template>
 							</v-data-table>
 						</v-card-text>
@@ -244,6 +135,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 
+import DialogCreateAccount from '../../components/accounts/DialogCreateAccount';
+import DialogEditAccount from '../../components/accounts/DialogEditAccount';
+import DialogDeleteAccount from '../../components/accounts/DialogDeleteAccount';
+
+
 import config from '../../config/index';
 
 import ApexChart from 'vue-apexcharts';
@@ -255,28 +151,18 @@ export default {
 		title: 'Comptes',
 	},
 
-	components: { ApexChart },
+	components: {
+		ApexChart,
+		DialogCreateAccount, // Composant représentant le bouton 'Nouveau compte'
+		DialogEditAccount, // Composant représentant le bouton 'Modifier'
+		DialogDeleteAccount, // Composant représentant le bouton 'Supprimer'
+	},
 
 	data: () => ({
 		apexLoading: true,
 
-		// Partie fenêtre modale des comptes
-		dialogCreateAccount: false,
-		dialogEditAccount: {}, // Objet, car sinon la fenêtre modale s'affiche plusieurs fois quand elle est imbriquée dans un tableau.
+		// dialogEditAccount: {}, // Objet, car sinon la fenêtre modale s'affiche plusieurs fois quand elle est imbriquée dans un tableau.
 		dialogDeleteAccount: {},
-
-		// Partie Rules
-		formBankRules: [(v) => !!v || 'La banque est obligatoire'],
-
-		// Partie création d'un compte
-		formCreateAccount: {
-			name: '',
-			createAt: null,
-			category: '',
-			establishment: '',
-			authorId: '',
-		},
-		menuCreateDatePicker: false,
 
 		// Juste pour l'exemple
 		apexArea1: {
@@ -385,30 +271,14 @@ export default {
 			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
 			retrieveAccounts: 'accounts/retrieveAccounts', // Récupère la liste des comptes dans le store
 			refreshAccounts: 'accounts/refreshAccounts', // Rafraichit la liste des comptes dans le store
-			createAccountInStore: 'accounts/createAccount', // Envoie la création d'un compte dans le store et lance le rafraichissement de la liste des comptes.
 		}),
 
 		// Partie CRUD des comptes
-		/**
-		 * Création d'un compte
-		 */
-		createAccount() {
-			this.dialogCreateAccount = false; // On peut fermer la fenêtre modale
-			this.formCreateAccount.authorId = this.user.id; // On définit l'utilisateur propriétaire du compte
-
-			this.createAccountInStore(this.formCreateAccount); // On lance la création du compte en l'envoyant à l'API.
-		},
 		/**
 		 * Affiche le compte
 		 */
 		viewAccount(accountId) {
 			console.log('(View) Compte : ' + accountId);
-		},
-		/**
-		 * Modifie le compte
-		 */
-		editAccount(accountId) {
-			console.log('(Edit) Compte : ' + accountId);
 		},
 		/**
 		 * Supprime le compte
@@ -437,7 +307,7 @@ export default {
 			return [
 				{ text: 'Nom du compte', align: 'start', value: 'name' },
 				{ text: 'Etablissement', value: 'establishment' },
-				{ text: 'Catégorie', value: 'category' },
+				{ text: 'Catégorie', value: '@type' },
 				{ text: 'Solde', value: 'balance', sortable: false },
 				{ text: '', value: 'actions', align: 'end', sortable: false },
 			];
