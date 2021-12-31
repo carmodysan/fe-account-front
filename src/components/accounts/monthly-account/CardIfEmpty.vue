@@ -51,6 +51,7 @@ export default {
 	methods: {
 		...mapActions({
 			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
+			createMonthlyAccounts: 'accountDetails/createMonthlyAccounts', // Créé les 12 comptes mensuels en fonction de l'année choisie.
 		}),
 
 		/**
@@ -58,7 +59,7 @@ export default {
 		 */
 		addMonthlyAccounts() {
 			if (this.selectedYear != 0) {
-				console.log(this.selectedYear);
+				this.createMonthlyAccounts(this.selectedYear); // On crée les 12 comptes mensuels
 			} else {
 				this.showSnackbar({ name: 'alertMACreatingYearError' });
 			}

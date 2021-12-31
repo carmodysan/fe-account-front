@@ -94,4 +94,22 @@ export default {
 		colorBtnClose: `red darken-4`,
 		icon: `mdi-alert-octagram`,
 	},
+	alertMACreatingError: {
+		text: `Une erreur est survenue durant la création des comptes mensuels.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertMACreated: {
+		text: `Les comptes mensuels ont bien créés.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	alertMARetrievingError: {
+		text: `Une erreur est survenue durant la récupération des comptes mensuels.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
 };

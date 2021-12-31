@@ -2,6 +2,11 @@
 	<v-app>
 		<router-view />
 
+		<!-- Un affichage de chargement sur toute la page -->
+		<v-overlay :value="isLoading" z-index="10">
+			<v-progress-circular indeterminate size="64"></v-progress-circular>
+		</v-overlay>
+
 		<!-- Partie Alerte notification -->
 		<v-snackbar
 			v-for="(snackbar, index) in snackbars.filter((s) => s.showing)"
@@ -59,6 +64,7 @@ export default {
 	computed: {
 		...mapGetters({
 			snackbars: 'snackbar/getSnackbars', // Récupère dynamiquement le tableau des snackbars
+			isLoading: 'getLoading', // Récupère dynamiquement s'il y a un chargement en cours
 		}),
 	},
 

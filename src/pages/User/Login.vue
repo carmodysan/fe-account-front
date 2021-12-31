@@ -1,10 +1,5 @@
 <template>
 	<v-container fluid>
-		<!-- Un affichage de chargement sur toute la page -->
-		<v-overlay :value="isLoading" z-index="10">
-			<v-progress-circular indeterminate size="64"></v-progress-circular>
-		</v-overlay>
-
 		<v-row no-gutters>
 			<!-- Partie gauche de la page de Login -->
 			<v-col cols="7" class="main-part d-none d-md-none d-lg-flex">
@@ -162,7 +157,6 @@ export default {
 
 	computed: {
 		...mapGetters({
-			isLoading: 'getLoading',
 			user: 'auth/getUser',
 		}),
 	},

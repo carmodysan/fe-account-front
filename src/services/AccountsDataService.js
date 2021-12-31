@@ -40,8 +40,8 @@ class AccountsDataService {
 	 * @param String id Identifiant du compte
 	 * @returns un compte.
 	 */
-	get(id) {
-		return axios.get(`/accounts/${id}`);
+	getCurrentAccount(id) {
+		return axios.get(`/current_accounts/${id}`);
 	}
 
     /**

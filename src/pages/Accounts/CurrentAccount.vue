@@ -1,8 +1,26 @@
 <template>
 	<v-container fluid>
-        <!-- Partie si le compte courant ne possède aucun compte mensuel -->
-		<div v-if="!monthlyAccountExist()" class="account-page">
-			<CardIfEmpty v-bind:account="account"/>
+		<!-- 
+			La page suit la logique suivante: 
+			- Quand on arrive sur la page, on teste si des comptes mensuels existent.
+			- Si non, alors
+				* On affiche le composant CardIfEmpty qui permet de créer une année de compte mensuel
+			- Si oui, alors
+				* On lance la récupération des comptes mensuels du compte courant.
+				* On test si la récupération des comptes mensuels est toujours en cours:
+				- Si oui, alors
+					* On affiche que les comptes mensuels sont en cours de récupération
+				- Si non, alors
+					* On affiche la page du compte mensuel
+		-->
+
+		<!-- Partie si le compte courant ne possède aucun compte mensuel -->
+		<div v-if="account.monthlyAccounts.length == 0" class="account-page">
+			<CardIfEmpty v-bind:account="account" />
+		</div>
+		<!-- Partie si le compte courant possède des comptes mensuels mais qu'ils sont en cours de récupération -->
+		<div v-else-if="monthlyAccountsRetrieving">
+			<p>Les comptes mensuels sont en cours de récupération.</p>
 		</div>
 		<div v-else class="account-page">
 			<!-- Partie titre et sous-titre -->
@@ -184,7 +202,7 @@ export default {
 
 	components: {
 		ApexChart,
-        CardIfEmpty,
+		CardIfEmpty,
 	},
 
 	data() {
@@ -223,7 +241,7 @@ export default {
 
 	methods: {
 		...mapActions({
-			// retrieveAccountSelected: 'accountDetails/retrieveAccountSelected', // Télécharge le compte dans le store
+			retrieveMonthlyAccounts: 'accountDetails/retrieveMonthlyAccounts', // Télécharge tous les comptes mensuels dans le store
 		}),
 
 		/**
@@ -231,14 +249,19 @@ export default {
 		 * Utilisé pour savoir s'il faut afficher la demande de création des comptes mensuels ou non.
 		 */
 		monthlyAccountExist() {
-			if (this.account.monthlyAccounts && this.account.monthlyAccounts.length > 0) return true;
-			else return false;
+			if (this.account.monthlyAccounts && this.account.monthlyAccounts.length > 0) {
+				return true;
+			} else {
+				console.log('Il n\'existe pas de compte mensuel');
+				return false;
+			}
 		},
 	},
 
 	computed: {
 		...mapGetters({
 			account: 'accountDetails/getAccountSelected', // Récupère le compte depuis le store
+			monthlyAccountsRetrieving: 'accountDetails/isMonthlyAccountsRetrieving', // Récupère l'état de la récupération des comptes mensuels
 		}),
 
 		headers() {
@@ -253,6 +276,10 @@ export default {
 			];
 		},
 	},
+
+	mounted: function () {
+		this.retrieveMonthlyAccounts();
+	}
 };
 </script>
 
