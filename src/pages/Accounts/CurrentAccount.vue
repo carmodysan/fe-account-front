@@ -33,7 +33,7 @@
 		</div>
 
 		<!-- Partie si l'utilisateur a demandé d'afficher l'ensemble des comptes mensuels -->
-		<div v-else-if="monthlyAccountsDisplaying" class="account-page">
+		<div v-else-if="monthlyAccountsDisplaying || !selectedMonthlyAccount.id" class="account-page">
 			<!-- Partie titre et sous-titre -->
 			<v-row no-gutters class="d-flex justify-space-between mt-10 mb-1">
 				<h1 class="page-title">Comptes mensuels</h1>
@@ -55,7 +55,7 @@
 							:elevation="hover ? 16 : 2"
 							:class="{ 'on-hover': hover }"
 							max-width="300"
-							:color="item.state === 'current' ? 'green lighten-4' : item.state === 'open' ? 'light-blue lighten-4' : 'blue-grey lighten-3'"
+							:color="getCardColor(item.state)"
 							:shaped="item.state === 'current' ? true : false"
 							:outlined="item.state === 'current' ? true : false"
 						>
@@ -66,6 +66,7 @@
 							<v-card-subtitle>
 								<span v-if="item.state == 'close'">Ce compte mensuel est fermé</span>
 								<span v-else-if="item.state == 'open'">Ce compte mensuel est ouvert</span>
+								<span v-else-if="item.state == 'upcoming'">Ce compte mensuel est à venir</span>
 								<span v-else-if="item.state == 'current'">Ce compte mensuel est en cours</span>
 							</v-card-subtitle>
 							<v-divider></v-divider>
@@ -355,6 +356,22 @@ export default {
 				this.showSnackbar({ name: 'alertMACurrent' });
 			}
 		},
+
+		getCardColor(state) {
+			switch (state) {
+				case 'open':
+					return 'light-blue lighten-4';
+				case 'close':
+					return 'blue-grey lighten-4';
+				case 'current':
+					return 'green lighten-4';
+				case 'upcoming':
+					return 'deep-orange lighten-4';
+			
+				default:
+					return 'white';
+			}
+		}
 	},
 
 	computed: {

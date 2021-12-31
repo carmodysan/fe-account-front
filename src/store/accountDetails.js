@@ -177,8 +177,18 @@ export default {
 				monthlyAccount.currentAccount = '/api/current_accounts/' + state.accountSelected.id; // Ajout de la référence au mois courant
 
 				// Si le mois et l'année correspondent alors l'état du compte mensuel est à en cours.
-				if (year == currentYear && month == currentMonth) monthlyAccount.state = 'current';
-				else monthlyAccount.state = 'close';
+				// Si non si le mois et l'année sont supérieurs à celui en cours, état à upcoming
+				// Sinon état close.
+				if (year == currentYear && month == currentMonth) {
+					monthlyAccount.state = 'current';
+				} else if (year == currentYear && month > currentMonth) {
+					monthlyAccount.state = 'upcoming';
+				} else if (year > currentYear) {
+					monthlyAccount.state = 'upcoming';
+				}
+				else {
+					monthlyAccount.state = 'close';
+				}
 
 				const promise = MonthlyAccountsDataService.create(monthlyAccount); // On récupère le promise en appelant l'API via Axios
 				promises.push(promise); // On met le promise dans le tableau des promises
@@ -237,7 +247,7 @@ export default {
 
 		/**
 		 * Change le compte mensuel sélectionné.
-		 * 
+		 *
 		 * @param {Object} param0
 		 */
 		changeSelectedMonthlyAccount({ commit }, monthlyAccount) {
