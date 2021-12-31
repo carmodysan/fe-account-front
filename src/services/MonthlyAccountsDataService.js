@@ -8,7 +8,7 @@ class MonthlyAccountsDataService {
      * @returns la liste des comptes mensuels.
      */
 	getAll(accountId) {
-		return axios.get(`/current_accounts/${accountId}/monthly_accounts`);
+		return axios.get(`/current_accounts/${accountId}/monthly_accounts?order[year]&order[month]`);
 	}
 
     /**

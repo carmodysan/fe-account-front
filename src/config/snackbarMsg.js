@@ -112,4 +112,10 @@ export default {
 		colorBtnClose: `red darken-4`,
 		icon: `mdi-alert-octagram`,
 	},
+	alertMACurrent: {
+		text: `Ce compte mensuel est maintenant le compte mensuel en cours.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
 };

@@ -11,25 +11,95 @@
 				- Si oui, alors
 					* On affiche que les comptes mensuels sont en cours de récupération
 				- Si non, alors
-					* On affiche la page du compte mensuel
+					* On teste si l'utilisateur a demandé d'afficher l'ensemble des comptes mensuels
+					- Si oui, alors on affiche les différents comptes mensuels
+					- Si non, alors on affiche la page du compte mensuel
 		-->
 
 		<!-- Partie si le compte courant ne possède aucun compte mensuel -->
 		<div v-if="account.monthlyAccounts.length == 0" class="account-page">
-			<CardIfEmpty v-bind:account="account" />
+			<v-row class="d-flex justify-center mt-10 mb-1">
+				<v-col cols="12">
+					<div class="d-flex justify-center">
+						<CardAddMonthlyAccount v-bind:account="account" empty />
+					</div>
+				</v-col>
+			</v-row>
 		</div>
+
 		<!-- Partie si le compte courant possède des comptes mensuels mais qu'ils sont en cours de récupération -->
 		<div v-else-if="monthlyAccountsRetrieving">
 			<p>Les comptes mensuels sont en cours de récupération.</p>
 		</div>
-		<div v-else class="account-page">
+
+		<!-- Partie si l'utilisateur a demandé d'afficher l'ensemble des comptes mensuels -->
+		<div v-else-if="monthlyAccountsDisplaying" class="account-page">
 			<!-- Partie titre et sous-titre -->
 			<v-row no-gutters class="d-flex justify-space-between mt-10 mb-1">
-				<h1 class="page-title">Compte de Janvier 2022</h1>
+				<h1 class="page-title">Comptes mensuels</h1>
 				<div>
-					<v-btn color="primary" class="text-capitalize button-shadow mr-4">Changer de mois</v-btn>
+					<v-dialog v-model="dialogAddMonthlyAccount" transition="dialog-bottom-transition" max-width="290">
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn v-on="on" v-bind="attrs" color="primary" class="text-capitalize button-shadow mr-4">Ajouter une année</v-btn>
+						</template>
+						<CardAddMonthlyAccount v-bind:account="account" v-model="dialogAddMonthlyAccount" v-bind:empty="false" />
+					</v-dialog>
+					<v-btn color="secondary" class="text-capitalize button-shadow mr-1" @click="monthlyAccountsDisplaying = false">Retour</v-btn>
+				</div>
+			</v-row>
+			<v-row align="center" justify="center" class="fill-height overflow-auto">
+				<v-col v-for="item in monthlyAccounts" :key="item.id" :cols="itemsPerRow" class="py-2">
+					<v-hover v-slot="{ hover }">
+						<v-card
+							class="fill-height"
+							:elevation="hover ? 16 : 2"
+							:class="{ 'on-hover': hover }"
+							max-width="300"
+							:color="item.state === 'current' ? 'green lighten-4' : item.state === 'open' ? 'light-blue lighten-4' : 'blue-grey lighten-3'"
+							:shaped="item.state === 'current' ? true : false"
+							:outlined="item.state === 'current' ? true : false"
+						>
+							<v-img :src="require(`../../assets/images/card_${item.month + 1}.jpg`)" width="100%" height="200"></v-img>
+							<v-card-title>
+								<span class="font-weight-light text-truncate"> {{ (item.month + 1) | formatMonth }} {{ item.year }} </span>
+							</v-card-title>
+							<v-card-subtitle>
+								<span v-if="item.state == 'close'">Ce compte mensuel est fermé</span>
+								<span v-else-if="item.state == 'open'">Ce compte mensuel est ouvert</span>
+								<span v-else-if="item.state == 'current'">Ce compte mensuel est en cours</span>
+							</v-card-subtitle>
+							<v-divider></v-divider>
+							<v-card-text>
+								<v-row justify="space-around">
+									<v-chip class="mx-2 my-auto" color="green" text-color="white">
+										<v-avatar left class="green darken-4"> {{ item.currentAccountOperations.length }} </v-avatar>
+										Opérations
+									</v-chip>
+									<v-btn class="ma-2" fab small dark color="teal" @click="openMonthlyAccount(item)">
+										<v-icon dark>mdi-eye</v-icon>
+									</v-btn>
+								</v-row>
+							</v-card-text>
+						</v-card>
+					</v-hover>
+				</v-col>
+			</v-row>
+		</div>
+
+		<!-- Partie "normale" où on affiche toutes les informations du compte mensuel -->
+		<div v-else class="account-page">
+			<!-- Partie titre -->
+			<v-row no-gutters class="d-flex justify-space-between mt-10 mb-1">
+				<h1 class="page-title">Compte de {{ selectedMonthlyAccount.month }} {{ selectedMonthlyAccount.year }}</h1>
+				<div>
+					<v-btn color="primary" class="text-capitalize button-shadow mr-4" @click="monthlyAccountsDisplaying = true">Changer de mois</v-btn>
 					<v-btn color="secondary" class="text-capitalize button-shadow mr-1">Configuration</v-btn>
 				</div>
+			</v-row>
+
+			<!-- Le switch pour changer l'état à 'en cours' du compte mensuel -->
+			<v-row no gutters class="d-flex justify-start ml-5">
+				<v-switch v-model="currentSwitch" :disabled="currentSwitchDisabled" @change="changeCurrentMonthlyAccount()" color="success" :label="currentSwitch ? currentSwitchTextOn : currentSwitchTextOff" />
 			</v-row>
 
 			<!-- Partie corps de page -->
@@ -190,7 +260,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import ApexChart from 'vue-apexcharts';
-import CardIfEmpty from '../../components/accounts/monthly-account/CardIfEmpty';
+import CardAddMonthlyAccount from '../../components/accounts/monthly-account/CardAddMonthlyAccount';
 import config from '../../config/index';
 
 export default {
@@ -202,11 +272,21 @@ export default {
 
 	components: {
 		ApexChart,
-		CardIfEmpty,
+		CardAddMonthlyAccount,
 	},
 
 	data() {
 		return {
+			// Etat pour savoir si l'utilisateur a demandé l'affichage des comptes mensuels.
+			monthlyAccountsDisplaying: false,
+			dialogAddMonthlyAccount: false,
+
+			// Partie switch du compte mensuel en cours ou non
+			currentSwitch: false,
+			currentSwitchDisabled: false,
+			currentSwitchTextOn: 'Compte mensuel en cours',
+			currentSwitchTextOff: 'Définir comme le compte mensuel en cours',
+
 			apexLoading: true,
 
 			operations: [],
@@ -241,19 +321,38 @@ export default {
 
 	methods: {
 		...mapActions({
+			showSnackbar: 'snackbar/showSnackbar', // Affiche le snackbar
 			retrieveMonthlyAccounts: 'accountDetails/retrieveMonthlyAccounts', // Télécharge tous les comptes mensuels dans le store
+			changeCurrentMonthlyAccountInStore: 'accountDetails/changeCurrentMonthlyAccount', // Change le compte mensuels visualisé comme le current
+			changeSelectedMonthlyAccountInStore: 'accountDetails/changeSelectedMonthlyAccount', // Change le compte mensuels visualisé comme le current
 		}),
 
 		/**
-		 * Permet de tester l'existence des comptes mensuels dans le compte courant.
-		 * Utilisé pour savoir s'il faut afficher la demande de création des comptes mensuels ou non.
+		 * Onvre le compte mensuel sélectionné.
 		 */
-		monthlyAccountExist() {
-			if (this.account.monthlyAccounts && this.account.monthlyAccounts.length > 0) {
-				return true;
+		openMonthlyAccount(monthlyAccount) {
+			if (monthlyAccount.state === 'current') { // Si le mois qu'on ouvre est un mois 'current'
+				this.currentSwitch = true; // On replace à true le switch
+				this.currentSwitchDisabled = true; // On replace à true l'état disable du switch
 			} else {
-				console.log('Il n\'existe pas de compte mensuel');
-				return false;
+				this.currentSwitch = false; // On replace à false le switch
+				this.currentSwitchDisabled = false; // On replace à false l'état disable du switch
+			}
+			this.changeSelectedMonthlyAccountInStore(monthlyAccount);
+			this.monthlyAccountsDisplaying = false; // On ferme cette "vue" pour aller dans la vue "normale"
+		},
+
+		/**
+		 * Change le compte mensuel affiché comme le compte mensuel en cours.
+		 * Attention, une fois que le compte mensuel est passé à 'en cours', on ne peut plus changer son état.
+		 * Il faut changer de compte mensuel et allé sur un autre pour modifier ça.
+		 */
+		changeCurrentMonthlyAccount() {
+			// Si l'utilisateur passe le switch à true alors, on change le compte mensuel à l'état 'en cours'
+			if (this.currentSwitch) {
+				this.currentSwitchDisabled = true; // On inactive le switch
+				this.changeCurrentMonthlyAccountInStore(); // On modifie l'état dans le store.
+				this.showSnackbar({ name: 'alertMACurrent' });
 			}
 		},
 	},
@@ -262,8 +361,13 @@ export default {
 		...mapGetters({
 			account: 'accountDetails/getAccountSelected', // Récupère le compte depuis le store
 			monthlyAccountsRetrieving: 'accountDetails/isMonthlyAccountsRetrieving', // Récupère l'état de la récupération des comptes mensuels
+			monthlyAccounts: 'accountDetails/getMonthlyAccounts', // Récupère tous les comptes mensuels du compte depuis le store
+			selectedMonthlyAccount: 'accountDetails/getSelectedMonthlyAccount', // Récupère le compte mensuel en cours depuis le store
 		}),
 
+		/**
+		 * Les en-têtes du tableau des opérations
+		 */
 		headers() {
 			return [
 				{ text: "Date de l'opération", align: 'start', value: 'dateOp' },
@@ -275,11 +379,44 @@ export default {
 				{ text: 'Actions', sortable: false, align: 'end', value: 'actions' },
 			];
 		},
+
+		/**
+		 * Définit l'affichage en colonnes des comptes mensuels en fonction de la taille de l'écran'
+		 */
+		itemsPerRow() {
+			switch (this.$vuetify.breakpoint.name) {
+				case 'xs':
+					return 12;
+				case 'sm':
+					return 4;
+				case 'md':
+					return 2;
+				case 'lg':
+					return 2;
+				case 'xl':
+					return 2;
+				default:
+					return 2;
+			}
+		},
+	},
+
+	watch: {
+		'selectedMonthlyAccount.state': function (val) {
+			if (val === 'current') {
+				this.currentSwitchDisabled = true; // On inactive le switch
+				this.currentSwitch = true; // On passe le switch à true
+			}
+		},
 	},
 
 	mounted: function () {
 		this.retrieveMonthlyAccounts();
-	}
+		if (this.selectedMonthlyAccount.state && this.selectedMonthlyAccount.state === 'current') {
+			this.currentSwitch = true;
+			this.currentSwitchDisabled = true;
+		}
+	},
 };
 </script>
 

@@ -18,6 +18,11 @@ export default {
 		monthlyAccounts: [],
 
 		/**
+		 * Objet représentant le compte mensuel en cours
+		 */
+		selectedMonthlyAccount: {},
+
+		/**
 		 * Boolean pour connaître l'état de la récupération des comptes mensuels
 		 */
 		monthlyAccountsRetrieving: true,
@@ -35,13 +40,23 @@ export default {
 		},
 
 		/**
-		 * Retourne l'objet compte mensuel en cours.
+		 * Retourne le tableau des comptes mensuels.
 		 *
 		 * @param {Object} state
 		 * @returns Le tableau des comptes mensuels du compte en cours
 		 */
 		getMonthlyAccounts(state) {
 			return state.monthlyAccounts;
+		},
+
+		/**
+		 * Retourne l'objet compte mensuel en cours.
+		 *
+		 * @param {Object} state
+		 * @returns L'objet compte mensuel en cours.
+		 */
+		getSelectedMonthlyAccount(state) {
+			return state.selectedMonthlyAccount;
 		},
 
 		/**
@@ -75,7 +90,7 @@ export default {
 		setMonthlyAccounts(state, monthlyAccounts) {
 			state.monthlyAccounts = monthlyAccounts;
 		},
-		
+
 		/**
 		 * Définit l'état de récupération des comptes mensuels
 		 *
@@ -84,6 +99,16 @@ export default {
 		 */
 		setMonthlyAccountsRetrieving(state, monthlyAccountsRetrieving) {
 			state.monthlyAccountsRetrieving = monthlyAccountsRetrieving;
+		},
+
+		/**
+		 * Définit le compte mensuel en cours
+		 *
+		 * @param {Object} state
+		 * @param {Boolean} selectedMonthlyAccount
+		 */
+		setSelectedMonthlyAccounts(state, selectedMonthlyAccount) {
+			state.selectedMonthlyAccount = selectedMonthlyAccount;
 		},
 	},
 
@@ -98,31 +123,38 @@ export default {
 		},
 
 		refreshAccountSelected({ commit, dispatch, state }) {
-			AccountsDataService.getCurrentAccount(state.accountSelected.id).then((response) => {
-				commit('setAccountsSelected', response.data); // On enregistre le compte courant
-			}).catch(() => {
-				dispatch('snackbar/showSnackbar', { name: 'alertAccountsRetrievingError' }, { root: true });
-				store.commit('setLoading', false); // On arrête le loader
-			}).finally(() => {
-				store.commit('setLoading', false); // On arrête le loader
-			})
+			AccountsDataService.getCurrentAccount(state.accountSelected.id)
+				.then((response) => {
+					commit('setAccountsSelected', response.data); // On enregistre le compte courant
+				})
+				.catch(() => {
+					dispatch('snackbar/showSnackbar', { name: 'alertAccountsRetrievingError' }, { root: true });
+					store.commit('setLoading', false); // On arrête le loader
+				})
+				.finally(() => {
+					store.commit('setLoading', false); // On arrête le loader
+				});
 		},
 
 		/**
 		 * ==============> Partie Comptes Mensuels <==============
 		 */
-		retrieveMonthlyAccounts({commit, dispatch, state}) {
+		retrieveMonthlyAccounts({ commit, dispatch, state }) {
 			commit('setMonthlyAccountsRetrieving', true); // On switch l'état de la récupération des comptes mensuels
+			state.monthlyAccounts = []; // On vide le tableau au cas où il resterait des résidus
 
-			MonthlyAccountsDataService.getAll(state.accountSelected.id).then((response) => {
-				commit('setMonthlyAccounts', response.data['hydra:member']); // On récupère tous les comptes mensuels
-				console.log(state.monthlyAccounts);
-			}).catch(() => {
-				dispatch('snackbar/showSnackbar', { name: 'alertMARetrievingError' }, { root: true });
-				commit('setMonthlyAccountsRetrieving', false); // On switch l'état de la récupération des comptes mensuels
-			}).finally(() => {
-				commit('setMonthlyAccountsRetrieving', false); // On switch l'état de la récupération des comptes mensuels
-			})
+			MonthlyAccountsDataService.getAll(state.accountSelected.id)
+				.then((response) => {
+					commit('setMonthlyAccounts', response.data['hydra:member']); // On récupère tous les comptes mensuels
+				})
+				.catch(() => {
+					dispatch('snackbar/showSnackbar', { name: 'alertMARetrievingError' }, { root: true });
+					commit('setMonthlyAccountsRetrieving', false); // On switch l'état de la récupération des comptes mensuels
+				})
+				.finally(() => {
+					dispatch('searchCurrentMonthlyAccount'); // On récupère le compte mensuel en cours
+					commit('setMonthlyAccountsRetrieving', false); // On switch l'état de la récupération des comptes mensuels
+				});
 		},
 
 		/**
@@ -139,7 +171,6 @@ export default {
 
 			// On parcourt les 12 mois à créer.
 			for (let month = 0; month < 12; month++) {
-
 				const monthlyAccount = {}; // Création de l'objet
 				monthlyAccount.year = year; // Ajout de l'année
 				monthlyAccount.month = month; // Ajout du mois
@@ -162,10 +193,55 @@ export default {
 				.finally(() => {
 					dispatch('accounts/refreshAccounts', state.accountSelected.authorId, { root: true }); // On rafraichit la liste des comptes
 					dispatch('refreshAccountSelected'); // On rafraichit le compte courant
+					dispatch('retrieveMonthlyAccounts'); // On rafraichit le compte courant
 					dispatch('snackbar/showSnackbar', { name: 'alertMACreated' }, { root: true });
 				});
 
 			// store.commit('setLoading', false); // On arrête le loader (code normalement non utile)
+		},
+
+		/**
+		 * Cherche et définit le compte mensuel en cours.
+		 *
+		 * @param {Object} param0
+		 */
+		searchCurrentMonthlyAccount({ commit, state }) {
+			// On vide le compte mensuel en cours
+			state.selectedMonthlyAccount = {};
+
+			// On récupère le premier élément (et seul normalement) ayant l'état current
+			const currentMonthlyAccount = state.monthlyAccounts.find((element) => element.state === 'current');
+			if (currentMonthlyAccount) {
+				// Si la recherche précédente a bien trouvé quelque chose
+				commit('setSelectedMonthlyAccounts', currentMonthlyAccount);
+			}
+		},
+
+		/**
+		 * Change le compte mensuel en cours comme le seul à être à l'état current
+		 * @param {Object} param0
+		 */
+		changeCurrentMonthlyAccount({ state }) {
+			// On recherche l'ancien compte mensuel en cours
+			for (const ma of state.monthlyAccounts) {
+				if (ma.state === 'current') {
+					// Si on en trouve
+					ma.state = 'open'; // On modifie à juste ouvert (open)
+					MonthlyAccountsDataService.update(ma.id, ma); // On met à jour le nouvel état en BDD via l'API.
+				}
+			}
+
+			state.selectedMonthlyAccount.state = 'current';
+			MonthlyAccountsDataService.update(state.selectedMonthlyAccount.id, state.selectedMonthlyAccount); // On met à jour l'état en BDD via l'API.
+		},
+
+		/**
+		 * Change le compte mensuel sélectionné.
+		 * 
+		 * @param {Object} param0
+		 */
+		changeSelectedMonthlyAccount({ commit }, monthlyAccount) {
+			commit('setSelectedMonthlyAccounts', monthlyAccount); // On écrase le précédent compte mensuel sélectionné.
 		},
 	},
 };
