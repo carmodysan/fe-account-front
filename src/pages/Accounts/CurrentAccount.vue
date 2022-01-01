@@ -100,7 +100,13 @@
 
 			<!-- Le switch pour changer l'état à 'en cours' du compte mensuel -->
 			<v-row no gutters class="d-flex justify-start ml-5">
-				<v-switch v-model="currentSwitch" :disabled="currentSwitchDisabled" @change="changeCurrentMonthlyAccount()" color="success" :label="currentSwitch ? currentSwitchTextOn : currentSwitchTextOff" />
+				<v-switch
+					v-model="currentSwitch"
+					:disabled="currentSwitchDisabled"
+					@change="changeCurrentMonthlyAccount()"
+					color="success"
+					:label="currentSwitch ? currentSwitchTextOn : currentSwitchTextOff"
+				/>
 			</v-row>
 
 			<!-- Partie corps de page -->
@@ -240,13 +246,52 @@
 								<v-btn color="primary" class="text-capitalize button-shadow mr-4">Opérations périodiques</v-btn>
 								<!-- <v-btn color="secondary" class="text-capitalize button-shadow mr-1">Nouvelle opération</v-btn> -->
 								<DialogCreateOperation v-bind:monthlyAccountId="selectedMonthlyAccount.id" />
-
 							</div>
 						</v-card-title>
 						<v-card-text class="pa-6 pt-0 mb-1">
-							<!-- <v-skeleton-loader v-if="isAccountsRetrieving" type="table"></v-skeleton-loader> -->
-							<!-- <v-data-table v-else disable-pagination hide-default-footer :headers="headers" :items="accounts" item-key="id"> -->
-							<v-data-table disable-pagination hide-default-footer :headers="headers" :items="operations" item-key="id"> </v-data-table>
+							<v-skeleton-loader v-if="isOperationsRetrieving" type="table"></v-skeleton-loader>
+							<v-data-table v-else disable-pagination hide-default-footer :headers="headers" :items="operations" item-key="id">
+								<!-- Affichage de la date avec un format plus lisible -->
+								<template v-slot:[`item.dateOp`]="{ item }">
+									{{ new Date(item.dateOp).toLocaleDateString('fr-FR') }}
+								</template>
+
+								<!-- Affichage de la catégory de l'opération -->
+								<template v-slot:[`item.category`]="{ item }">
+									{{ displayOperationCategory(item.category) }}
+								</template>
+
+								<!-- Affichage des crédits et débit dans un format plus user friendly -->
+								<template v-slot:[`item.debit`]="{ item }">
+									{{ item.debit == 0 ? '' : item.debit | formatCurrencyNumber }}
+								</template>
+								<template v-slot:[`item.credit`]="{ item }">
+									{{ item.credit == 0 ? '' : item.credit | formatCurrencyNumber }}
+								</template>
+
+								<!-- Affichage du boolean pointée en case à cocher -->
+								<template v-slot:[`item.checked`]="{ item }">
+									<v-hover v-slot="{ hover }">
+										<v-icon small @click="changeOperationStatus(item)" :color="hover ? 'blue' : item.checked ? 'green' : 'red'">
+											{{ item.checked ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline' }}
+										</v-icon>
+									</v-hover>
+								</template>
+
+								<template v-slot:[`item.actions`]="{ item }">
+									<v-row class="d-flex justify-end mr-2">
+										<!-- Partie édition du compte -->
+										<div>
+											<DialogEditOperation v-bind:item="item" />
+										</div>
+
+										<!-- Partie suppression du compte -->
+										<div>
+											<DialogDeleteOperation v-bind:item="item" />
+										</div>
+									</v-row>
+								</template>
+							</v-data-table>
 						</v-card-text>
 					</v-card>
 				</v-col>
@@ -265,7 +310,10 @@ import { mapActions, mapGetters } from 'vuex';
 import ApexChart from 'vue-apexcharts';
 import CardAddMonthlyAccount from '../../components/accounts/monthly-account/CardAddMonthlyAccount';
 import DialogCreateOperation from '../../components/accounts/monthly-account/DialogCreateOperation.vue';
+import DialogEditOperation from '../../components/accounts/monthly-account/DialogEditOperation.vue';
+import DialogDeleteOperation from '../../components/accounts/monthly-account/DialogDeleteOperation.vue';
 import config from '../../config/index';
+import formAccountHelper from '../../config/formAccountHelper';
 
 export default {
 	name: 'CurrentAccount',
@@ -278,6 +326,8 @@ export default {
 		ApexChart,
 		CardAddMonthlyAccount,
 		DialogCreateOperation,
+		DialogEditOperation,
+		DialogDeleteOperation,
 	},
 
 	data() {
@@ -293,8 +343,6 @@ export default {
 			currentSwitchTextOff: 'Définir comme le compte mensuel en cours',
 
 			apexLoading: true,
-
-			operations: [],
 
 			// Juste pour l'exemple
 			apexArea1: {
@@ -336,7 +384,8 @@ export default {
 		 * Onvre le compte mensuel sélectionné.
 		 */
 		openMonthlyAccount(monthlyAccount) {
-			if (monthlyAccount.state === 'current') { // Si le mois qu'on ouvre est un mois 'current'
+			if (monthlyAccount.state === 'current') {
+				// Si le mois qu'on ouvre est un mois 'current'
 				this.currentSwitch = true; // On replace à true le switch
 				this.currentSwitchDisabled = true; // On replace à true l'état disable du switch
 			} else {
@@ -361,6 +410,9 @@ export default {
 			}
 		},
 
+		/** 
+		 * Permet de définir la couleur de la carte du compte mensuel
+		 */
 		getCardColor(state) {
 			switch (state) {
 				case 'open':
@@ -371,10 +423,32 @@ export default {
 					return 'green lighten-4';
 				case 'upcoming':
 					return 'deep-orange lighten-4';
-			
+
 				default:
 					return 'white';
 			}
+		},
+
+		/**
+		 * Switch sur l'état checked de l'opération
+		 */
+		changeOperationStatus(item) {
+			item.checked = !item.checked;
+			const operation = { ...item };
+			operation.debit = operation.debit.toString();
+			operation.credit = operation.credit.toString();
+			// OperationsDataService.update(operation.id, operation).catch((e) => {
+			// 	console.log('error : ' + e);
+			// });
+		},
+
+		/**
+		 * Affiche le texte de la catégorie
+		 */
+		displayOperationCategory(categoryValue) {
+			const category = formAccountHelper.formOperationSelect.categories.find(({ value }) => value === categoryValue);
+			if (category) return category.text;
+			return ''; 
 		}
 	},
 
@@ -384,6 +458,8 @@ export default {
 			monthlyAccountsRetrieving: 'accountDetails/isMonthlyAccountsRetrieving', // Récupère l'état de la récupération des comptes mensuels
 			monthlyAccounts: 'accountDetails/getMonthlyAccounts', // Récupère tous les comptes mensuels du compte depuis le store
 			selectedMonthlyAccount: 'accountDetails/getSelectedMonthlyAccount', // Récupère le compte mensuel en cours depuis le store
+			isOperationsRetrieving: 'currentAccountOperation/isOperationsRetrieving', // Récupère l'état de la récupération des opérations
+			operations: 'currentAccountOperation/getOperations', // Récupère les opérations du compte mensuel sélectionné
 		}),
 
 		/**
@@ -397,7 +473,7 @@ export default {
 				{ text: 'Débit', sortable: false, value: 'debit' },
 				{ text: 'Crédit', sortable: false, value: 'credit' },
 				{ text: 'Pointée ?', sortable: false, value: 'checked' },
-				{ text: 'Actions', sortable: false, align: 'end', value: 'actions' },
+				{ text: '', sortable: false, align: 'end', value: 'actions' },
 			];
 		},
 

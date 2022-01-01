@@ -96,7 +96,7 @@ export default {
             this.formCreateOperation.monthlyAccount = '/api/monthly_accounts/' + this.monthlyAccountId; // On ajoute l'identifiant du compte mensuel
             this.formCreateOperation.fromPeriodic = false; // L'opération ne vient pas des opérations périodiques
 			
-            this.createOperationInStore(this.formCreateOperation); // On lance la création depuis le store
+            this.createOperationInStore({operation: this.formCreateOperation, monthlyAccountId: this.monthlyAccountId}); // On lance la création depuis le store
 
             this.initializeFormOperation(); // On réinitialise le formulaire
 		},

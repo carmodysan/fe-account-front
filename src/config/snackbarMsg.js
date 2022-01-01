@@ -132,5 +132,12 @@ export default {
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-checkbox-marked-circle-outline`,
 	},
+	// Récupération
+	alertOperationRetrievingError: {
+		text: `Une erreur est survenue durant la récupération des opérations.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	}
 
 };

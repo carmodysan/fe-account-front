@@ -24,6 +24,7 @@
 			<v-card-text>Attention, êtes vous bien sûr de vouloir supprimer ce compte : {{ item.name }}</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
+				<v-btn @click="dialog = false">Annuler</v-btn>
 				<v-btn @click="deleteAccount()">Supprimer</v-btn>
 			</v-card-actions>
 		</v-card>

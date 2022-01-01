@@ -129,7 +129,6 @@ export default {
 				})
 				.catch(() => {
 					dispatch('snackbar/showSnackbar', { name: 'alertAccountsRetrievingError' }, { root: true });
-					store.commit('setLoading', false); // On arrête le loader
 				})
 				.finally(() => {
 					store.commit('setLoading', false); // On arrête le loader
@@ -215,7 +214,7 @@ export default {
 		 *
 		 * @param {Object} param0
 		 */
-		searchCurrentMonthlyAccount({ commit, state }) {
+		searchCurrentMonthlyAccount({ commit, state, dispatch }) {
 			// On vide le compte mensuel en cours
 			state.selectedMonthlyAccount = {};
 
@@ -224,11 +223,13 @@ export default {
 			if (currentMonthlyAccount) {
 				// Si la recherche précédente a bien trouvé quelque chose
 				commit('setSelectedMonthlyAccounts', currentMonthlyAccount);
+				dispatch('currentAccountOperation/retrieveOperations', currentMonthlyAccount.id, { root: true }); // On récupère toutes ses opérations
 			}
 		},
 
 		/**
 		 * Change le compte mensuel en cours comme le seul à être à l'état current
+		 * 
 		 * @param {Object} param0
 		 */
 		changeCurrentMonthlyAccount({ state }) {
@@ -250,8 +251,9 @@ export default {
 		 *
 		 * @param {Object} param0
 		 */
-		changeSelectedMonthlyAccount({ commit }, monthlyAccount) {
+		changeSelectedMonthlyAccount({ commit, dispatch }, monthlyAccount) {
 			commit('setSelectedMonthlyAccounts', monthlyAccount); // On écrase le précédent compte mensuel sélectionné.
+			dispatch('currentAccountOperation/retrieveOperations', monthlyAccount.id, { root: true }); // On récupère toutes ses opérations
 		},
 	},
 };
