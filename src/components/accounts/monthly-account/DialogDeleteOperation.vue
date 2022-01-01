@@ -1,7 +1,7 @@
 <template>
-    <!-- Ce composant représente un bouton qui ouvre une fenêtre modale dans laquelle il y a un formulaire d'édition d'une opération -->
-    <v-dialog v-model="dialog" :key="item.id + 'deleteKey'" persistent max-width="290">
-        <template #activator="dialogDeleteActivator">
+	<!-- Ce composant représente un bouton qui ouvre une fenêtre modale dans laquelle il y a un formulaire d'édition d'une opération -->
+	<v-dialog v-model="dialog" :key="item.id + 'deleteKey'" persistent max-width="320">
+		<template #activator="dialogDeleteActivator">
 			<v-tooltip bottom color="error">
 				<template #activator="tooltipDeleteActivator">
 					<v-btn
@@ -21,28 +21,45 @@
 			</v-tooltip>
 		</template>
 		<v-card>
-            Blabla
-            <v-card-actions>
+			<v-card-title>Suppression de l'opération</v-card-title>
+			<v-card-text> Attention, êtes vous bien sûr de vouloir supprimer cette opération ? </v-card-text>
+			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn @click="dialog = false">Annuler</v-btn>
-				<!-- <v-btn @click="editAccount()">Modifier</v-btn> -->
+				<v-btn color="secondary" @click="dialog = false">Annuler</v-btn>
+				<v-btn color="error" @click="deleteOperation()">Supprimer</v-btn>
 			</v-card-actions>
-        </v-card>
-    </v-dialog>
+		</v-card>
+	</v-dialog>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
-    name: 'DialogEditOperation',
+	name: 'DialogEditOperation',
 
-    props: {
-        item: Object, // L'objet représentant une opération
-    },
+	props: {
+		item: Object, // L'objet représentant une opération
+	},
 
-    data() {
-        return {
-            dialog: false, // Le model du dialog
-        }
-    },
-}
+	data() {
+		return {
+			dialog: false, // Le model du dialog
+		};
+	},
+
+    methods: {
+		...mapActions({
+			deleteOperationInStore: 'currentAccountOperation/deleteOperation', // Envoie la modification d'un compte dans le store et lance le rafraichissement de la liste des comptes.
+		}),
+
+		/**
+		 * Modifie l'opération'
+		 */
+		deleteOperation() {
+			this.dialog = false; // On ferme le dialog
+			this.deleteOperationInStore(this.item);
+		},
+	},
+};
 </script>

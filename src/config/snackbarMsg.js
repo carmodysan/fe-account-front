@@ -138,6 +138,31 @@ export default {
 		color: `error`,
 		colorBtnClose: `red darken-4`,
 		icon: `mdi-alert-octagram`,
-	}
-
+	},
+	// Modification
+	alertOperationUpdatingError: {
+		text: `Une erreur est survenue durant la modification de l'opération.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertOperationUpdated: {
+		text: `L'opération est bien modifié.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-pencil`,
+	},
+	// Suppression
+	alertOperationDeletingError: {
+		text: `Une erreur est survenue durant la suppression de l'opération.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertOperationDeleted: {
+		text: `L'opération est bien supprimé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-delete`,
+	},
 };

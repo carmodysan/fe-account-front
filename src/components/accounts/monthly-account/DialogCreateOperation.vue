@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialogCreateOperation" persistent max-width="290">
+	<v-dialog v-model="dialogCreateOperation" persistent max-width="320">
 		<template v-slot:activator="{ on, attrs }">
 			<v-btn v-bind="attrs" v-on="on" color="secondary" class="text-capitalize button-shadow mr-1">
 				<v-icon class="mr-2">mdi-plus</v-icon>
@@ -51,8 +51,8 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn @click="dialogCreateOperation = false">Annuler</v-btn>
-				<v-btn @click="createOperation()">Créer</v-btn>
+				<v-btn color="secondary" @click="dialogCreateOperation = false">Annuler</v-btn>
+				<v-btn color="success" @click="createOperation()">Créer</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

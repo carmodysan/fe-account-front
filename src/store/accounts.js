@@ -74,7 +74,6 @@ export default {
 					default:
 						break;
 				}
-				
 			}
 			// On ajoute les comptes récupérés dans la liste des comptes.
 			state.accounts.push.apply(state.accounts, accounts);
@@ -219,7 +218,6 @@ export default {
 
 			AccountsDataService.updateAccount(account)
 				.catch(() => {
-					store.commit('setLoading', false); // On arrête le loader
 					dispatch('snackbar/showSnackbar', { name: 'alertAccountUpdatingError' }, { root: true });
 				})
 				.finally(() => {
@@ -244,17 +242,16 @@ export default {
 			store.commit('setLoading', true); // On déclenche l'affichage du loader.
 
 			AccountsDataService.deleteAccount(account)
+				.then(() => {
+					dispatch('snackbar/showSnackbar', { name: 'alertAccountDeleted' }, { root: true }); // Tout s'est bien passé
+				})
 				.catch(() => {
-					store.commit('setLoading', false); // On arrête le loader
 					dispatch('snackbar/showSnackbar', { name: 'alertAccountDeletingError' }, { root: true });
 				})
 				.finally(() => {
 					store.commit('setLoading', false); // On arrête le loader
 					dispatch('refreshAccounts', account.authorId);
-					dispatch('snackbar/showSnackbar', { name: 'alertAccountDeleted' }, { root: true });
 				});
-
-			store.commit('setLoading', false); // Au cas où on ne serait passé dans aucune des instructions ci-dessus.
 		},
 	},
 };

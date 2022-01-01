@@ -378,6 +378,7 @@ export default {
 			retrieveMonthlyAccounts: 'accountDetails/retrieveMonthlyAccounts', // Télécharge tous les comptes mensuels dans le store
 			changeCurrentMonthlyAccountInStore: 'accountDetails/changeCurrentMonthlyAccount', // Change le compte mensuels visualisé comme le current
 			changeSelectedMonthlyAccountInStore: 'accountDetails/changeSelectedMonthlyAccount', // Change le compte mensuels visualisé comme le current
+			editOperationInStore: 'currentAccountOperation/editOperation', // Modifie l'opération dans le store
 		}),
 
 		/**
@@ -437,9 +438,7 @@ export default {
 			const operation = { ...item };
 			operation.debit = operation.debit.toString();
 			operation.credit = operation.credit.toString();
-			// OperationsDataService.update(operation.id, operation).catch((e) => {
-			// 	console.log('error : ' + e);
-			// });
+			this.editOperationInStore(operation);
 		},
 
 		/**
