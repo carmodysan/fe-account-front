@@ -16,7 +16,7 @@
 					<v-col cols="12">
 						<v-select
 							v-model="formCreateAccount.establishment"
-							:items="helper.formSelect.establishments"
+							:items="helper.formAccountSelect.establishments"
 							:rules="helper.formRules.establishment"
 							label="Etablissement"
 							persistent-hint
@@ -26,7 +26,7 @@
 					<v-col cols="12">
 						<v-select
 							v-model="formCreateAccount.category"
-							:items="helper.formSelect.categories"
+							:items="helper.formAccountSelect.categories"
 							:rules="helper.formRules.category"
 							label="Catégorie du compte"
 							persistent-hint

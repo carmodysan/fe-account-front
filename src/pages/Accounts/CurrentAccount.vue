@@ -238,7 +238,9 @@
 							<!-- Partie création d'un compte -->
 							<div>
 								<v-btn color="primary" class="text-capitalize button-shadow mr-4">Opérations périodiques</v-btn>
-								<v-btn color="secondary" class="text-capitalize button-shadow mr-1">Nouvelle opération</v-btn>
+								<!-- <v-btn color="secondary" class="text-capitalize button-shadow mr-1">Nouvelle opération</v-btn> -->
+								<DialogCreateOperation v-bind:monthlyAccountId="selectedMonthlyAccount.id" />
+
 							</div>
 						</v-card-title>
 						<v-card-text class="pa-6 pt-0 mb-1">
@@ -262,6 +264,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import ApexChart from 'vue-apexcharts';
 import CardAddMonthlyAccount from '../../components/accounts/monthly-account/CardAddMonthlyAccount';
+import DialogCreateOperation from '../../components/accounts/monthly-account/DialogCreateOperation.vue';
 import config from '../../config/index';
 
 export default {
@@ -274,6 +277,7 @@ export default {
 	components: {
 		ApexChart,
 		CardAddMonthlyAccount,
+		DialogCreateOperation,
 	},
 
 	data() {

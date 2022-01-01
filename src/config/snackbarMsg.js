@@ -101,7 +101,7 @@ export default {
 		icon: `mdi-alert-octagram`,
 	},
 	alertMACreated: {
-		text: `Les comptes mensuels ont bien créés.`,
+		text: `Les comptes mensuels ont bien été créés.`,
 		color: `success`,
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-checkbox-marked-circle-outline`,
@@ -118,4 +118,19 @@ export default {
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-checkbox-marked-circle-outline`,
 	},
+	// Opérations
+	// Création
+	alertOperationCreatingError: {
+		text: `Une erreur est survenue durant la création de l'opération.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertOperationCreated: {
+		text: `L'opération a bien été créée.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+
 };

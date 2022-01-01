@@ -1,6 +1,6 @@
 import axios from './FEApiService';
 
-class OperationsDataService {
+class CurrentAccountOperationsDataService {
     /**
      * Récupère toutes les opérations d'un compte mensuel.
      * 
@@ -8,7 +8,7 @@ class OperationsDataService {
      * @returns la liste des opérations d'un compte mensuel.
      */
 	getAll(maId) {
-		return axios.get(`/monthly_accounts/${maId}/operations`);
+		return axios.get(`/monthly_accounts/${maId}/current_account_operations`);
 	}
 
     /**
@@ -18,7 +18,7 @@ class OperationsDataService {
      * @returns une opération.
      */
 	get(id) {
-		return axios.get(`/operations/${id}`);
+		return axios.get(`/current_account_operations/${id}`);
 	}
 
     /**
@@ -28,7 +28,7 @@ class OperationsDataService {
      * @returns Response
      */
 	create(data) {
-		return axios.post('/operations', data);
+		return axios.post('/current_account_operations', data);
 	}
 
     /**
@@ -39,7 +39,7 @@ class OperationsDataService {
      * @returns Response
      */
 	update(id, data) {
-		return axios.put(`/operations/${id}`, data);
+		return axios.put(`/current_account_operations/${id}`, data);
 	}
 
     /**
@@ -49,8 +49,8 @@ class OperationsDataService {
      * @returns Response
      */
 	delete(id) {
-		return axios.delete(`/operations/${id}`);
+		return axios.delete(`/current_account_operations/${id}`);
 	}
 }
 
-export default new OperationsDataService();
+export default new CurrentAccountOperationsDataService();

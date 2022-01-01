@@ -4,6 +4,7 @@ import auth from './auth';
 import snackbar from './snackbar';
 import accounts from './accounts';
 import accountDetails from './accountDetails';
+import currentAccountOperation from './currentAccountOperation';
 
 Vue.use(Vuex);
 
@@ -68,6 +69,6 @@ export default new Vuex.Store({
     },
 
 	modules: {
-		auth, snackbar, accounts, accountDetails
+		auth, snackbar, accounts, accountDetails, currentAccountOperation
 	},
 });
