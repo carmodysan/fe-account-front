@@ -94,7 +94,7 @@
 				<h1 class="page-title">Compte de {{ selectedMonthlyAccount.month }} {{ selectedMonthlyAccount.year }}</h1>
 				<div>
 					<v-btn color="primary" class="text-capitalize button-shadow mr-4" @click="monthlyAccountsDisplaying = true">Changer de mois</v-btn>
-					<v-btn color="secondary" class="text-capitalize button-shadow mr-1">Configuration</v-btn>
+					<v-btn color="secondary" class="text-capitalize button-shadow mr-1" :to="{ name: 'PeriodicOperation' }">Configuration</v-btn>
 				</div>
 			</v-row>
 
@@ -241,10 +241,26 @@
 						<v-card-title class="pa-6 pb-6">
 							<p>Liste des opérations du mois en cours</p>
 							<v-spacer></v-spacer>
-							<!-- Partie création d'un compte -->
+							<!-- Partie création d'une opération -->
 							<div>
-								<v-btn color="primary" class="text-capitalize button-shadow mr-4">Opérations périodiques</v-btn>
-								<!-- <v-btn color="secondary" class="text-capitalize button-shadow mr-1">Nouvelle opération</v-btn> -->
+								<v-dialog max-width="900" transition="dialog-top-transition">
+									<template v-slot:activator="{ on, attrs }">
+										<v-btn v-on="on" v-bind="attrs" color="primary" class="text-capitalize button-shadow mr-4">Opérations périodiques</v-btn>
+									</template>
+									<template v-slot:default="dialog">
+										<v-card>
+											<v-toolbar color="primary" dark>Ajouter une opération périodique</v-toolbar>
+											<v-card-text>
+												<div class="mt-5">
+													<TablePeriodicOperation v-bind:config="false" v-model="dialog.value" />
+												</div>
+											</v-card-text>
+											<v-card-actions class="justify-end">
+												<v-btn text @click="dialog.value = false" color="secondary" class="text-capitalize button-shadow">Fermer</v-btn>
+											</v-card-actions>
+										</v-card>
+									</template>
+								</v-dialog>
 								<DialogCreateOperation v-bind:monthlyAccountId="selectedMonthlyAccount.id" />
 							</div>
 						</v-card-title>
@@ -312,6 +328,7 @@ import CardAddMonthlyAccount from '../../components/accounts/monthly-account/Car
 import DialogCreateOperation from '../../components/accounts/monthly-account/DialogCreateOperation.vue';
 import DialogEditOperation from '../../components/accounts/monthly-account/DialogEditOperation.vue';
 import DialogDeleteOperation from '../../components/accounts/monthly-account/DialogDeleteOperation.vue';
+import TablePeriodicOperation from '../../components/accounts/TablePeriodicOperation';
 import config from '../../config/index';
 import formAccountHelper from '../../config/formAccountHelper';
 
@@ -328,6 +345,7 @@ export default {
 		DialogCreateOperation,
 		DialogEditOperation,
 		DialogDeleteOperation,
+		TablePeriodicOperation,
 	},
 
 	data() {
@@ -411,7 +429,7 @@ export default {
 			}
 		},
 
-		/** 
+		/**
 		 * Permet de définir la couleur de la carte du compte mensuel
 		 */
 		getCardColor(state) {
@@ -447,8 +465,8 @@ export default {
 		displayOperationCategory(categoryValue) {
 			const category = formAccountHelper.formOperationSelect.categories.find(({ value }) => value === categoryValue);
 			if (category) return category.text;
-			return ''; 
-		}
+			return '';
+		},
 	},
 
 	computed: {

@@ -13,6 +13,7 @@ import Home from '@/pages/Home';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import Accounts from '@/pages/Accounts/Accounts';
 import CurrentAccount from '@/pages/Accounts/CurrentAccount';
+import PeriodicOperation from '@/pages/Accounts/PeriodicOperation';
 import Empty from '@/pages/Empty/Empty';
 
 Vue.use(VueRouter);
@@ -57,6 +58,14 @@ const routes = [
 				path: 'current-account-details',
 				name: 'CurrentAccount',
 				component: CurrentAccount,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+			{
+				path: 'periodic-operations',
+				name: 'PeriodicOperation',
+				component: PeriodicOperation,
 				beforeEnter: (to, from, next) => {
 					isAuthenticated(next);
 				},

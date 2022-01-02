@@ -147,7 +147,7 @@ export default {
 		icon: `mdi-alert-octagram`,
 	},
 	alertOperationUpdated: {
-		text: `L'opération est bien modifié.`,
+		text: `L'opération est bien modifiée.`,
 		color: `success`,
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-pencil`,
@@ -160,7 +160,54 @@ export default {
 		icon: `mdi-alert-octagram`,
 	},
 	alertOperationDeleted: {
-		text: `L'opération est bien supprimé.`,
+		text: `L'opération est bien supprimée.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-delete`,
+	},
+	// Opérations périodiques
+	// Création
+	alertPeriodicOperationCreatingError: {
+		text: `Une erreur est survenue durant la création de l'opération périodique.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertPeriodicOperationCreated: {
+		text: `L'opération périodique a bien été créée.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	// Récupération
+	alertPeriodicOperationRetrievingError: {
+		text: `Une erreur est survenue durant la récupération des opérations périodiques.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	// Modification
+	alertPeriodicOperationUpdatingError: {
+		text: `Une erreur est survenue durant la modification de l'opération périodique.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertPeriodicOperationUpdated: {
+		text: `L'opération périodique est bien modifiée.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-pencil`,
+	},
+	// Suppression
+	alertPeriodicOperationDeletingError: {
+		text: `Une erreur est survenue durant la suppression de l'opération périodique.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertPeriodicOperationDeleted: {
+		text: `L'opération périodique est bien supprimée.`,
 		color: `success`,
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-delete`,

@@ -73,13 +73,13 @@ export default {
 			CurrentAccountOperationsDataService.create(data.operation)
 				.then(() => {
 					dispatch('snackbar/showSnackbar', { name: 'alertOperationCreated' }, { root: true });
+					dispatch('retrieveOperations', data.monthlyAccountId);
 				})
 				.catch(() => {
 					dispatch('snackbar/showSnackbar', { name: 'alertOperationCreatingError' }, { root: true });
 				})
 				.finally(() => {
 					store.commit('setLoading', false); // On ferme l'affichage du loader.
-					dispatch('retrieveOperations', data.monthlyAccountId);
 				});
 		},
 
