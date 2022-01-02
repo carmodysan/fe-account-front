@@ -217,16 +217,43 @@ export default {
 			store.commit('setLoading', true); // On déclenche l'affichage du loader.
 
 			AccountsDataService.updateAccount(account)
+				.then(() => {
+					dispatch('refreshAccounts', account.authorId);
+					dispatch('snackbar/showSnackbar', { name: 'alertAccountUpdated' }, { root: true });
+				})
 				.catch(() => {
 					dispatch('snackbar/showSnackbar', { name: 'alertAccountUpdatingError' }, { root: true });
 				})
 				.finally(() => {
 					store.commit('setLoading', false); // On arrête le loader
-					dispatch('refreshAccounts', account.authorId);
-					dispatch('snackbar/showSnackbar', { name: 'alertAccountUpdated' }, { root: true });
 				});
 
 			store.commit('setLoading', false); // Au cas où on ne serait passé dans aucune des instructions ci-dessus.
+		},
+
+		/**
+		 * Modifie le solde et le solde à venir du compte sélectionné et met à jour en BDD s'ils sont différents.
+		 *
+		 * @param {*} param0
+		 * @param {*} data Objet contenant le compte sélectionné (data.account) et les opérations du compte mensuel en cours (data.operations)
+		 */
+		updateCurrentAccountBalance({ dispatch }, data) {
+			store.commit('setLoading', true); // On déclenche l'affichage du loader.
+
+			const upcomingBalance = data.operations.reduce((a, b) => a + (b['credit'] - b['debit'] || 0), 0);
+			const balance = data.operations.reduce((a, b) => a + ((b['checked'] ? b['credit'] - b['debit'] : 0) || 0), 0);
+
+			const upcomingBalanceStr = upcomingBalance.toFixed(2);
+			const balanceStr = balance.toFixed(2);
+
+			if (upcomingBalanceStr.localeCompare(data.account.upcomingBalance) != 0 || balanceStr.localeCompare(data.account.balance) != 0) {
+				data.account.upcomingBalance = upcomingBalanceStr;
+				data.account.balance = balanceStr;
+				console.log(data.account);
+				dispatch('editAccount', data.account);
+			} else {
+				store.commit('setLoading', false); // On arrête l'affichage du loader.
+			}
 		},
 
 		/**

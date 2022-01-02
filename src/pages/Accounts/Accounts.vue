@@ -98,6 +98,12 @@
 						<v-card-text class="pa-6 pt-0 mb-1">
 							<v-skeleton-loader v-if="isAccountsRetrieving" type="table"></v-skeleton-loader>
 							<v-data-table v-else disable-pagination hide-default-footer :headers="headers" :items="accounts" item-key="id">
+								<!-- Affichage des crédits et débit dans un format plus user friendly -->
+								<template v-slot:[`item.balance`]="{ item }">
+									{{ item.balance | formatCurrencyNumber }}
+								</template>
+
+								<!-- Partie affichage des actions -->
 								<template v-slot:[`item.actions`]="{ item }">
 									<v-row class="d-flex justify-end mr-2">
 										<div>

@@ -37,6 +37,32 @@ export default {
 		isOperationsRetrieving(state) {
 			return state.operationsRetrieving;
 		},
+
+		/**
+		 * Retourne le compte sélectionné.
+		 *
+		 * @param {Object} state
+		 * @param {Object} getters
+		 * @param {Object} rootState
+		 * @param {Object} rootGetters
+		 * @returns Le compte sélectionné
+		 */
+		getAccountSelected(state, getters, rootState, rootGetters) {
+			return rootGetters['accountDetails/getAccountSelected'];
+		},
+
+		/**
+		 * Retourne le compte mensuel sélectionné.
+		 *
+		 * @param {Object} state
+		 * @param {Object} getters
+		 * @param {Object} rootState
+		 * @param {Object} rootGetters
+		 * @returns Le compte mensuel sélectionné
+		 */
+		getSelectedMonthlyAccount(state, getters, rootState, rootGetters) {
+			return rootGetters['accountDetails/getSelectedMonthlyAccount'];
+		},
 	},
 
 	mutations: {
@@ -86,16 +112,21 @@ export default {
 		/**
 		 * Récupère l'ensemble des opérations du compte mensuel.
 		 *
-		 * @param {Object} param0 commit, dispatch, state
+		 * @param {Object} param0 commit, dispatch, state, getters
 		 * @param {String} monthlyAccountId Identifiant du compte mensuel
 		 */
-		retrieveOperations({ commit, dispatch, state }, monthlyAccountId) {
+		retrieveOperations({ commit, dispatch, state, getters }, monthlyAccountId) {
 			commit('setOperationsRetrieving', true); // On définit l'état de récupération à true
 			state.operations = []; // On vide le tableau des opérations.
 
 			CurrentAccountOperationsDataService.getAll(monthlyAccountId)
 				.then((response) => {
 					commit('setOperations', response.data['hydra:member']); // On récupère l'ensemble des opérations du compte mensuel
+					// Si on est sur le compte mensuel en cours alors on met à jour le solde et le solde à venir du compte
+					if (getters.getSelectedMonthlyAccount.state === 'current') {
+						const account = getters.getAccountSelected;
+						dispatch('accounts/updateCurrentAccountBalance', { account: account, operations: state.operations }, { root: true });
+					}
 				})
 				.catch(() => {
 					dispatch('snackbar/showSnackbar', { name: 'alertOperationRetrievingError' }, { root: true });
@@ -136,7 +167,7 @@ export default {
 		 */
 		deleteOperation({ dispatch }, operation) {
 			store.commit('setLoading', true); // On déclenche l'affichage du loader.
-            const monthlyAccountId = operation.monthlyAccount.split('/')[3]; // On récupère l'identifiant du compte mensuel
+			const monthlyAccountId = operation.monthlyAccount.split('/')[3]; // On récupère l'identifiant du compte mensuel
 
 			CurrentAccountOperationsDataService.delete(operation.id)
 				.then(() => {

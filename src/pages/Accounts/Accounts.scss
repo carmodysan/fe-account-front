@@ -35,3 +35,11 @@
 .v-tooltip__content {
 	opacity: 1 !important;
 }
+
+// Affichage de la ligne avec une couleur spéciale quand elle provient d'une opération périodique
+.fromPeriodicRow {
+	background-color: #E3F2FD;
+}
+.classicRow {
+	background-color: white;
+}

@@ -180,7 +180,7 @@
 						<v-card-text class="pa-6 pt-0">
 							<v-row no-gutters class="pb-5" align="center">
 								<v-col cols="5" class="my-auto d-flex align-center" style="min-height: 115px">
-									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">5,145.00 €</span>
+									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">{{ account.balance | formatCurrencyNumber }}</span>
 								</v-col>
 								<v-col cols="7">
 									<ApexChart v-if="apexLoading" height="35" type="area" :options="apexArea1.options" :series="apexArea1.series"></ApexChart>
@@ -188,8 +188,8 @@
 							</v-row>
 							<v-row no-gutters class="justify-space-between">
 								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Epargne</div>
+									<div class="subtext">A venir<v-icon color="success"> mdi-arrow-bottom-right</v-icon></div>
+									<div class="subtext-index">{{ account.upcomingBalance | formatCurrencyNumber }}</div>
 								</div>
 								<div>
 									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
@@ -245,7 +245,10 @@
 							<div>
 								<v-dialog max-width="900" transition="dialog-top-transition">
 									<template v-slot:activator="{ on, attrs }">
-										<v-btn v-on="on" v-bind="attrs" color="primary" class="text-capitalize button-shadow mr-4">Opérations périodiques</v-btn>
+										<v-btn v-on="on" v-bind="attrs" color="primary" class="text-capitalize button-shadow mr-4">
+											<v-icon class="mr-1">mdi-book-refresh</v-icon>
+											Opérations périodiques
+										</v-btn>
 									</template>
 									<template v-slot:default="dialog">
 										<v-card>
@@ -256,7 +259,7 @@
 												</div>
 											</v-card-text>
 											<v-card-actions class="justify-end">
-												<v-btn text @click="dialog.value = false" color="secondary" class="text-capitalize button-shadow">Fermer</v-btn>
+												<v-btn @click="dialog.value = false" color="secondary" class="text-capitalize button-shadow">Fermer</v-btn>
 											</v-card-actions>
 										</v-card>
 									</template>
@@ -292,6 +295,11 @@
 											{{ item.checked ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline' }}
 										</v-icon>
 									</v-hover>
+								</template>
+
+								<!-- Affichage de l'opération périodique quand c'en est une -->
+								<template v-slot:[`item.periodic`]="{ item }">
+									<v-chip v-if="item.fromPeriodic" outlined><v-icon left>mdi-book-refresh</v-icon>périodique</v-chip>
 								</template>
 
 								<template v-slot:[`item.actions`]="{ item }">
@@ -467,6 +475,10 @@ export default {
 			if (category) return category.text;
 			return '';
 		},
+
+		itemRowBackground: function (item) {
+			return item.fromPeriodic ? 'fromPeriodicRow' : 'classicRow';
+		},
 	},
 
 	computed: {
@@ -489,7 +501,8 @@ export default {
 				{ text: 'Libellé', sortable: false, value: 'description' },
 				{ text: 'Débit', sortable: false, value: 'debit' },
 				{ text: 'Crédit', sortable: false, value: 'credit' },
-				{ text: 'Pointée ?', sortable: false, value: 'checked' },
+				{ text: 'Pointée ?', sortable: false, align: 'center', value: 'checked' },
+				{ text: '', sortable: false, align: 'center', value: 'periodic' },
 				{ text: '', sortable: false, align: 'end', value: 'actions' },
 			];
 		},

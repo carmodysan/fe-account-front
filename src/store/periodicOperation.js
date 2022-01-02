@@ -39,12 +39,13 @@ export default {
 		},
 
 		/**
-		 *
-		 * @param {*} state
-		 * @param {*} getters
-		 * @param {*} rootState
-		 * @param {*} rootGetters
-		 * @returns
+		 * Retourne le compte mensuel sélectionné.
+		 * 
+		 * @param {Object} state 
+		 * @param {Object} getters 
+		 * @param {Object} rootState 
+		 * @param {Object} rootGetters 
+		 * @returns le compte mensuel sélectionné
 		 */
 		getSelectedMonthlyAccount(state, getters, rootState, rootGetters) {
 			return rootGetters['accountDetails/getSelectedMonthlyAccount'];
