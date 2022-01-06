@@ -103,8 +103,6 @@ import { mapGetters } from 'vuex';
 import AccountsDataService from '../../services/AccountsDataService';
 import MonthlyAccountsDataService from '../../services/MonthlyAccountsDataService';
 
-var _ = require('lodash');
-
 export default {
 	name: 'account-details',
 
@@ -131,7 +129,7 @@ export default {
 		}),
 
 		orderedMonthlyAccounts: function () {
-			return _.orderBy(this.monthlyAccounts, ['year', 'month'], ['desc', 'asc']);
+			return null;
 		},
 
 		/**
