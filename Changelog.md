@@ -4,6 +4,20 @@
 ### Version 0.6
 Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingénieur civil de la défense)
 
+*Amélioration :*
+* Mise en place d'un simulateur de traitement
+
+*Ajout :*
+* Ajout d'une vue Configuration
+* Ajout d'une partie Service publique à la configuration
+* Ajout d'une gestion des grades dans la partie configuration/service publique
+
+*Correction de bug :*
+* Pas de correction
+
+*Suppression :*
+* Pas de suppression
+
 ## Dernière version
 ### Version 0.5
 Mise à jour technique.

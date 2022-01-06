@@ -212,4 +212,52 @@ export default {
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-delete`,
 	},
+	
+	// Grades
+	// Création
+	alertRankCreatingError: {
+		text: `Une erreur est survenue durant la création du grade.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertRankCreated: {
+		text: `Le grade a bien été créé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	// Récupération
+	alertRankRetrievingError: {
+		text: `Une erreur est survenue durant la récupération des grades.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	// Modification
+	alertRankUpdatingError: {
+		text: `Une erreur est survenue durant la modification du grade.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertRankUpdated: {
+		text: `Le grade est bien modifié.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-pencil`,
+	},
+	// Suppression
+	alertRankDeletingError: {
+		text: `Une erreur est survenue durant la suppression du grade.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertRankDeleted: {
+		text: `Le grade est bien supprimé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-delete`,
+	},
 };

@@ -80,9 +80,9 @@ export default {
 		// Menu
 		items: [
 			{ title: 'Accueil', icon: 'mdi-home', link: 'Home' },
-			{ title: 'Tableau de bord', icon: 'mdi-format-size', link: 'Dashboard' },
-			{ title: 'Comptes', icon: 'mdi-grid-large', link: 'Accounts' },
-			{ title: 'Notifications', icon: 'mdi-bell-outline', link: 'Empty' },
+			{ title: 'Tableau de bord', icon: 'mdi-desktop-mac-dashboard', link: 'Dashboard' },
+			{ title: 'Comptes', icon: 'mdi-cash-multiple', link: 'Accounts' },
+			{ title: 'Service public', icon: 'mdi-chair-rolling', link: 'PublicService' },
 			{
 				title: 'UI Elements',
 				icon: 'mdi-image-filter-none',

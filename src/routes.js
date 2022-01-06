@@ -14,6 +14,8 @@ import Dashboard from '@/pages/Dashboard/Dashboard';
 import Accounts from '@/pages/Accounts/Accounts';
 import CurrentAccount from '@/pages/Accounts/CurrentAccount';
 import PeriodicOperation from '@/pages/Accounts/PeriodicOperation';
+import PublicService from '@/pages/PublicService/PublicService';
+import Configuration from '@/pages/Configuration/Configuration';
 import Empty from '@/pages/Empty/Empty';
 
 Vue.use(VueRouter);
@@ -66,6 +68,22 @@ const routes = [
 				path: 'periodic-operations',
 				name: 'PeriodicOperation',
 				component: PeriodicOperation,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+			{
+				path: 'public-service',
+				name: 'PublicService',
+				component: PublicService,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+			{
+				path: 'configuration',
+				name: 'Configuration',
+				component: Configuration,
 				beforeEnter: (to, from, next) => {
 					isAuthenticated(next);
 				},
