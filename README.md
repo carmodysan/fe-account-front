@@ -18,17 +18,15 @@ Cette programme a été conçus avec les technologies/framework/langages suivant
 Pour le moment, les contributions ne sont pas ouvertes.
 
 ## Versions
-**Version en cours de développement :** v0.4
-La version 0.4 doit voir l'arrivé d'un nouveau design et d'une gestion des comptes repensée !
+**Version actuelle :** v0.5
+La version 0.5 participe à la mise à jour interne des éléments techniques.
 
 *Amélioration :*
-* Mise en place d'un nouveau design inspiré de [Vue Material Admin](https://flatlogic.github.io/material-vue/?ref=morioh.com&utm_source=morioh.com#/dashboard)
+* Pas d'amélioration
 
 *Ajout :*
-* Page de login
-* Layout (header, footer, sidebar, etc.)
-* Système de notification global (erreur, warning et info)
-* Favicon et Titre du site dynamique (utilisation de vue-meta)
+* Passage à vuejs 2.6.14
+* Passage à vuetify 2.6.2
 
 *Correction de bug :*
 * Pas de correction
@@ -38,7 +36,8 @@ La version 0.4 doit voir l'arrivé d'un nouveau design et d'une gestion des comp
 
 **Ancienne version :** 
 Visualiser le changelog complet : [Changelog](Changelog.md)
-*  v0.3 : Pas d'information sur les anciennes versions
+* v0.4 : Mise en place d'un nouveau design et d'une gestion des comptes repensée
+* v0.3 : Pas d'information sur les anciennes versions
 
 ## Auteur
 * **Carmodysan** _alias_ [@carmodysan](https://github.com/carmodysan)
