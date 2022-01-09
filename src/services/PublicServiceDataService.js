@@ -2,11 +2,14 @@ import axios from './FEApiService';
 
 class PublicServiceDataService {
     /**
+     * ===============>>> Partie Grades <<<===============
+     */
+    /**
      * Récupère tous les grades.
      * 
      * @returns la liste des grades.
      */
-	getAll() {
+	getAllRanks() {
 		return axios.get(`/ref_ranks`);
 	}
 
@@ -16,7 +19,7 @@ class PublicServiceDataService {
      * @param String id Identifiant du grade
      * @returns un grade.
      */
-	get(id) {
+	getRank(id) {
 		return axios.get(`/ref_ranks/${id}`);
 	}
 
@@ -26,7 +29,7 @@ class PublicServiceDataService {
      * @param RefRank data 
      * @returns Response
      */
-	create(data) {
+	createRank(data) {
 		return axios.post('/ref_ranks', data);
 	}
 
@@ -37,7 +40,7 @@ class PublicServiceDataService {
      * @param RefRank data 
      * @returns Response
      */
-	update(id, data) {
+	updateRank(id, data) {
 		return axios.put(`/ref_ranks/${id}`, data);
 	}
 
@@ -47,8 +50,62 @@ class PublicServiceDataService {
      * @param String id Identifiant du grade
      * @returns Response
      */
-	delete(id) {
+	deleteRank(id) {
 		return axios.delete(`/ref_ranks/${id}`);
+	}
+
+
+    /**
+     * ===============>>> Partie Grille indiciaire <<<===============
+     */
+    /**
+     * Récupère la grille indiciaire.
+     * 
+     * @returns la grille indiciaire.
+     */
+	getIndexGrid() {
+		return axios.get(`/ref_index_grids`);
+	}
+
+    /**
+     * Récupère un échelon.
+     * 
+     * @param String id Identifiant de l'échelon
+     * @returns un échelon.
+     */
+	getEchelon(id) {
+		return axios.get(`/ref_index_grids/${id}`);
+	}
+
+    /**
+     * Créé un échelon
+     * 
+     * @param RefIndexGrid data 
+     * @returns Response
+     */
+	createEchelon(data) {
+		return axios.post('/ref_index_grids', data);
+	}
+
+    /**
+     * Met à jour un échelon.
+     * 
+     * @param String id Identifiant de l'échelon
+     * @param RefIndexGrid data 
+     * @returns Response
+     */
+	updateEchelon(id, data) {
+		return axios.put(`/ref_index_grids/${id}`, data);
+	}
+
+    /**
+     * Supprime un échelon.
+     * 
+     * @param String id Identifiant de l'échelon
+     * @returns Response
+     */
+	deleteEchelon(id) {
+		return axios.delete(`/ref_index_grids/${id}`);
 	}
 }
 

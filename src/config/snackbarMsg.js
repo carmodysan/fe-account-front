@@ -260,4 +260,52 @@ export default {
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-delete`,
 	},
+
+	// Grille indiciaire
+	// Création
+	alertEchelonCreatingError: {
+		text: `Une erreur est survenue durant la création de l'échelon.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertEchelonCreated: {
+		text: `L'échelon a bien été créé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	// Récupération
+	alertIndexGridRetrievingError: {
+		text: `Une erreur est survenue durant la récupération de la grille indiciaire.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	// Modification
+	alertEchelonUpdatingError: {
+		text: `Une erreur est survenue durant la modification de l'échelon.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertEchelonUpdated: {
+		text: `L'échelon est bien modifié.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-pencil`,
+	},
+	// Suppression
+	alertEchelonDeletingError: {
+		text: `Une erreur est survenue durant la suppression de l'échelon.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertEchelonDeleted: {
+		text: `L'échelon est bien supprimé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-delete`,
+	},
 };
