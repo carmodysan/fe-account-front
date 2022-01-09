@@ -12,6 +12,7 @@ Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingén
 * Ajout d'une partie Service publique à la configuration
 * Ajout d'une gestion des grades dans la partie configuration/service publique
 * Ajout d'une gestion de la grille indiciaire
+* Ajout d'une partie simulation du traitement net (avec passage d'un grade possible)
 
 *Correction de bug :*
 * Pas de correction
