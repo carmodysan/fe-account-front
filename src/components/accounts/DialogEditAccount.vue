@@ -95,7 +95,7 @@ export default {
 		 */
 		editAccount() {
 			this.dialog = false; // On ferme le dialog
-			this.item.establishment = this.establishmentSelected; // On récupère le nouveau établissement si nécessaire avant de l'envoyer à l'API.
+			this.item.establishment = this.establishmentSelected.value; // On récupère le nouveau établissement si nécessaire avant de l'envoyer à l'API.
 			this.editAccountInStore(this.item);
 		},
 	},

@@ -173,6 +173,7 @@ export default {
 					dispatch('createCurrentAccount', account);
 					break;
 				case 'Savings':
+					dispatch('createSavingsAccount', account);
 					break;
 
 				default:
@@ -193,6 +194,28 @@ export default {
 			account.upcomingBalance = '0'; // On ajoute le solde à venir dans les données à envoyer
 
 			AccountsDataService.createCurrentAccount(account)
+				.catch(() => {
+					store.commit('setLoading', false); // On arrête le loader
+					dispatch('snackbar/showSnackbar', { name: 'alertAccountCreatingError' }, { root: true });
+				})
+				.finally(() => {
+					store.commit('setLoading', false); // On arrête le loader
+					dispatch('refreshAccounts', account.authorId);
+					dispatch('snackbar/showSnackbar', { name: 'alertAccountCreated' }, { root: true });
+				});
+		},
+
+		/**
+		 * Créé un compte d'épargne via l'API.
+		 *
+		 * @param {Dispatch} param0 dispatch
+		 * @param {Object} account Objet de type account
+		 */
+		createSavingsAccount({ dispatch }, account) {
+			account.pendingCumulativeInterest = '0'; // On ajoute les intérêts annuels en cours de cumulation
+			account.totalCumulativeInterest = '0'; // On ajoute le total des intérêts annuels
+
+			AccountsDataService.createSavingsAccount(account)
 				.catch(() => {
 					store.commit('setLoading', false); // On arrête le loader
 					dispatch('snackbar/showSnackbar', { name: 'alertAccountCreatingError' }, { root: true });
@@ -249,7 +272,27 @@ export default {
 			if (upcomingBalanceStr.localeCompare(data.account.upcomingBalance) != 0 || balanceStr.localeCompare(data.account.balance) != 0) {
 				data.account.upcomingBalance = upcomingBalanceStr;
 				data.account.balance = balanceStr;
-				console.log(data.account);
+				dispatch('editAccount', data.account);
+			} else {
+				store.commit('setLoading', false); // On arrête l'affichage du loader.
+			}
+		},
+
+		/**
+		 * Modifie le solde du compte sélectionné et met à jour en BDD s'ils sont différents.
+		 *
+		 * @param {*} param0
+		 * @param {*} data Objet contenant le compte sélectionné (data.account) et les opérations du compte d'épargne en cours (data.operations)
+		 */
+		 updateSavingsAccountBalance({ dispatch }, data) {
+			store.commit('setLoading', true); // On déclenche l'affichage du loader.
+
+			const balance = data.operations.reduce((a, b) => a + (b['credit'] - b['debit'] || 0), 0);
+
+			const balanceStr = balance.toFixed(2);
+
+			if (balanceStr.localeCompare(data.account.balance) != 0) {
+				data.account.balance = balanceStr;
 				dispatch('editAccount', data.account);
 			} else {
 				store.commit('setLoading', false); // On arrête l'affichage du loader.

@@ -13,6 +13,7 @@ import Home from '@/pages/Home';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import Accounts from '@/pages/Accounts/Accounts';
 import CurrentAccount from '@/pages/Accounts/CurrentAccount';
+import SavingsAccount from '@/pages/Accounts/SavingsAccount';
 import PeriodicOperation from '@/pages/Accounts/PeriodicOperation';
 import PublicService from '@/pages/PublicService/PublicService';
 import Configuration from '@/pages/Configuration/Configuration';
@@ -68,6 +69,14 @@ const routes = [
 				path: 'periodic-operations',
 				name: 'PeriodicOperation',
 				component: PeriodicOperation,
+				beforeEnter: (to, from, next) => {
+					isAuthenticated(next);
+				},
+			},
+			{
+				path: 'savings-account-details',
+				name: 'SavingsAccount',
+				component: SavingsAccount,
 				beforeEnter: (to, from, next) => {
 					isAuthenticated(next);
 				},

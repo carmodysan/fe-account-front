@@ -212,6 +212,54 @@ export default {
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-delete`,
 	},
+
+	// Taux d'intérêts
+	// Création
+	alertInterestRateCreatingError: {
+		text: `Une erreur est survenue durant la création du taux d'intérêt.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertInterestRateCreated: {
+		text: `Le taux d'intérêt a bien été créé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	// Récupération
+	alertInterestRateRetrievingError: {
+		text: `Une erreur est survenue durant la récupération des taux d'intérêts.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	// Modification
+	alertInterestRateUpdatingError: {
+		text: `Une erreur est survenue durant la modification du taux d'intérêt.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertInterestRateUpdated: {
+		text: `Le taux d'intérêt est bien modifié.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-pencil`,
+	},
+	// Suppression
+	alertInterestRateDeletingError: {
+		text: `Une erreur est survenue durant la suppression du taux d'intérêt.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
+	alertInterestRateDeleted: {
+		text: `Le taux d'intérêt est bien supprimé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-delete`,
+	},
 	
 	// Grades
 	// Création

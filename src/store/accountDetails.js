@@ -122,10 +122,34 @@ export default {
 			commit('setAccountsSelected', account);
 		},
 
-		refreshAccountSelected({ commit, dispatch, state }) {
+		/**
+		 * Raffraichit le compte courant sélectionné.
+		 * 
+		 * @param {Object} param0 
+		 */
+		refreshCurrentAccountSelected({ commit, dispatch, state }) {
 			AccountsDataService.getCurrentAccount(state.accountSelected.id)
 				.then((response) => {
 					commit('setAccountsSelected', response.data); // On enregistre le compte courant
+				})
+				.catch(() => {
+					dispatch('snackbar/showSnackbar', { name: 'alertAccountsRetrievingError' }, { root: true });
+				})
+				.finally(() => {
+					store.commit('setLoading', false); // On arrête le loader
+				});
+		},
+
+		/**
+		 * Raffraichit le compte d'épargne sélectionné.
+		 * 
+		 * @param {Object} param0 
+		 */
+		refreshSavingsAccountSelected({ commit, dispatch, state }, data) {
+			AccountsDataService.getSavingsAccount(state.accountSelected.id)
+				.then((response) => {
+					commit('setAccountsSelected', response.data); // On enregistre le compte courant
+					dispatch('accounts/updateSavingsAccountBalance', { account: state.accountSelected, operations: data.operations }, { root: true });
 				})
 				.catch(() => {
 					dispatch('snackbar/showSnackbar', { name: 'alertAccountsRetrievingError' }, { root: true });
@@ -201,7 +225,7 @@ export default {
 				})
 				.finally(() => {
 					dispatch('accounts/refreshAccounts', state.accountSelected.authorId, { root: true }); // On rafraichit la liste des comptes
-					dispatch('refreshAccountSelected'); // On rafraichit le compte courant
+					dispatch('refreshCurrentAccountSelected'); // On rafraichit le compte courant
 					dispatch('retrieveMonthlyAccounts'); // On rafraichit le compte courant
 					dispatch('snackbar/showSnackbar', { name: 'alertMACreated' }, { root: true });
 				});

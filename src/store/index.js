@@ -5,6 +5,8 @@ import snackbar from './snackbar';
 import accounts from './accounts';
 import accountDetails from './accountDetails';
 import currentAccountOperation from './currentAccountOperation';
+import savingsAccountOperation from './savingsAccountOperation';
+import interestRate from './interestRate';
 import periodicOperation from './periodicOperation';
 import publicService from './publicService';
 
@@ -71,6 +73,6 @@ export default new Vuex.Store({
     },
 
 	modules: {
-		auth, snackbar, accounts, accountDetails, currentAccountOperation, periodicOperation, publicService
+		auth, snackbar, accounts, accountDetails, currentAccountOperation, savingsAccountOperation, interestRate, periodicOperation, publicService
 	},
 });

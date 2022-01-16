@@ -35,13 +35,23 @@ class AccountsDataService {
 	}
 
 	/**
-	 * Récupère un compte particulier.
+	 * Récupère un compte courant particulier.
 	 *
 	 * @param String id Identifiant du compte
 	 * @returns un compte.
 	 */
 	getCurrentAccount(id) {
 		return axios.get(`/current_accounts/${id}`);
+	}
+
+	/**
+	 * Récupère un compte d'épargne particulier.
+	 *
+	 * @param String id Identifiant du compte
+	 * @returns un compte.
+	 */
+	 getSavingsAccount(id) {
+		return axios.get(`/savings_accounts/${id}`);
 	}
 
     /**
@@ -52,6 +62,16 @@ class AccountsDataService {
      */
 	createCurrentAccount(data) {
         return axios.post(`/current_accounts`, data);
+    }
+
+	/**
+     * Créé un compte d'épargne.
+     * 
+     * @param {*} data les données du compte d'épargne à créer
+     * @returns Response La response d'axios pour le POST
+     */
+	 createSavingsAccount(data) {
+        return axios.post(`/savings_accounts`, data);
     }
 
 	/**

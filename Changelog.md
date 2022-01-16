@@ -2,7 +2,8 @@
 
 ## Version en cours de développement
 ### Version 0.6
-Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingénieur civil de la défense)
+Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingénieur civil de la défense).
+Mise en place d'une partie compte d'épargne
 
 *Amélioration :*
 * Mise en place d'un simulateur de traitement
@@ -13,6 +14,8 @@ Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingén
 * Ajout d'une gestion des grades dans la partie configuration/service publique
 * Ajout d'une gestion de la grille indiciaire
 * Ajout d'une partie simulation du traitement net (avec passage d'un grade possible)
+* Ajout d'une partie liste des opérations d'un compte d'épargne
+* Ajout d'une partie configuration du compte d'épargne avec gestion des taux d'intérêts
 
 *Correction de bug :*
 * Pas de correction
