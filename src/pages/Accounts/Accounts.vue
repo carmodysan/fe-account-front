@@ -317,7 +317,8 @@ export default {
 		},
 
 		savingsAccountTotal() {
-			return this.accounts.reduce((a, b) => a + ((b['@type'] == 'SavingsAccount' ? b['balance'] : 0) || 0), 0);
+			console.log(this.accounts);
+			return this.accounts.reduce((a, b) => a + ((b['@type'] == 'SavingsAccount' ? Number(b['balance']) : 0) || 0), 0);
 		},
 	},
 
