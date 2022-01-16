@@ -48,7 +48,10 @@
 						<v-card-text class="pa-6 pt-0">
 							<v-row no-gutters class="pb-5">
 								<v-col cols="6" class="my-auto">
-									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">5,150.00 €<span class="caption error-text">-3.7%</span></span>
+									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">
+										{{ savingsAccountTotal | formatCurrencyNumber }}
+										<span class="caption error-text">-3.7%</span>
+									</span>
 								</v-col>
 								<v-col cols="6">
 									<ApexChart height="100" type="bar" v-if="apexLoading" :options="apexBar1.options" :series="apexBar1.series"></ApexChart>
@@ -284,7 +287,7 @@ export default {
 		 */
 		viewAccount(account) {
 			this.retrieveAccountSelected(account); // Récupère le compte dans le store
-			this.$router.push({ name: account['@type']}); // Affiche la page des détails
+			this.$router.push({ name: account['@type'] }); // Affiche la page des détails
 		},
 	},
 
@@ -311,6 +314,10 @@ export default {
 				{ text: 'Solde', value: 'balance', sortable: false },
 				{ text: '', value: 'actions', align: 'end', sortable: false },
 			];
+		},
+
+		savingsAccountTotal() {
+			return this.accounts.reduce((a, b) => a + ((b['@type'] == 'SavingsAccount' ? b['balance'] : 0) || 0), 0);
 		},
 	},
 
