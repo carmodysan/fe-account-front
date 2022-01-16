@@ -34,6 +34,7 @@ export default {
 			{ text: 'Alimentation', value: 'Alimentation' },
 			{ text: 'Assurance', value: 'Insurance' },
 			{ text: 'Beauté', value: 'Beauty' },
+			{ text: 'Economie', value: 'Savings' },
 			{ text: 'Energie', value: 'Energy' },
 			{ text: 'Impôt', value: 'Taxes' },
 			{ text: 'Logement', value: 'Habitat' },
