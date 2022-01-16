@@ -172,7 +172,7 @@ export default {
 			let newOperation = {};
 
 			let monthlyAccount = getters.getSelectedMonthlyAccount;
-			newOperation.dateOp = new Date(monthlyAccount.year, monthlyAccount.month - 1, operation.dayOfMonth + 1).toISOString().substr(0, 10);
+			newOperation.dateOp = new Date(monthlyAccount.year, monthlyAccount.month, operation.dayOfMonth + 1).toISOString().substr(0, 10);
 			newOperation.category = operation.category;
 			newOperation.description = operation.description;
 			newOperation.credit = operation.credit;
