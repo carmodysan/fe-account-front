@@ -89,7 +89,7 @@
 					<!-- Le footer du Login -->
 					<v-col cols="12" class="d-flex justify-center">
 						<v-footer>
-							<div class="primary--text">© 2021 <a href="https://www.facilepargne.fr/" class="text-decoration-none">FacilEpargne</a>. All rights reserved.</div>
+							<div class="primary--text">© 2022 <a href="https://www.facilepargne.fr/" class="text-decoration-none">FacilEpargne</a>. All rights reserved.</div>
 						</v-footer>
 					</v-col>
 				</v-row>
