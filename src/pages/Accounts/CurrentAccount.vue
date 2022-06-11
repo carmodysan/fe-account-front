@@ -243,6 +243,13 @@
 							<v-spacer></v-spacer>
 							<!-- Partie création d'une opération -->
 							<div>
+								<input id="fileInput" ref="file" type="file" style="display: none" @change="importOperations"/>
+								<v-btn @click="$refs.file.click()" class="text-capitalize button-shadow mr-4">
+									<v-icon class="mr-1">mdi-database-import</v-icon>
+								</v-btn>
+								<v-btn @click="exportOperations()" class="text-capitalize button-shadow mr-4">
+									<v-icon class="mr-1">mdi-database-export</v-icon>
+								</v-btn>
 								<v-dialog max-width="900" transition="dialog-top-transition">
 									<template v-slot:activator="{ on, attrs }">
 										<v-btn v-on="on" v-bind="attrs" color="primary" class="text-capitalize button-shadow mr-4">
@@ -405,6 +412,7 @@ export default {
 			changeCurrentMonthlyAccountInStore: 'accountDetails/changeCurrentMonthlyAccount', // Change le compte mensuels visualisé comme le current
 			changeSelectedMonthlyAccountInStore: 'accountDetails/changeSelectedMonthlyAccount', // Change le compte mensuels visualisé comme le current
 			editOperationInStore: 'currentAccountOperation/editOperation', // Modifie l'opération dans le store
+			createOperationInStore: 'currentAccountOperation/createOperation', // Envoie la création d'une opération
 		}),
 
 		/**
@@ -479,7 +487,51 @@ export default {
 		itemRowBackground: function (item) {
 			return item.fromPeriodic ? 'fromPeriodicRow' : 'classicRow';
 		},
-	},
+
+		/**
+		 * Exporte toutes les opérations du mois en cours
+		 */
+		exportOperations() {
+			const data = JSON.stringify(this.operations, null, 2)
+			let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(data);
+			let exportFileDefaultName = 'data.json';
+			let linkElement = document.createElement('a');
+			linkElement.setAttribute('href', dataUri);
+			linkElement.setAttribute('download', exportFileDefaultName);
+			linkElement.click();
+		},
+
+		/**
+		 * Importe des opérations dans le mois en cours
+		 */
+		importOperations(event) {
+			let file = event.target.files[0];
+			const reader = new FileReader();
+			if (file.name.includes(".json")) {
+				reader.onload = (res) => {
+					let resultReader = res.target.result;
+					let operation = {}; // Création d'une opération vierge
+
+					let obj = JSON.parse(resultReader); // On parse en JSON le résultat
+					for (let i = 0; i < obj.length; i++) { // Pour chaque opération, on récupère tous les éléments nécessaires à la création
+						console.log(obj[i].dateOp);
+						operation.category = obj[i].category;
+						operation.checked = obj[i].checked;
+						operation.credit = obj[i].credit;
+						operation.debit = obj[i].debit;
+						operation.dateOp = obj[i].dateOp;
+						operation.description = obj[i].description;
+						operation.fromPeriodic = obj[i].fromPeriodic;
+						operation.monthlyAccount = '/api/monthly_accounts/' + this.selectedMonthlyAccount.id; // On ajoute l'identifiant
+
+						this.createOperationInStore({operation: operation, monthlyAccountId: this.selectedMonthlyAccount.id}); // On lance la création depuis le store
+					}
+				}
+				reader.onerror = (err) => console.log(err);
+				reader.readAsText(file);
+			}
+		},
+ 	},
 
 	computed: {
 		...mapGetters({
