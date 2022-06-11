@@ -91,7 +91,7 @@
 		<div v-else class="account-page">
 			<!-- Partie titre -->
 			<v-row no-gutters class="d-flex justify-space-between mt-10 mb-1">
-				<h1 class="page-title">Compte de {{ selectedMonthlyAccount.month }} {{ selectedMonthlyAccount.year }}</h1>
+				<h1 class="page-title">Compte {{ displayMonthText() }} {{ selectedMonthlyAccount.year }}</h1>
 				<div>
 					<v-btn color="primary" class="text-capitalize button-shadow mr-4" @click="monthlyAccountsDisplaying = true">Changer de mois</v-btn>
 					<v-btn color="secondary" class="text-capitalize button-shadow mr-1" :to="{ name: 'PeriodicOperation' }">Configuration</v-btn>
@@ -243,7 +243,7 @@
 							<v-spacer></v-spacer>
 							<!-- Partie création d'une opération -->
 							<div>
-								<input id="fileInput" ref="file" type="file" style="display: none" @change="importOperations"/>
+								<input id="fileInput" ref="file" type="file" style="display: none" @change="importOperations" />
 								<v-btn @click="$refs.file.click()" class="text-capitalize button-shadow mr-4">
 									<v-icon class="mr-1">mdi-database-import</v-icon>
 								</v-btn>
@@ -276,7 +276,16 @@
 						</v-card-title>
 						<v-card-text class="pa-6 pt-0 mb-1">
 							<v-skeleton-loader v-if="isOperationsRetrieving" type="table"></v-skeleton-loader>
-							<v-data-table v-else disable-pagination hide-default-footer :headers="headers" :items="operations" item-key="id">
+							<v-data-table
+								v-else
+								disable-pagination
+								hide-default-footer
+								:headers="headers"
+								:items="operations"
+								:sort-by.sync="columnName"
+								:sort-desc.sync="isDescending"
+								item-key="id"
+							>
 								<!-- Affichage de la date avec un format plus lisible -->
 								<template v-slot:[`item.dateOp`]="{ item }">
 									{{ new Date(item.dateOp).toLocaleDateString('fr-FR') }}
@@ -331,6 +340,9 @@
 				<v-col cols="12" class="px-10">
 					<v-btn color="primary" class="text-capitalize button-shadow" block>Clôturer le mois en cours</v-btn>
 				</v-col>
+
+				<!-- Bouton scroll back to top -->
+				<v-btn v-scroll="onScroll" v-show="fab" fab dark fixed bottom right color="primary" @click="toTop"><v-icon>mdi-menu-up</v-icon> </v-btn>
 			</v-row>
 		</div>
 	</v-container>
@@ -376,6 +388,9 @@ export default {
 			currentSwitchTextOff: 'Définir comme le compte mensuel en cours',
 
 			apexLoading: true,
+			fab: false, // Bouton scroll back to top
+			isDescending: true, // Colonne date opération toujours triée
+			columnName: 'dateOp', // Colonne date opération toujours triée
 
 			// Juste pour l'exemple
 			apexArea1: {
@@ -492,8 +507,8 @@ export default {
 		 * Exporte toutes les opérations du mois en cours
 		 */
 		exportOperations() {
-			const data = JSON.stringify(this.operations, null, 2)
-			let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(data);
+			const data = JSON.stringify(this.operations, null, 2);
+			let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(data);
 			let exportFileDefaultName = 'data.json';
 			let linkElement = document.createElement('a');
 			linkElement.setAttribute('href', dataUri);
@@ -507,13 +522,14 @@ export default {
 		importOperations(event) {
 			let file = event.target.files[0];
 			const reader = new FileReader();
-			if (file.name.includes(".json")) {
+			if (file.name.includes('.json')) {
 				reader.onload = (res) => {
 					let resultReader = res.target.result;
 					let operation = {}; // Création d'une opération vierge
 
 					let obj = JSON.parse(resultReader); // On parse en JSON le résultat
-					for (let i = 0; i < obj.length; i++) { // Pour chaque opération, on récupère tous les éléments nécessaires à la création
+					for (let i = 0; i < obj.length; i++) {
+						// Pour chaque opération, on récupère tous les éléments nécessaires à la création
 						console.log(obj[i].dateOp);
 						operation.category = obj[i].category;
 						operation.checked = obj[i].checked;
@@ -524,14 +540,61 @@ export default {
 						operation.fromPeriodic = obj[i].fromPeriodic;
 						operation.monthlyAccount = '/api/monthly_accounts/' + this.selectedMonthlyAccount.id; // On ajoute l'identifiant
 
-						this.createOperationInStore({operation: operation, monthlyAccountId: this.selectedMonthlyAccount.id}); // On lance la création depuis le store
+						this.createOperationInStore({ operation: operation, monthlyAccountId: this.selectedMonthlyAccount.id }); // On lance la création depuis le store
 					}
-				}
+				};
 				reader.onerror = (err) => console.log(err);
 				reader.readAsText(file);
 			}
 		},
- 	},
+
+		/**
+		 * Fonction onScroll et toTop pour le bouton Scroll back to top
+		 */
+		onScroll(e) {
+			if (typeof window === 'undefined') return;
+			const top = window.pageYOffset || e.target.scrollTop || 0;
+			this.fab = top > 20;
+		},
+		toTop() {
+			this.$vuetify.goTo(0);
+		},
+
+		/**
+		 * Affichage en mode texte du mois du compte courant en cours
+		 */
+		displayMonthText() {
+			switch (this.selectedMonthlyAccount.month) {
+				case 0:
+					return 'de janvier';
+				case 1:
+					return 'de février';
+				case 2:
+					return 'de mars';
+				case 3:
+					return 'd\'avril';
+				case 4:
+					return 'de mai';
+				case 5:
+					return 'de juin';
+				case 6:
+					return 'de juillet';
+				case 7:
+					return 'd\'aout';
+				case 8:
+					return 'de septembre';
+				case 9:
+					return 'd\'octobre';
+				case 10:
+					return 'de novembre';
+				case 11:
+					return 'de décembre';	
+				default:
+					break;
+			}
+			return ''; // Par défaut on ne retourne rien
+		},
+	},
 
 	computed: {
 		...mapGetters({
@@ -548,7 +611,7 @@ export default {
 		 */
 		headers() {
 			return [
-				{ text: "Date de l'opération", align: 'start', value: 'dateOp' },
+				{ text: "Date de l'opération", sortable: false, align: 'start', value: 'dateOp' },
 				{ text: 'Catégorie', sortable: false, value: 'category' },
 				{ text: 'Libellé', sortable: false, value: 'description' },
 				{ text: 'Débit', sortable: false, value: 'debit' },

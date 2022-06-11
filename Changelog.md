@@ -4,6 +4,8 @@
 ### Version 0.6
 Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingénieur civil de la défense).
 Mise en place d'une partie compte d'épargne
+Mise en place de l'import / export des opérations dans les comptes courants
+Mise en place d'un bouton scroll back to top
 
 *Amélioration :*
 * Mise en place d'un simulateur de traitement
@@ -18,7 +20,7 @@ Mise en place d'une partie compte d'épargne
 * Ajout d'une partie configuration du compte d'épargne avec gestion des taux d'intérêts
 
 *Correction de bug :*
-* Pas de correction
+* Correction de l'affichage du mois dans le compte courant
 
 *Suppression :*
 * Pas de suppression

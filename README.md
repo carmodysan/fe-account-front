@@ -18,24 +18,34 @@ Cette programme a été conçus avec les technologies/framework/langages suivant
 Pour le moment, les contributions ne sont pas ouvertes.
 
 ## Versions
-**Version actuelle :** v0.5
-La version 0.5 participe à la mise à jour interne des éléments techniques.
+**Version actuelle :** v0.6
+La version 0.6 participe à la mise à jour de plusieurs éléments métier.
+Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingénieur civil de la défense).
+Mise en place d'une partie compte d'épargne
+Mise en place de l'import / export des opérations dans les comptes courants
+Mise en place d'un bouton scroll back to top
 
 *Amélioration :*
-* Pas d'amélioration
+* Mise en place d'un simulateur de traitement
 
 *Ajout :*
-* Passage à vuejs 2.6.14
-* Passage à vuetify 2.6.2
+* Ajout d'une vue Configuration
+* Ajout d'une partie Service publique à la configuration
+* Ajout d'une gestion des grades dans la partie configuration/service publique
+* Ajout d'une gestion de la grille indiciaire
+* Ajout d'une partie simulation du traitement net (avec passage d'un grade possible)
+* Ajout d'une partie liste des opérations d'un compte d'épargne
+* Ajout d'une partie configuration du compte d'épargne avec gestion des taux d'intérêts
 
 *Correction de bug :*
-* Pas de correction
+* Correction de l'affichage du mois dans le compte courant
 
 *Suppression :*
 * Pas de suppression
 
 **Ancienne version :** 
 Visualiser le changelog complet : [Changelog](Changelog.md)
+* v0.5 : Mise à jour des éléments techniques
 * v0.4 : Mise en place d'un nouveau design et d'une gestion des comptes repensée
 * v0.3 : Pas d'information sur les anciennes versions
 
