@@ -279,5 +279,13 @@ export default {
 			commit('setSelectedMonthlyAccounts', monthlyAccount); // On écrase le précédent compte mensuel sélectionné.
 			dispatch('currentAccountOperation/retrieveOperations', monthlyAccount.id, { root: true }); // On récupère toutes ses opérations
 		},
+
+		/**
+		 * Clôture le compte mensuel sélectionné.
+		 */
+		closeSelectedMonthlyAccount({ state }) {
+			state.selectedMonthlyAccount.state = 'close';
+			MonthlyAccountsDataService.update(state.selectedMonthlyAccount.id, state.selectedMonthlyAccount); // On met à jour l'état en BDD via l'API.
+		}
 	},
 };

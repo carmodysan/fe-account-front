@@ -43,6 +43,7 @@ export default {
 			{ text: 'Télécommunication', value: 'Telecom' },
 			{ text: 'Transport', value: 'Transport' },
 			{ text: 'Travail', value: 'Job' },
+			{ text: 'Compte', value: 'Account' },
 		],
 
 		// Liste des jours du mois - Il y a sûrement une manière plus élégente de faire cette liste avec un v-select...

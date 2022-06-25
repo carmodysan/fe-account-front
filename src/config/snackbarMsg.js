@@ -118,6 +118,18 @@ export default {
 		colorBtnClose: `green darken-4`,
 		icon: `mdi-checkbox-marked-circle-outline`,
 	},
+	alertMAClose: {
+		text: `Ce compte mensuel est maintenant bien clôturé.`,
+		color: `success`,
+		colorBtnClose: `green darken-4`,
+		icon: `mdi-checkbox-marked-circle-outline`,
+	},
+	alertMACloseError: {
+		text: `Vous ne pouvez pas clôturer le compte mensuel en cours. Vous devez changer de compte mensuel courant avant de clôturer celui-ci.`,
+		color: `error`,
+		colorBtnClose: `red darken-4`,
+		icon: `mdi-alert-octagram`,
+	},
 	// Opérations
 	// Création
 	alertOperationCreatingError: {

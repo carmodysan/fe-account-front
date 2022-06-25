@@ -101,49 +101,41 @@
 			<!-- Le switch pour changer l'état à 'en cours' du compte mensuel -->
 			<v-row no gutters class="d-flex justify-start ml-5">
 				<v-switch
+					v-if="selectedMonthlyAccount.state != 'close'"
 					v-model="currentSwitch"
 					:disabled="currentSwitchDisabled"
 					@change="changeCurrentMonthlyAccount()"
 					color="success"
 					:label="currentSwitch ? currentSwitchTextOn : currentSwitchTextOff"
 				/>
+				<h2 v-else class="page-subtitle">Les comptes de ce mois sont clôturés</h2>
 			</v-row>
 
 			<!-- Partie corps de page -->
 			<v-row>
 				<!-- Partie Salaire -->
-				<v-col lg="3" sm="6" md="5" cols="12">
+				<v-col lg="3" sm="6" md="5" cols="12" v-if="selectedMonthlyAccount.state != 'upcoming'">
 					<v-card class="mx-1 mb-1">
 						<v-card-title class="pa-6 pb-6"><p>Salaires</p></v-card-title>
 						<v-card-text class="pa-6 pt-0">
-							<v-row no-gutters class="pb-5" align="center">
-								<v-col cols="5" class="my-auto d-flex align-center" style="min-height: 115px">
-									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">5,145.00 €</span>
+							<v-row>
+								<v-col cols="12">
+									<ApexChart
+										height="210"
+										type="donut"
+										class="mt-1"
+										:options="displaySelectedMonth.apexPieSalaries.options"
+										:series="displaySelectedMonth.apexPieSalaries.series"
+										parentHeightOffset="0"
+									></ApexChart>
 								</v-col>
-								<v-col cols="7">
-									<ApexChart v-if="apexLoading" height="35" type="area" :options="apexArea1.options" :series="apexArea1.series"></ApexChart>
-								</v-col>
-							</v-row>
-							<v-row no-gutters class="justify-space-between">
-								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Epargne</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Bourse</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="error"> mdi-arrow-bottom-right</v-icon></div>
-									<div class="subtext-index">Autres</div>
-								</div>
 							</v-row>
 						</v-card-text>
 					</v-card>
 				</v-col>
 
 				<!-- Partie Opérations périodiques -->
-				<v-col lg="3" sm="6" md="5" cols="12">
+				<v-col lg="3" sm="6" md="5" cols="12" v-if="selectedMonthlyAccount.state != 'upcoming'">
 					<v-card class="mx-1 mb-1">
 						<v-card-title class="pa-6 pb-6"><p>Opérations périodiques</p></v-card-title>
 						<v-card-text class="pa-6 pt-0">
@@ -174,13 +166,19 @@
 				</v-col>
 
 				<!-- Partie Totaux -->
-				<v-col lg="3" sm="6" md="5" cols="12">
+				<v-col lg="3" sm="6" md="5" cols="12" v-if="selectedMonthlyAccount.state != 'upcoming'">
 					<v-card class="mx-1 mb-1">
-						<v-card-title class="pa-6 pb-6"><p>Soldes</p></v-card-title>
+						<v-card-title class="pa-6 pb-6">
+							<p v-if="selectedMonthlyAccount.state == 'close'">Restant mensuel</p>
+							<p v-else>Solde mensuel</p>
+						</v-card-title>
 						<v-card-text class="pa-6 pt-0">
 							<v-row no-gutters class="pb-5" align="center">
 								<v-col cols="5" class="my-auto d-flex align-center" style="min-height: 115px">
-									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">{{ account.balance | formatCurrencyNumber }}</span>
+									<span v-if="selectedMonthlyAccount.state == 'current'" class="font-weight-medium card-dark-grey" style="font-size: 24px">{{
+										account.balance | formatCurrencyNumber
+									}}</span>
+									<span v-else class="font-weight-medium card-dark-grey" style="font-size: 24px">{{ displaySelectedMonth.balance | formatCurrencyNumber }}</span>
 								</v-col>
 								<v-col cols="7">
 									<ApexChart v-if="apexLoading" height="35" type="area" :options="apexArea1.options" :series="apexArea1.series"></ApexChart>
@@ -205,7 +203,7 @@
 				</v-col>
 
 				<!-- Partie Dépenses -->
-				<v-col lg="3" sm="6" md="5" cols="12">
+				<v-col lg="3" sm="6" md="5" cols="12" v-if="selectedMonthlyAccount.state != 'upcoming'">
 					<v-card class="mx-1 mb-1">
 						<v-card-title class="pa-6 pb-6"><p>Plus grosses dépenses</p></v-card-title>
 						<v-card-text class="pa-6 pt-0">
@@ -244,13 +242,13 @@
 							<!-- Partie création d'une opération -->
 							<div>
 								<input id="fileInput" ref="file" type="file" style="display: none" @change="importOperations" />
-								<v-btn @click="$refs.file.click()" class="text-capitalize button-shadow mr-4">
+								<v-btn @click="$refs.file.click()" class="text-capitalize button-shadow mr-4" v-if="selectedMonthlyAccount.state != 'close'">
 									<v-icon class="mr-1">mdi-database-import</v-icon>
 								</v-btn>
 								<v-btn @click="exportOperations()" class="text-capitalize button-shadow mr-4">
 									<v-icon class="mr-1">mdi-database-export</v-icon>
 								</v-btn>
-								<v-dialog max-width="900" transition="dialog-top-transition">
+								<v-dialog max-width="900" transition="dialog-top-transition" v-if="selectedMonthlyAccount.state != 'close'">
 									<template v-slot:activator="{ on, attrs }">
 										<v-btn v-on="on" v-bind="attrs" color="primary" class="text-capitalize button-shadow mr-4">
 											<v-icon class="mr-1">mdi-book-refresh</v-icon>
@@ -271,7 +269,7 @@
 										</v-card>
 									</template>
 								</v-dialog>
-								<DialogCreateOperation v-bind:monthlyAccountId="selectedMonthlyAccount.id" />
+								<DialogCreateOperation v-bind:monthlyAccountId="selectedMonthlyAccount.id" v-if="selectedMonthlyAccount.state != 'close'" />
 							</div>
 						</v-card-title>
 						<v-card-text class="pa-6 pt-0 mb-1">
@@ -307,7 +305,15 @@
 								<!-- Affichage du boolean pointée en case à cocher -->
 								<template v-slot:[`item.checked`]="{ item }">
 									<v-hover v-slot="{ hover }">
-										<v-icon small @click="changeOperationStatus(item)" :color="hover ? 'blue' : item.checked ? 'green' : 'red'">
+										<v-icon
+											v-if="selectedMonthlyAccount.state != 'close'"
+											small
+											@click="changeOperationStatus(item)"
+											:color="hover ? 'blue' : item.checked ? 'green' : 'red'"
+										>
+											{{ item.checked ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline' }}
+										</v-icon>
+										<v-icon v-else small color="grey">
 											{{ item.checked ? 'mdi-checkbox-marked-circle-outline' : 'mdi-checkbox-blank-circle-outline' }}
 										</v-icon>
 									</v-hover>
@@ -321,12 +327,12 @@
 								<template v-slot:[`item.actions`]="{ item }">
 									<v-row class="d-flex justify-end mr-2">
 										<!-- Partie édition du compte -->
-										<div>
+										<div v-if="selectedMonthlyAccount.state != 'close'">
 											<DialogEditOperation v-bind:item="item" />
 										</div>
 
 										<!-- Partie suppression du compte -->
-										<div>
+										<div v-if="selectedMonthlyAccount.state != 'close'">
 											<DialogDeleteOperation v-bind:item="item" />
 										</div>
 									</v-row>
@@ -338,7 +344,9 @@
 
 				<!-- Partie clôture du compte mensuel -->
 				<v-col cols="12" class="px-10">
-					<v-btn color="primary" class="text-capitalize button-shadow" block>Clôturer le mois en cours</v-btn>
+					<v-btn v-if="selectedMonthlyAccount.state != 'close'" color="primary" class="text-capitalize button-shadow" @click="closeSelectedMonth()" block>
+						Clôturer le mois en cours</v-btn
+					>
 				</v-col>
 
 				<!-- Bouton scroll back to top -->
@@ -392,6 +400,25 @@ export default {
 			isDescending: true, // Colonne date opération toujours triée
 			columnName: 'dateOp', // Colonne date opération toujours triée
 
+			// Partie affichage des totaux et autres statistiques du haut de page
+			displaySelectedMonth: {
+				balance: 0,
+				apexPieSalaries: {
+					options: {
+						dataLabels: {
+							enabled: false,
+						},
+						colors: [config.color.light.primary, config.color.light.secondary],
+						labels: ['Salaire 1', 'Salaire 2'],
+						legend: {
+							position: 'bottom',
+						},
+					},
+					series: [100, 100],
+				},
+				sumSalaries: 0,
+			},
+
 			// Juste pour l'exemple
 			apexArea1: {
 				options: {
@@ -426,6 +453,7 @@ export default {
 			retrieveMonthlyAccounts: 'accountDetails/retrieveMonthlyAccounts', // Télécharge tous les comptes mensuels dans le store
 			changeCurrentMonthlyAccountInStore: 'accountDetails/changeCurrentMonthlyAccount', // Change le compte mensuels visualisé comme le current
 			changeSelectedMonthlyAccountInStore: 'accountDetails/changeSelectedMonthlyAccount', // Change le compte mensuels visualisé comme le current
+			closeSelectedMonthlyAccountInStore: 'accountDetails/closeSelectedMonthlyAccount', // Clôture le compte sélectionné
 			editOperationInStore: 'currentAccountOperation/editOperation', // Modifie l'opération dans le store
 			createOperationInStore: 'currentAccountOperation/createOperation', // Envoie la création d'une opération
 		}),
@@ -443,6 +471,7 @@ export default {
 				this.currentSwitchDisabled = false; // On replace à false l'état disable du switch
 			}
 			this.changeSelectedMonthlyAccountInStore(monthlyAccount);
+			this.updateAllUpPageStatistique();
 			this.monthlyAccountsDisplaying = false; // On ferme cette "vue" pour aller dans la vue "normale"
 		},
 
@@ -572,7 +601,7 @@ export default {
 				case 2:
 					return 'de mars';
 				case 3:
-					return 'd\'avril';
+					return "d'avril";
 				case 4:
 					return 'de mai';
 				case 5:
@@ -580,19 +609,129 @@ export default {
 				case 6:
 					return 'de juillet';
 				case 7:
-					return 'd\'aout';
+					return "d'aout";
 				case 8:
 					return 'de septembre';
 				case 9:
-					return 'd\'octobre';
+					return "d'octobre";
 				case 10:
 					return 'de novembre';
 				case 11:
-					return 'de décembre';	
+					return 'de décembre';
 				default:
 					break;
 			}
 			return ''; // Par défaut on ne retourne rien
+		},
+
+		/**
+		 * ------------------------------ Partie statistique ------------------------------
+		 */
+		/**
+		 * Permet de mettre à jour toutes les statistiques du haut de la page (salaire, solde, etc.)
+		 */
+		updateAllUpPageStatistique() {
+			this.calculateBalanceSelectedMonth();
+			this.retrievingSalaries();
+		},
+
+		/**
+		 * Calcul le solde du mois sélectionné
+		 */
+		calculateBalanceSelectedMonth() {
+			let balance = this.operations.reduce((a, b) => a + ((b['checked'] ? b['credit'] - b['debit'] : 0) || 0), 0);
+			this.displaySelectedMonth.balance = balance;
+		},
+
+		/**
+		 * Récupération des salaires. Se base sur le principe qu'il n'y a que deux salaires.
+		 * Cela pourrait être amélioré...
+		 */
+		retrievingSalaries() {
+			let salaries = this.operations.filter((item) => item.category == 'Job' && item.description.includes('Salaire'));
+
+			if (salaries.length == 2) {
+				// Pour ne pas avoir d'errreur dans la lecture du tableau salaries.
+				this.displaySelectedMonth.apexPieSalaries = {
+					options: {
+						dataLabels: {
+							enabled: false,
+						},
+						colors: [config.color.light.primary, config.color.light.secondary],
+						labels: [salaries[0].description.toString().split(' ')[1], salaries[1].description.toString().split(' ')[1]],
+						legend: {
+							position: 'bottom',
+							formatter: function (val, opts) {
+								return val + ' - ' + opts.w.globals.series[opts.seriesIndex] + ' €';
+							},
+						},
+						plotOptions: {
+							pie: {
+								donut: {
+									labels: {
+										show: true,
+										value: {
+											show: true,
+											fontWeight: 700,
+										},
+										total: {
+											show: true,
+											fontWeight: 600,
+											label: 'Total',
+											color: '#373d3f',
+											formatter: function (w) {
+												return (
+													w.globals.seriesTotals.reduce((a, b) => {
+														return a + b;
+													}, 0) + ' €'
+												);
+											},
+										},
+									},
+								},
+							},
+						},
+						fill: {
+							type: 'gradient',
+						},
+					},
+					series: [parseFloat(salaries[0].credit), parseFloat(salaries[1].credit)],
+				};
+				this.displaySelectedMonth.sumSalaries = parseFloat(salaries[0].credit) + parseFloat(salaries[1].credit);
+			} else {
+				// Affichage par défaut du ApexChart quand on ne trouve pas de salaires
+				this.displaySelectedMonth.apexPieSalaries = {
+					options: {
+						dataLabels: {
+							enabled: false,
+						},
+						colors: [config.color.light.primary, config.color.light.secondary],
+						labels: ['Salaire 1', 'Salaire 2'],
+						legend: {
+							position: 'bottom',
+						},
+					},
+					series: [100, 100],
+				};
+			}
+		},
+		/**
+		 * ------------------------------ Fin partie statistique ------------------------------
+		 */
+
+		/**
+		 * Cloture le mois sélectionné
+		 */
+		closeSelectedMonth() {
+			if (this.selectedMonthlyAccount.state == 'open') {
+				// On ne peut clôturer qu'un compte ouvert et pas le courant
+				this.closeSelectedMonthlyAccountInStore();
+				this.toTop();
+				this.showSnackbar({ name: 'alertMAClose'});
+			}
+			else {
+				this.showSnackbar({ name: 'alertMACloseError' });
+			}
 		},
 	},
 
@@ -649,6 +788,15 @@ export default {
 				this.currentSwitchDisabled = true; // On inactive le switch
 				this.currentSwitch = true; // On passe le switch à true
 			}
+		},
+		isOperationsRetrieving: {
+			handler(oldValue, newValue) {
+				// On peut mettre un watch sur une computed property.
+				if (oldValue == false && newValue == true) {
+					// Je ne comprends pas pourquoi cela fonctionne quand isOperationRetrieving nouvelle valeur est à true... (cela devrait être l'inverse)
+					this.updateAllUpPageStatistique();
+				}
+			},
 		},
 	},
 

@@ -1,6 +1,23 @@
 # Changelog du front de Facilepargne
 
 ## Version en cours de développement
+### Version 0.7
+Amélioration de la partie Comptes mensuels
+
+*Amélioration :*
+* Les comptes mensuels peuvent désormais être clôturés
+* Calcul des salaires pour la partie statistique des comptes mensuels
+
+*Ajout :*
+* Ajout d'une catégorie "Compte" dans la création/édition d'une opération pour pouvoir ajouter l'opération "Reste du mois précédent"
+
+*Correction de bug :*
+* Pas de correction
+
+*Suppression :*
+* Pas de suppression
+
+## Dernière version
 ### Version 0.6
 Mise en place d'un calculateur de traitement pour les fonctionnaires ICD (Ingénieur civil de la défense).
 Mise en place d'une partie compte d'épargne
@@ -25,7 +42,7 @@ Mise en place d'un bouton scroll back to top
 *Suppression :*
 * Pas de suppression
 
-## Dernière version
+## Anciennes versions
 ### Version 0.5
 Mise à jour technique.
 
@@ -42,7 +59,6 @@ Mise à jour technique.
 *Suppression :*
 * Pas de suppression
 
-## Anciennes versions
 ### Version 0.4
 La version 0.4 voit l'arrivé d'un nouveau design et d'une gestion des comptes repensée !
 
