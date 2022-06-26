@@ -12,6 +12,11 @@
 			<div v-if="config">
 				<DialogCreatePeriodicOperation v-bind:authorId="user.id" />
 			</div>
+			<div v-if="!config">
+				<v-btn color="secondary" class="text-capitalize button-shadow mr-1" @click="addAllPeriodicOperationsToOperationsInStore()">
+					<v-icon class="mr-2">mdi-expand-all</v-icon>Ajouter toutes les opérations
+				</v-btn>
+			</div>
 		</v-card-title>
 		<v-card-text class="pa-6 pt-0 mb-1">
 			<v-skeleton-loader v-if="isPeriodicOperationsRetrieving" type="table"></v-skeleton-loader>
@@ -112,6 +117,7 @@ export default {
 
 	methods: {
         ...mapActions({
+            addAllPeriodicOperationsToOperationsInStore: 'periodicOperation/addAllPeriodicOperationsToOperations', // Ajoute l'opération périodique à la liste des opérations
             addPeriodicOperationToOperationsInStore: 'periodicOperation/addPeriodicOperationToOperations', // Ajoute l'opération périodique à la liste des opérations
             retrievePeriodicOperationsInStore: 'periodicOperation/retrievePeriodicOperations', // Récupère les opérations périodiques du store
         }),
@@ -129,9 +135,17 @@ export default {
          * Ajoute une opération périodique à la liste des opérations en cours
          */
         addPeriodicOperationToOperations(periodicOperation) {
-            this.addPeriodicOperationToOperationsInStore(periodicOperation);
+            this.addPeriodicOperationToOperationsInStore({operation: periodicOperation, multiple: false});
 			this.$emit('input', false); // On fait fermer le dialog parent
 		},
+
+		/**
+		 * Ajoute toutes opérations périodiques à la liste des opérations en cours
+		 */
+		addAllPeriodicOperationsToOperations() {
+			this.addAllPeriodicOperationsToOperations();
+			this.$emit('input', false); // On fait fermer le dialog parent (ne fonctionne pas... ?)
+		}
 	},
 
     mounted() {

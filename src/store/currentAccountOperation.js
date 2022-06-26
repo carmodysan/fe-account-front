@@ -98,7 +98,7 @@ export default {
 
 			CurrentAccountOperationsDataService.create(data.operation)
 				.then(() => {
-					dispatch('snackbar/showSnackbar', { name: 'alertOperationCreated' }, { root: true });
+					if (!data.multiple) dispatch('snackbar/showSnackbar', { name: 'alertOperationCreated' }, { root: true });
 					dispatch('retrieveOperations', data.monthlyAccountId);
 				})
 				.catch(() => {

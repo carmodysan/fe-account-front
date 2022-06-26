@@ -569,7 +569,7 @@ export default {
 						operation.fromPeriodic = obj[i].fromPeriodic;
 						operation.monthlyAccount = '/api/monthly_accounts/' + this.selectedMonthlyAccount.id; // On ajoute l'identifiant
 
-						this.createOperationInStore({ operation: operation, monthlyAccountId: this.selectedMonthlyAccount.id }); // On lance la création depuis le store
+						this.createOperationInStore({ operation: operation, monthlyAccountId: this.selectedMonthlyAccount.id, multiple: true }); // On lance la création depuis le store
 					}
 				};
 				reader.onerror = (err) => console.log(err);

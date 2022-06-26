@@ -166,23 +166,32 @@ export default {
 		 * Transforme l'opération périodique en opération et l'envoie dans la liste des opérations du compte mensuel.
 		 *
 		 * @param {Object} param0
-		 * @param {PeriodicOperation} operation Opération périodique à ajouter à la liste des opérations
+		 * @param {PeriodicOperation} data Données contenant l'opération périodique à ajouter à la liste des opérations et la notion de multiplicité
 		 */
-		addPeriodicOperationToOperations({ getters, dispatch }, operation) {
+		addPeriodicOperationToOperations({ getters, dispatch }, data) {
 			let newOperation = {};
 
 			let monthlyAccount = getters.getSelectedMonthlyAccount;
-			newOperation.dateOp = new Date(monthlyAccount.year, monthlyAccount.month, operation.dayOfMonth + 1).toISOString().substr(0, 10);
-			newOperation.category = operation.category;
-			newOperation.description = operation.description;
-			newOperation.credit = operation.credit;
-			newOperation.debit = operation.debit;
+			newOperation.dateOp = new Date(monthlyAccount.year, monthlyAccount.month, data.operation.dayOfMonth + 1).toISOString().substr(0, 10);
+			newOperation.category = data.operation.category;
+			newOperation.description = data.operation.description;
+			newOperation.credit = data.operation.credit;
+			newOperation.debit = data.operation.debit;
 			newOperation.checked = false;
 			newOperation.monthlyAccount = '/api/monthly_accounts/' + monthlyAccount.id;
 			newOperation.fromPeriodic = true;
 
 			// Tout bug, il faut regarder à quoi ressemble l'objet dans la partie du dispatch ci-dessous.
-			dispatch('currentAccountOperation/createOperation', { operation: newOperation, monthlyAccountId: monthlyAccount.id }, { root: true }); // Tout s'est bien déroulé
+			dispatch('currentAccountOperation/createOperation', { operation: newOperation, monthlyAccountId: monthlyAccount.id, multiple: data.multiple }, { root: true }); // Tout s'est bien déroulé
 		},
+
+		/**
+		 * Ajoute toutes les opérations périodiques dans la liste des opérations du compte mensuel
+		 */
+		 addAllPeriodicOperationsToOperations({ state, dispatch }) {
+			state.periodicOperations.forEach(element => {
+				dispatch('addPeriodicOperationToOperations', { operation: element, multiple: true }); // Tout s'est bien déroulé
+			});
+		 }
 	},
 };
