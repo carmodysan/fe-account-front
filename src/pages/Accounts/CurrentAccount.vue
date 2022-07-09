@@ -134,6 +134,54 @@
 					</v-card>
 				</v-col>
 
+				<!-- Partie Totaux -->
+				<v-col lg="3" sm="6" md="5" cols="12" v-if="selectedMonthlyAccount.state != 'upcoming'">
+					<v-card class="mx-1 mb-1">
+						<v-card-title class="pa-6 pb-6">
+							<p v-if="selectedMonthlyAccount.state == 'close'">Restant mensuel</p>
+							<p v-else>Solde mensuel</p>
+						</v-card-title>
+						<v-card-text class="pa-6 pt-0">
+							<!-- Restant mensuel -->
+							<v-row v-if="selectedMonthlyAccount.state == 'close'">
+								<v-col cols="12">
+									<ApexChart
+										height="198"
+										type="radialBar"
+										class="mt-1"
+										:options="displaySelectedMonth.apexRadialBarBalance1.options"
+										:series="displaySelectedMonth.apexRadialBarBalance1.series"
+										parentHeightOffset="0"
+									></ApexChart>
+								</v-col>
+							</v-row>
+							<!-- Solde mensuel -->
+							<v-row v-else>
+								<v-col cols="6">
+									<ApexChart
+										height="198"
+										type="radialBar"
+										class="mt-1"
+										:options="displaySelectedMonth.apexRadialBarBalance1.options"
+										:series="displaySelectedMonth.apexRadialBarBalance1.series"
+										parentHeightOffset="0"
+									></ApexChart>
+								</v-col>
+								<v-col cols="6">
+									<ApexChart
+										height="198"
+										type="radialBar"
+										class="mt-1"
+										:options="displaySelectedMonth.apexRadialBarBalance2.options"
+										:series="displaySelectedMonth.apexRadialBarBalance2.series"
+										parentHeightOffset="0"
+									></ApexChart>
+								</v-col>
+							</v-row>
+						</v-card-text>
+					</v-card>
+				</v-col>
+
 				<!-- Partie Opérations périodiques -->
 				<v-col lg="3" sm="6" md="5" cols="12" v-if="selectedMonthlyAccount.state != 'upcoming'">
 					<v-card class="mx-1 mb-1">
@@ -151,43 +199,6 @@
 								<div>
 									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
 									<div class="subtext-index">Epargne</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Bourse</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="error"> mdi-arrow-bottom-right</v-icon></div>
-									<div class="subtext-index">Autres</div>
-								</div>
-							</v-row>
-						</v-card-text>
-					</v-card>
-				</v-col>
-
-				<!-- Partie Totaux -->
-				<v-col lg="3" sm="6" md="5" cols="12" v-if="selectedMonthlyAccount.state != 'upcoming'">
-					<v-card class="mx-1 mb-1">
-						<v-card-title class="pa-6 pb-6">
-							<p v-if="selectedMonthlyAccount.state == 'close'">Restant mensuel</p>
-							<p v-else>Solde mensuel</p>
-						</v-card-title>
-						<v-card-text class="pa-6 pt-0">
-							<v-row no-gutters class="pb-5" align="center">
-								<v-col cols="5" class="my-auto d-flex align-center" style="min-height: 115px">
-									<span v-if="selectedMonthlyAccount.state == 'current'" class="font-weight-medium card-dark-grey" style="font-size: 24px">{{
-										account.balance | formatCurrencyNumber
-									}}</span>
-									<span v-else class="font-weight-medium card-dark-grey" style="font-size: 24px">{{ displaySelectedMonth.balance | formatCurrencyNumber }}</span>
-								</v-col>
-								<v-col cols="7">
-									<ApexChart v-if="apexLoading" height="35" type="area" :options="apexArea1.options" :series="apexArea1.series"></ApexChart>
-								</v-col>
-							</v-row>
-							<v-row no-gutters class="justify-space-between">
-								<div>
-									<div class="subtext">A venir<v-icon color="success"> mdi-arrow-bottom-right</v-icon></div>
-									<div class="subtext-index">{{ account.upcomingBalance | formatCurrencyNumber }}</div>
 								</div>
 								<div>
 									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
@@ -404,6 +415,7 @@ export default {
 			displaySelectedMonth: {
 				balance: 0,
 				apexPieSalaries: {
+					// Graphique des salaires
 					options: {
 						dataLabels: {
 							enabled: false,
@@ -415,6 +427,14 @@ export default {
 						},
 					},
 					series: [100, 100],
+				},
+				apexRadialBarBalance1: {
+					series: [75],
+					options: {},
+				},
+				apexRadialBarBalance2: {
+					series: [75],
+					options: {},
 				},
 				sumSalaries: 0,
 			},
@@ -631,16 +651,178 @@ export default {
 		 * Permet de mettre à jour toutes les statistiques du haut de la page (salaire, solde, etc.)
 		 */
 		updateAllUpPageStatistique() {
-			this.calculateBalanceSelectedMonth();
-			this.retrievingSalaries();
+			let salaries = this.retrievingSalaries();
+			this.calculateBalanceSelectedMonth(salaries);
 		},
 
 		/**
-		 * Calcul le solde du mois sélectionné
+		 * Calcul le solde du mois sélectionné et met à jour le graphique
 		 */
-		calculateBalanceSelectedMonth() {
+		calculateBalanceSelectedMonth(salaries) {
 			let balance = this.operations.reduce((a, b) => a + ((b['checked'] ? b['credit'] - b['debit'] : 0) || 0), 0);
 			this.displaySelectedMonth.balance = balance;
+			let upcomingBalance = parseFloat(this.account.upcomingBalance);
+
+			// S'il y a bien les deux salaires qui ont été récupérés
+			if (salaries.length == 2) {
+				let totalSalaries = parseFloat(salaries[0].credit) + parseFloat(salaries[1].credit); // On calcule la somme des salaires
+				let soldePercent = ((totalSalaries - balance) / totalSalaries) * 100; // On récupère le pourcentage de l'argent dépensé du mois
+				let upcomingSoldePercent = ((totalSalaries - upcomingBalance) / totalSalaries) * 100; // On récupère le pourcentage de l'argent qui sera dépensé du mois
+				let label = "Solde";
+				if (this.selectedMonthlyAccount.state == 'close') {
+					label = "Reste";
+				}
+				// Graphique du solde en cours
+				this.displaySelectedMonth.apexRadialBarBalance1 = {
+					options: {
+						plotOptions: {
+							radialBar: {
+								startAngle: -135,
+								endAngle: 225,
+								hollow: {
+									margin: 0,
+									size: '70%',
+									background: '#fff',
+									image: undefined,
+									imageOffsetX: 0,
+									imageOffsetY: 0,
+									position: 'front',
+									dropShadow: {
+										enabled: true,
+										top: 3,
+										left: 0,
+										blur: 4,
+										opacity: 0.24,
+									},
+								},
+								track: {
+									background: '#fff',
+									strokeWidth: '67%',
+									margin: 0, // margin is in pixels
+									dropShadow: {
+										enabled: true,
+										top: -3,
+										left: 0,
+										blur: 4,
+										opacity: 0.35,
+									},
+								},
+
+								dataLabels: {
+									show: true,
+									name: {
+										offsetY: -10,
+										show: true,
+										color: '#888',
+										fontSize: '17px',
+									},
+									value: {
+										formatter: function () {
+											return balance.toFixed(2) + ' €';
+										},
+										color: '#111',
+										fontSize: '22px',
+										show: true,
+									},
+								},
+							},
+						},
+						fill: {
+							type: 'gradient',
+							gradient: {
+								shade: 'dark',
+								type: 'horizontal',
+								shadeIntensity: 0.5,
+								gradientToColors: ['#ABE5A1'],
+								inverseColors: true,
+								opacityFrom: 1,
+								opacityTo: 1,
+								stops: [0, 100],
+							},
+						},
+						stroke: {
+							lineCap: 'round',
+						},
+						labels: [label],
+					},
+					series: [soldePercent],
+				};
+				// Graphique du solde à venir
+				this.displaySelectedMonth.apexRadialBarBalance2 = {
+					options: {
+						plotOptions: {
+							radialBar: {
+								startAngle: -135,
+								endAngle: 225,
+								hollow: {
+									margin: 0,
+									size: '70%',
+									background: '#fff',
+									image: undefined,
+									imageOffsetX: 0,
+									imageOffsetY: 0,
+									position: 'front',
+									dropShadow: {
+										enabled: true,
+										top: 3,
+										left: 0,
+										blur: 4,
+										opacity: 0.24,
+									},
+								},
+								track: {
+									background: '#fff',
+									strokeWidth: '67%',
+									margin: 0, // margin is in pixels
+									dropShadow: {
+										enabled: true,
+										top: -3,
+										left: 0,
+										blur: 4,
+										opacity: 0.35,
+									},
+								},
+
+								dataLabels: {
+									show: true,
+									name: {
+										offsetY: -10,
+										show: true,
+										color: '#888',
+										fontSize: '17px',
+									},
+									value: {
+										formatter: function () {
+											return upcomingBalance + ' €';
+										},
+										color: '#111',
+										fontSize: '22px',
+										show: true,
+									},
+								},
+							},
+						},
+						fill: {
+							type: 'gradient',
+							gradient: {
+								shade: 'dark',
+								type: 'vertical',
+								shadeIntensity: 0.5,
+								gradientToColors: ['#ABE5A1'],
+								inverseColors: true,
+								opacityFrom: 1,
+								opacityTo: 1,
+								stops: [0, 100],
+							},
+						},
+						stroke: {
+							lineCap: 'round',
+						},
+						labels: ['A venir'],
+					},
+					series: [upcomingSoldePercent],
+				};
+			}
 		},
 
 		/**
@@ -673,12 +855,17 @@ export default {
 										value: {
 											show: true,
 											fontWeight: 700,
+											color: '#111',
+											fontSize: '22px',
 										},
 										total: {
 											show: true,
-											fontWeight: 600,
+											offsetY: -10,
+											color: '#888',
+											fontSize: '17px',
+											// fontWeight: 600,
 											label: 'Total',
-											color: '#373d3f',
+											// color: '#373d3f',
 											formatter: function (w) {
 												return (
 													w.globals.seriesTotals.reduce((a, b) => {
@@ -714,6 +901,8 @@ export default {
 					series: [100, 100],
 				};
 			}
+
+			return salaries;
 		},
 		/**
 		 * ------------------------------ Fin partie statistique ------------------------------
@@ -727,9 +916,8 @@ export default {
 				// On ne peut clôturer qu'un compte ouvert et pas le courant
 				this.closeSelectedMonthlyAccountInStore();
 				this.toTop();
-				this.showSnackbar({ name: 'alertMAClose'});
-			}
-			else {
+				this.showSnackbar({ name: 'alertMAClose' });
+			} else {
 				this.showSnackbar({ name: 'alertMACloseError' });
 			}
 		},
