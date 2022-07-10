@@ -146,11 +146,11 @@
 							<v-row v-if="selectedMonthlyAccount.state == 'close'">
 								<v-col cols="12">
 									<ApexChart
-										height="198"
+										height="200"
 										type="radialBar"
 										class="mt-1"
-										:options="displaySelectedMonth.apexRadialBarBalance1.options"
-										:series="displaySelectedMonth.apexRadialBarBalance1.series"
+										:options="displaySelectedMonth.apexRadialBarBalance.options"
+										:series="displaySelectedMonth.apexRadialBarBalance.series"
 										parentHeightOffset="0"
 									></ApexChart>
 								</v-col>
@@ -159,21 +159,21 @@
 							<v-row v-else>
 								<v-col cols="6">
 									<ApexChart
-										height="198"
+										height="200"
 										type="radialBar"
 										class="mt-1"
-										:options="displaySelectedMonth.apexRadialBarBalance1.options"
-										:series="displaySelectedMonth.apexRadialBarBalance1.series"
+										:options="displaySelectedMonth.apexRadialBarBalance.options"
+										:series="displaySelectedMonth.apexRadialBarBalance.series"
 										parentHeightOffset="0"
 									></ApexChart>
 								</v-col>
 								<v-col cols="6">
 									<ApexChart
-										height="198"
+										height="200"
 										type="radialBar"
 										class="mt-1"
-										:options="displaySelectedMonth.apexRadialBarBalance2.options"
-										:series="displaySelectedMonth.apexRadialBarBalance2.series"
+										:options="displaySelectedMonth.apexRadialBarUpcomingBalance.options"
+										:series="displaySelectedMonth.apexRadialBarUpcomingBalance.series"
 										parentHeightOffset="0"
 									></ApexChart>
 								</v-col>
@@ -187,27 +187,17 @@
 					<v-card class="mx-1 mb-1">
 						<v-card-title class="pa-6 pb-6"><p>Opérations périodiques</p></v-card-title>
 						<v-card-text class="pa-6 pt-0">
-							<v-row no-gutters class="pb-5" align="center">
-								<v-col cols="5" class="my-auto d-flex align-center" style="min-height: 115px">
-									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">5,145.00 €</span>
+							<v-row>
+								<v-col cols="12">
+									<ApexChart
+										height="200"
+										type="radialBar"
+										class="mt-1"
+										:options="displaySelectedMonth.apexRadialBarPeriodicOps.options"
+										:series="displaySelectedMonth.apexRadialBarPeriodicOps.series"
+										parentHeightOffset="0"
+									></ApexChart>
 								</v-col>
-								<v-col cols="7">
-									<ApexChart v-if="apexLoading" height="35" type="area" :options="apexArea1.options" :series="apexArea1.series"></ApexChart>
-								</v-col>
-							</v-row>
-							<v-row no-gutters class="justify-space-between">
-								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Epargne</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Bourse</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="error"> mdi-arrow-bottom-right</v-icon></div>
-									<div class="subtext-index">Autres</div>
-								</div>
 							</v-row>
 						</v-card-text>
 					</v-card>
@@ -218,27 +208,15 @@
 					<v-card class="mx-1 mb-1">
 						<v-card-title class="pa-6 pb-6"><p>Plus grosses dépenses</p></v-card-title>
 						<v-card-text class="pa-6 pt-0">
-							<v-row no-gutters class="pb-5" align="center">
-								<v-col cols="5" class="my-auto d-flex align-center" style="min-height: 115px">
-									<span class="font-weight-medium card-dark-grey" style="font-size: 24px">5,145.00 €</span>
-								</v-col>
-								<v-col cols="7">
-									<ApexChart v-if="apexLoading" height="35" type="area" :options="apexArea1.options" :series="apexArea1.series"></ApexChart>
-								</v-col>
-							</v-row>
-							<v-row no-gutters class="justify-space-between">
-								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Epargne</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="success"> mdi-arrow-top-right</v-icon></div>
-									<div class="subtext-index">Bourse</div>
-								</div>
-								<div>
-									<div class="subtext">Exemple<v-icon color="error"> mdi-arrow-bottom-right</v-icon></div>
-									<div class="subtext-index">Autres</div>
-								</div>
+							<v-row>
+								<ApexChart
+									height="190"
+									type="bar"
+									class="mt-1"
+									:options="displaySelectedMonth.apexChartMaxExpense.options"
+									:series="displaySelectedMonth.apexChartMaxExpense.series"
+									parentHeightOffset="0"
+								></ApexChart>
 							</v-row>
 						</v-card-text>
 					</v-card>
@@ -428,12 +406,25 @@ export default {
 					},
 					series: [100, 100],
 				},
-				apexRadialBarBalance1: {
+				apexRadialBarBalance: {
 					series: [75],
 					options: {},
 				},
-				apexRadialBarBalance2: {
+				apexRadialBarUpcomingBalance: {
 					series: [75],
+					options: {},
+				},
+				apexRadialBarPeriodicOps: {
+					series: [75],
+					options: {},
+				},
+				apexChartMaxExpense: {
+					series: [
+						{
+							name: 'Total',
+							data: [],
+						},
+					],
 					options: {},
 				},
 				sumSalaries: 0,
@@ -653,6 +644,8 @@ export default {
 		updateAllUpPageStatistique() {
 			let salaries = this.retrievingSalaries();
 			this.calculateBalanceSelectedMonth(salaries);
+			this.calculatePeriodicOperations(salaries);
+			this.calculateMaxExpense(salaries);
 		},
 
 		/**
@@ -668,12 +661,12 @@ export default {
 				let totalSalaries = parseFloat(salaries[0].credit) + parseFloat(salaries[1].credit); // On calcule la somme des salaires
 				let soldePercent = ((totalSalaries - balance) / totalSalaries) * 100; // On récupère le pourcentage de l'argent dépensé du mois
 				let upcomingSoldePercent = ((totalSalaries - upcomingBalance) / totalSalaries) * 100; // On récupère le pourcentage de l'argent qui sera dépensé du mois
-				let label = "Solde";
+				let label = 'Solde';
 				if (this.selectedMonthlyAccount.state == 'close') {
-					label = "Reste";
+					label = 'Reste';
 				}
 				// Graphique du solde en cours
-				this.displaySelectedMonth.apexRadialBarBalance1 = {
+				this.displaySelectedMonth.apexRadialBarBalance = {
 					options: {
 						plotOptions: {
 							radialBar: {
@@ -720,6 +713,7 @@ export default {
 										formatter: function () {
 											return balance.toFixed(2) + ' €';
 										},
+										offsetY: 5,
 										color: '#111',
 										fontSize: '22px',
 										show: true,
@@ -748,7 +742,7 @@ export default {
 					series: [soldePercent],
 				};
 				// Graphique du solde à venir
-				this.displaySelectedMonth.apexRadialBarBalance2 = {
+				this.displaySelectedMonth.apexRadialBarUpcomingBalance = {
 					options: {
 						plotOptions: {
 							radialBar: {
@@ -795,6 +789,7 @@ export default {
 										formatter: function () {
 											return upcomingBalance + ' €';
 										},
+										offsetY: 5,
 										color: '#111',
 										fontSize: '22px',
 										show: true,
@@ -903,6 +898,194 @@ export default {
 			}
 
 			return salaries;
+		},
+
+		/**
+		 * Calcule la sommes des opérations périodiques du mois
+		 */
+		calculatePeriodicOperations(salaries) {
+			let periodicOperations = this.operations.reduce((a, b) => a + ((b['fromPeriodic'] ? b['credit'] - b['debit'] : 0) || 0), 0);
+			periodicOperations = periodicOperations * -1;
+			if (salaries.length == 2) {
+				let periodicOpsPercent = (periodicOperations / (parseFloat(salaries[0].credit) + parseFloat(salaries[1].credit))) * 100;
+				// Graphique du solde à venir
+				this.displaySelectedMonth.apexRadialBarPeriodicOps = {
+					options: {
+						plotOptions: {
+							radialBar: {
+								startAngle: -135,
+								endAngle: 225,
+								hollow: {
+									margin: 0,
+									size: '70%',
+									background: '#fff',
+									image: undefined,
+									imageOffsetX: 0,
+									imageOffsetY: 0,
+									position: 'front',
+									dropShadow: {
+										enabled: true,
+										top: 3,
+										left: 0,
+										blur: 4,
+										opacity: 0.24,
+									},
+								},
+								track: {
+									background: '#fff',
+									strokeWidth: '67%',
+									margin: 0, // margin is in pixels
+									dropShadow: {
+										enabled: true,
+										top: -3,
+										left: 0,
+										blur: 4,
+										opacity: 0.35,
+									},
+								},
+
+								dataLabels: {
+									show: true,
+									name: {
+										offsetY: -10,
+										show: true,
+										color: '#888',
+										fontSize: '17px',
+									},
+									value: {
+										formatter: function () {
+											return [periodicOperations.toFixed(2) + ' €', periodicOpsPercent.toFixed(0) + '%'];
+										},
+										offsetY: 5,
+										color: '#111',
+										fontSize: '22px',
+										show: true,
+									},
+								},
+							},
+						},
+						fill: {
+							type: 'gradient',
+							gradient: {
+								shade: 'dark',
+								type: 'horizontal',
+								shadeIntensity: 0.5,
+								gradientToColors: ['#FF1100'],
+								inverseColors: false,
+								opacityFrom: 1,
+								opacityTo: 1,
+								stops: [0, 100],
+							},
+						},
+						stroke: {
+							lineCap: 'round',
+						},
+						labels: ['Total'],
+					},
+					series: [periodicOpsPercent],
+				};
+			}
+		},
+
+		/**
+		 * Calcule les 5 plus grosses dépenses du mois
+		 */
+		calculateMaxExpense(salaries) {
+			// Calcul des sommes de chaque catégorie
+			let savings = this.operations.filter((item) => item.category == 'Savings');
+			savings = savings.reduce((a, b) => a + parseFloat(b['debit']) || 0, 0);
+			let savingsPercent = 0;
+			let taxes = this.operations.filter((item) => item.category == 'Taxes');
+			taxes = taxes.reduce((a, b) => a + parseFloat(b['debit']) || 0, 0);
+			let taxesPercent = 0;
+			let habitat = this.operations.filter((item) => item.category == 'Habitat');
+			habitat = habitat.reduce((a, b) => a + parseFloat(b['debit']) || 0, 0);
+			let habitatPercent = 0;
+			let fun = this.operations.filter((item) => item.category == 'Fun');
+			fun = fun.reduce((a, b) => a + parseFloat(b['debit']) || 0, 0);
+			let funPercent = 0;
+			let alimentation = this.operations.filter((item) => item.category == 'Alimentation');
+			alimentation = alimentation.reduce((a, b) => a + parseFloat(b['debit']) || 0, 0);
+			let alimentationPercent = 0;
+			let transport = this.operations.filter((item) => item.category == 'Transport');
+			transport = transport.reduce((a, b) => a + parseFloat(b['debit']) || 0, 0);
+			let transportPercent = 0;
+
+			let apexChartData = []; // Tableau des données à envoyer au graphique
+
+			if (salaries.length == 2) {
+				let sumSalaries = parseFloat(salaries[0].credit) + parseFloat(salaries[1].credit);
+				savingsPercent = ((savings / sumSalaries) * 100).toFixed(0);
+				taxesPercent = ((taxes / sumSalaries) * 100).toFixed(0);
+				habitatPercent = ((habitat / sumSalaries) * 100).toFixed(0);
+				funPercent = ((fun / sumSalaries) * 100).toFixed(0);
+				alimentationPercent = ((alimentation / sumSalaries) * 100).toFixed(0);
+				transportPercent = ((transport / sumSalaries) * 100).toFixed(0);
+				apexChartData = [
+					{ label: 'Economies : ' + savingsPercent + '%', data: savings.toFixed(2) },
+					{ label: 'Impôts : ' + taxesPercent + '%', data: taxes.toFixed(2) },
+					{ label: 'Logement : ' + habitatPercent + '%', data: habitat.toFixed(2) },
+					{ label: 'Loisirs : ' + funPercent + '%', data: fun.toFixed(2) },
+					{ label: 'Alimentation : ' + alimentationPercent + '%', data: alimentation.toFixed(2) },
+					{ label: 'Transport : ' + transportPercent + '%', data: transport.toFixed(2) },
+				];
+			}
+			// On trie le tableau des données à envoyer au graphique (tri descendant)
+			const sortByMapped = (map, compareFn) => (a, b) => compareFn(map(a), map(b));
+			const byValue = (a, b) => b - a;
+			const toData = (e) => e.data;
+			const byData = sortByMapped(toData, byValue);
+			apexChartData.sort(byData);
+
+			// On créé les deux tableaux à envoyer au graphique en se basant sur le tableau des données trié
+			let data = [];
+			let categories = [];
+			apexChartData.forEach((element) => data.push(element['data']));
+			apexChartData.forEach((element) => categories.push(element['label']));
+
+			this.displaySelectedMonth.apexChartMaxExpense = {
+				series: [
+					{
+						name: 'Total',
+						data: data,
+					},
+				],
+				options: {
+					chart: {
+						height: 190,
+						type: 'bar',
+						toolbar: {
+							show: false,
+						},
+					},
+					plotOptions: {
+						bar: {
+							borderRadius: 4,
+							horizontal: true,
+						},
+					},
+					dataLabels: {
+						enabled: true,
+						offsetX: 30,
+						formatter: function (value) {
+							return value + ' €';
+						},
+						style: {
+							colors: ['#333'],
+						},
+					},
+					xaxis: {
+						categories: categories,
+					},
+					tooltip: {
+						y: {
+							formatter: function (value) {
+								return value + ' €';
+							},
+						},
+					},
+				},
+			};
 		},
 		/**
 		 * ------------------------------ Fin partie statistique ------------------------------
