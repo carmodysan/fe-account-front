@@ -865,7 +865,7 @@ export default {
 												return (
 													w.globals.seriesTotals.reduce((a, b) => {
 														return a + b;
-													}, 0) + ' €'
+													}, 0).toFixed(2) + ' €'
 												);
 											},
 										},

@@ -3,7 +3,7 @@ class PublicServiceSalaryService {
 	 * Valeur du point d'indice.
 	 */
 	__INDEX_POINT() {
-		return 4.68602;
+		return 4.85003;
 	}
 
 	/**
