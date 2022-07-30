@@ -7,12 +7,13 @@ Amélioration de la partie Comptes mensuels
 *Amélioration :*
 * Les comptes mensuels peuvent désormais être clôturés
 * Calcul des salaires pour la partie statistique des comptes mensuels
+* Modification de la valeur du point d'indice qui a changé au 01/07/2022
 
 *Ajout :*
 * Ajout d'une catégorie "Compte" dans la création/édition d'une opération pour pouvoir ajouter l'opération "Reste du mois précédent"
 
 *Correction de bug :*
-* Pas de correction
+* Partie statistiques : affichage du salaire avec deux décimales après la virgule
 
 *Suppression :*
 * Pas de suppression
